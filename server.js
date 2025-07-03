@@ -275,6 +275,8 @@ function createOrderEmailTemplate(order) {
     <div style="padding: 30px; background: #f8f9fc;">
       <div style="background: white; border-radius: 8px; padding: 20px; margin-bottom: 25px; box-shadow: 0 2px 10px rgba(0,0,0,0.05);">
         <h2 style="color: #1a3c6c; margin-top: 0;">Shipping Information</h2>
+        <p style="margin: 5px 0 0; opacity: 0.9;">Order #: ${new Date().toLocaleString('en-IN', {day:'2-digit',month:'2-digit',year:'2-digit',hour:'2-digit',minute:'2-digit',second:'2-digit',hour12:false}).replace(/[\/,:]/g, '').replace(/(\d{6})(\d{6})/, '$1-$2')}</p>
+
         <table style="width: 100%;">
           <tr>
             <td style="width: 30%; padding: 8px 0; font-weight: bold;">Name:</td>
