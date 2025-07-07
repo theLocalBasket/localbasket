@@ -1,0 +1,602 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <meta http-equiv="Content-Security-Policy" content="
+            default-src 'self';
+            script-src 'self' https://cdn.jsdelivr.net 'unsafe-inline';
+            style-src 'self' https://cdn.jsdelivr.net https://fonts.googleapis.com 'unsafe-inline';
+            img-src 'self' data: https:;
+            font-src 'self' https://cdn.jsdelivr.net https://fonts.gstatic.com;
+            connect-src 'self' https://your-api-domain.com;
+        ">
+        <title>The Local Basket - Premium Local Products</title>
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.4/dist/css/bootstrap.min.css" rel="stylesheet">
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
+        <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Playfair+Display:wght@400;500;600;700&display=swap" rel="stylesheet">
+        <link rel="stylesheet" href="styles.css">
+        <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90' fill='%23C5A47E'>LB</text></svg>">
+
+    </head>
+<body>
+    <!-- Nav Bar -->
+    <nav class="navbar navbar-expand-lg navbar-light fixed-top">
+        <div class="container">
+            <a class="navbar-brand" href="index.html">The Local Basket</a>
+            
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav me-auto">
+                    
+                    <li class="nav-item">
+                        <a class="nav-link" href="#">New Arrivals</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="assignments.html">Solved Assignments</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#">Special Offers</a>
+                    </li>
+                </ul>
+                
+                <div class="d-flex align-items-center">
+                    <form class="d-flex me-3">
+                        <div class="input-group">
+                            <input type="text" class="form-control" placeholder="Search products..." aria-label="Search">
+                            <button class="btn btn-outline-success" type="submit">
+                                <i class="bi bi-search"></i>
+                            </button>
+                        </div>
+                    </form>
+                    
+                    <div class="nav-item">
+                        <a class="nav-link" href="Login.html">
+                            <i class="bi bi-person-circle me-1"></i> Account
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Cart Button -->
+    <button class="btn btn-light cart-button" id="openCartBtn">
+        <i class="bi bi-cart3"></i>
+        <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger" id="cartCount">0</span>
+    </button>
+    <!-- Main Content -->
+    <div class="container">
+        <!-- Hero Section -->
+        <section class="hero-section">
+            <video autoplay loop muted playsinline>
+                <source src="images/offer.mp4" type="video/mp4">
+                Your browser does not support the video tag.
+                
+            </video>
+        </section>
+
+        <!-- Featured Products -->
+        <div class="category-banner">
+            <h3>
+                <img src="https://cdn-icons-png.flaticon.com/512/5619/5619269.png"  alt="Snacks">
+                Featured Snacks
+                <img src="https://cdn-icons-png.flaticon.com/512/5619/5619269.png" alt="Snacks">
+            </h3>
+        </div>
+
+        <div class="products-grid">
+            <!-- Product 1 -->
+            <div class="product-card">
+                <img src="images/Finger-Chips.PNG" class="product-img" alt="Finger Chips">
+                <div class="product-body">
+                    <h5 class="product-title">Finger Chips</h5>
+                    <p class="text-muted">Crunchy and delicious potato snacks</p>
+                    <div class="product-price">₹49</div>
+                    <button class="btn btn-add-cart" onclick="addToCart('p1', 'Finger Chips', 49, 'images/Finger-Chips.PNG')">
+                        <i class="bi bi-cart-plus me-1"></i> Add to Cart
+                    </button>
+                </div>
+            </div>
+            
+            <!-- Product 2 -->
+            <div class="product-card">
+                <img src="images/Banana Chips.PNG" class="product-img" alt="Banana Chips">
+                <div class="product-body">
+                    <h5 class="product-title">Banana Chips</h5>
+                    <p class="text-muted">Sweet and crispy banana slices</p>
+                    <div class="product-price">₹99</div>
+                    <button class="btn btn-add-cart" onclick="addToCart('p2', 'Banana Chips', 99, 'images/Banana Chips.PNG')">
+                        <i class="bi bi-cart-plus me-1"></i> Add to Cart
+                    </button>
+                </div>
+            </div>
+            
+            <!-- Product 3 -->
+            <div class="product-card">
+                <img src="images/Potato chips.PNG" class="product-img" alt="Potato Chips">
+                <div class="product-body">
+                    <h5 class="product-title">Potato Chips</h5>
+                    <p class="text-muted">Classic salted potato chips</p>
+                    <div class="product-price">₹99</div>
+                    <button class="btn btn-add-cart" onclick="addToCart('p3', 'Potato Chips', 99, 'images/Potato chips.PNG')">
+                        <i class="bi bi-cart-plus me-1"></i> Add to Cart
+                    </button>
+                </div>
+            </div>
+            
+            <!-- Product 4 -->
+            <div class="product-card">
+                <img src="images/greenChilli Pickle.PNG" class="product-img" alt="Green Chilli Pickle">
+                <div class="product-body">
+                    <h5 class="product-title">Green Chilli Pickle</h5>
+                    <p class="text-muted">Spicy and tangy homemade pickle</p>
+                    <div class="product-price">₹199</div>
+                    <button class="btn btn-add-cart" onclick="addToCart('p4', 'Green Chilli Pickle', 199, 'images/greenChilli Pickle.PNG')">
+                        <i class="bi bi-cart-plus me-1"></i> Add to Cart
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Cosmetics Section -->
+        <div class="category-banner" style="background: linear-gradient(135deg, #f5e6ff 0%, #ffffff 100%);">
+            <h3>
+                <img src="https://cdn-icons-png.flaticon.com/512/1997/1997928.png" alt="Cosmetics">
+                Premium Cosmetics
+                <img src="https://cdn-icons-png.flaticon.com/512/1997/1997928.png" alt="Cosmetics">
+            </h3>
+        </div>
+
+        <div class="products-grid">
+            <!-- Product 5 -->
+            <div class="product-card">
+                <img src="https://images.unsplash.com/photo-1596462502278-27bfdc403348?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=600&q=80" class="product-img" alt="Foundation">
+                <div class="product-body">
+                    <h5 class="product-title">Foundation</h5>
+                    <p class="text-muted">Full coverage liquid foundation</p>
+                    <div class="product-price">₹570</div>
+                    <button class="btn btn-add-cart" onclick="addToCart('p5', 'Foundation', 570, 'images/foundation.jpg')">
+                        <i class="bi bi-cart-plus me-1"></i> Add to Cart
+                    </button>
+                </div>
+            </div>
+            
+            <!-- Product 6 -->
+            <div class="product-card">
+                <img src="https://images.unsplash.com/photo-1625772299848-391b6a87d7b3?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=600&q=80" class="product-img" alt="Moisturizer">
+                <div class="product-body">
+                    <h5 class="product-title">Moisturizer</h5>
+                    <p class="text-muted">Hydrating daily face moisturizer</p>
+                    <div class="product-price">₹460</div>
+                    <button class="btn btn-add-cart" onclick="addToCart('p6', 'Moisturizer', 460, 'images/foxtale.jpg')">
+                        <i class="bi bi-cart-plus me-1"></i> Add to Cart
+                    </button>
+                </div>
+            </div>
+            
+            <!-- Product 7 -->
+            <div class="product-card">
+                <img src="https://images.unsplash.com/photo-1608571423902-eed4a5ad8108?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=600&q=80" class="product-img" alt="Face Serum">
+                <div class="product-body">
+                    <h5 class="product-title">Face Serum</h5>
+                    <p class="text-muted">Vitamin C brightening serum</p>
+                    <div class="product-price">₹500</div>
+                    <button class="btn btn-add-cart" onclick="addToCart('p7', 'Face Serum', 500, 'images/Minimalist.jpg')">
+                        <i class="bi bi-cart-plus me-1"></i> Add to Cart
+                    </button>
+                </div>
+            </div>
+            
+            <!-- Product 8 -->
+            <div class="product-card">
+                <img src="https://images.unsplash.com/photo-1608248543828-18b8f0d5a5d2?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=600&q=80" class="product-img" alt="Sunscreen">
+                <div class="product-body">
+                    <h5 class="product-title">Sunscreen</h5>
+                    <p class="text-muted">SPF 50+ protection for all skin types</p>
+                    <div class="product-price">₹390</div>
+                    <button class="btn btn-add-cart" onclick="addToCart('p8', 'Sunscreen', 390, 'images/suncreen.jpg')">
+                        <i class="bi bi-cart-plus me-1"></i> Add to Cart
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Stationary Section -->
+        <div class="category-banner" style="background: linear-gradient(135deg, #e1f0ff 0%, #ffffff 100%);">
+            <h3>
+                <img src="https://cdn-icons-png.flaticon.com/512/3075/3075977.png" alt="Stationary">
+                Creative Stationary
+                <img src="https://cdn-icons-png.flaticon.com/512/3075/3075977.png" alt="Stationary">
+            </h3>
+        </div>
+
+        <div class="products-grid">
+            <!-- Product 9 -->
+            <div class="product-card">
+                <img src="https://images.unsplash.com/photo-1585336261022-680e295ce3fe?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=600&q=80" class="product-img" alt="Journal">
+                <div class="product-body">
+                    <h5 class="product-title">Premium Journal</h5>
+                    <p class="text-muted">Leather-bound writing journal</p>
+                    <div class="product-price">₹850</div>
+                    <button class="btn btn-add-cart" onclick="addToCart('p9', 'Premium Journal', 850, 'images/journal.jpg')">
+                        <i class="bi bi-cart-plus me-1"></i> Add to Cart
+                    </button>
+                </div>
+            </div>
+            
+            <!-- Product 10 -->
+            <div class="product-card">
+                <img src="https://images.unsplash.com/photo-1513364776144-60967b0f800f?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=600&q=80" class="product-img" alt="Pens">
+                <div class="product-body">
+                    <h5 class="product-title">Artist Pens Set</h5>
+                    <p class="text-muted">12-color premium drawing pens</p>
+                    <div class="product-price">₹670</div>
+                    <button class="btn btn-add-cart" onclick="addToCart('p10', 'Artist Pens Set', 670, 'images/pens.jpg')">
+                        <i class="bi bi-cart-plus me-1"></i> Add to Cart
+                    </button>
+                </div>
+            </div>
+            
+            <!-- Product 11 -->
+            <div class="product-card">
+                <img src="https://images.unsplash.com/photo-1544787219-7f47ccb76574?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=600&q=80" class="product-img" alt="Notebook">
+                <div class="product-body">
+                    <h5 class="product-title">Designer Notebook</h5>
+                    <p class="text-muted">Hardcover with premium paper</p>
+                    <div class="product-price">₹350</div>
+                    <button class="btn btn-add-cart" onclick="addToCart('p11', 'Designer Notebook', 350, 'images/notebook.jpg')">
+                        <i class="bi bi-cart-plus me-1"></i> Add to Cart
+                    </button>
+                </div>
+            </div>
+            
+            <!-- Product 12 -->
+            <div class="product-card">
+                <img src="https://images.unsplash.com/photo-1566150902887-9679ecc155ba?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=600&q=80" class="product-img" alt="Stickers">
+                <div class="product-body">
+                    <h5 class="product-title">Decorative Stickers</h5>
+                    <p class="text-muted">Assorted designs for planners</p>
+                    <div class="product-price">₹220</div>
+                    <button class="btn btn-add-cart" onclick="addToCart('p12', 'Decorative Stickers', 220, 'images/stickers.jpg')">
+                        <i class="bi bi-cart-plus me-1"></i> Add to Cart
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-4 mb-4 mb-md-0">
+                    <h5>The Local Basket</h5>
+                    <p>Your premier destination for locally sourced, high-quality products. Supporting local businesses and artisans since 2025.</p>
+                    <div class="social-links">
+                        <a href="#"><i class="bi bi-facebook"></i></a>
+                        <a href="#"><i class="bi bi-instagram"></i></a>
+                        <a href="#"><i class="bi bi-twitter"></i></a>
+                        <a href="https://wa.me/+919609010193"><i class="bi bi-whatsapp"></i></a>
+                    </div>
+                </div>
+                
+                <div class="col-md-2 mb-4 mb-md-0">
+                    <h5>Shop</h5>
+                    <ul>
+                        <li><a href="#">All Products</a></li>
+                        <li><a href="cosmetic.html">Cosmetics</a></li>
+                        <li><a href="stationary.html">Stationary</a></li>
+                        <li><a href="#">Snacks</a></li>
+                        <li><a href="#">Pickles</a></li>
+                    </ul>
+                </div>
+                
+                <div class="col-md-2 mb-4 mb-md-0">
+                    <h5>Help</h5>
+                    <ul>
+                        <li><a href="#">FAQs</a></li>
+                        <li><a href="#">Shipping</a></li>
+                        <li><a href="#">Returns</a></li>
+                        <li><a href="#">Contact Us</a></li>
+                        <li><a href="Login.html">Admin Login</a></li>
+                    </ul>
+                </div>
+                
+                <div class="col-md-4">
+                    <h5>Newsletter</h5>
+                    <p>Subscribe to receive updates on new products and special offers.</p>
+                    <div class="input-group mb-3">
+                        <input type="email" class="form-control" placeholder="Your email address">
+                        <button class="btn btn-light" type="button">Subscribe</button>
+                    </div>
+                    <p><i class="bi bi-envelope me-2"></i> contact@thelocalbasket.com</p>
+                    <p><i class="bi bi-telephone me-2"></i> +91 8116134446, +91 9609010193, +91 8348945765, +91 7872778009</p>
+                </div>
+            </div>
+            
+            <div class="row">
+                <div class="col-12">
+                    <div class="copyright">
+                        &copy; 2023 The Local Basket. All rights reserved.
+                    </div>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Cart Modal -->
+    <div class="modal fade" id="cartModal" tabindex="-1">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title"><i class="bi bi-cart3 me-2"></i>Your Shopping Cart</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body" id="cartBody">
+                    <!-- Cart items will be rendered here -->
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Continue Shopping</button>
+                    <button type="button" class="btn btn-checkout" id="checkoutBtn">Proceed to Checkout</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.4/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // Cart array to store items
+        let cart = [];
+        
+        // DOM elements
+        const openCartBtn = document.getElementById('openCartBtn');
+        const cartModal = new bootstrap.Modal(document.getElementById('cartModal'));
+        const cartBody = document.getElementById('cartBody');
+        const cartCount = document.getElementById('cartCount');
+        const checkoutBtn = document.getElementById('checkoutBtn');
+        
+        // Open cart modal
+        openCartBtn.addEventListener('click', () => {
+            renderCart();
+            cartModal.show();
+        });
+        
+        // Add to cart function
+        function addToCart(id, name, price, imgSrc) {
+            const existingItem = cart.find(item => item.id === id);
+            
+            if (existingItem) {
+                existingItem.qty++;
+            } else {
+                cart.push({
+                    id: id,
+                    img: imgSrc,
+                    name: name,
+                    price: price,
+                    qty: 1
+                });
+            }
+            
+            // Update cart count
+            cartCount.textContent = cart.reduce((sum, item) => sum + item.qty, 0);
+            
+            // Show success message
+            showAlert(`${name} added to cart!`, 'success');
+            
+            // Re-render cart if modal is open
+            if (document.getElementById('cartModal').classList.contains('show')) {
+                renderCart();
+            }
+        }
+        
+        // Remove from cart function
+        function removeFromCart(id) {
+            cart = cart.filter(item => item.id !== id);
+            renderCart();
+            cartCount.textContent = cart.reduce((sum, item) => sum + item.qty, 0);
+        }
+        
+        // Increase quantity function
+        function increaseQty(id) {
+            const item = cart.find(item => item.id === id);
+            if (item) {
+                item.qty++;
+                renderCart();
+                cartCount.textContent = cart.reduce((sum, item) => sum + item.qty, 0);
+            }
+        }
+        
+        // Decrease quantity function
+        function decreaseQty(id) {
+            const item = cart.find(item => item.id === id);
+            if (item) {
+                item.qty--;
+                if (item.qty < 1) {
+                    removeFromCart(id);
+                } else {
+                    renderCart();
+                    cartCount.textContent = cart.reduce((sum, item) => sum + item.qty, 0);
+                }
+            }
+        }
+        
+        // Render cart function
+        function renderCart() {
+            cartBody.innerHTML = "";
+            
+            if (cart.length === 0) {
+                cartBody.innerHTML = `
+                    <div class="empty-cart">
+                        <i class="bi bi-cart-x"></i>
+                        <h4>Your cart is empty</h4>
+                        <p>Add some products to your cart</p>
+                    </div>
+                `;
+                return;
+            }
+            
+            cart.forEach(item => {
+                const itemDiv = document.createElement('div');
+                itemDiv.className = 'cart-item';
+                itemDiv.innerHTML = `
+                    <div class="row align-items-center">
+                        <div class="col-2">
+                            <img src="${item.img}" alt="${item.name}" class="img-fluid rounded">
+                        </div>
+                        <div class="col-4">
+                            <strong>${item.name}</strong>
+                            <div class="text-muted">₹${item.price.toLocaleString()}</div>
+                        </div>
+                        <div class="col-3">
+                            <div class="d-flex align-items-center">
+                                <button class="btn btn-sm btn-outline-secondary quantity-btn" onclick="decreaseQty('${item.id}')">-</button>
+                                <span class="mx-2">${item.qty}</span>
+                                <button class="btn btn-sm btn-outline-secondary quantity-btn" onclick="increaseQty('${item.id}')">+</button>
+                            </div>
+                        </div>
+                        <div class="col-2 text-end fw-bold">
+                            ₹${(item.price * item.qty).toLocaleString()}
+                        </div>
+                        <div class="col-1 text-center">
+                            <button class="btn btn-sm btn-link text-danger" onclick="removeFromCart('${item.id}')">
+                                <i class="bi bi-trash"></i>
+                            </button>
+                        </div>
+                    </div>
+                `;
+                cartBody.appendChild(itemDiv);
+            });
+            
+            const total = cart.reduce((sum, item) => sum + item.price * item.qty, 0);
+            const shipping = total > 0 ? 80 : 0;
+            const grandTotal = total + shipping;
+            
+            const totalDiv = document.createElement('div');
+            totalDiv.className = 'mt-4 pt-3 border-top';
+            totalDiv.innerHTML = `
+                <div class="d-flex justify-content-between mb-2">
+                    <div>Subtotal:</div>
+                    <div>₹${total.toLocaleString()}</div>
+                </div>
+                <div class="d-flex justify-content-between mb-2">
+                    <div>Shipping:</div>
+                    <div>₹${shipping.toLocaleString()}</div>
+                </div>
+                <div class="d-flex justify-content-between mb-3 fw-bold fs-5">
+                    <div>Total:</div>
+                    <div>₹${grandTotal.toLocaleString()}</div>
+                </div>
+                
+                <div class="mt-4">
+                    <h5><i class="bi bi-truck me-2"></i>Shipping Information</h5>
+                    <div class="mb-3">
+                        <input type="email" class="form-control shipping-email" placeholder="Email" required>
+                    </div>
+                    <div class="mb-3">
+                        <input type="text" class="form-control shipping-name" placeholder="Full Name" required>
+                    </div>
+                    <div class="mb-3">
+                        <textarea class="form-control shipping-address" placeholder="Shipping Address" rows="2" required></textarea>
+                    </div>
+                    <div class="mb-3">
+                        <input type="tel" class="form-control contact-number" placeholder="Contact Number" required>
+                    </div>
+                </div>
+            `;
+            cartBody.appendChild(totalDiv);
+        }
+        
+        // Checkout button handler - MODIFIED
+        checkoutBtn.addEventListener('click', async () => {
+            if (cart.length === 0) {
+                showAlert('Your cart is empty!', 'warning');
+                return;
+            }
+            
+            // Collect shipping information
+            const shippingEmail = document.querySelector('.shipping-email').value;
+            const shippingName = document.querySelector('.shipping-name').value;
+            const shippingAddress = document.querySelector('.shipping-address').value;
+            const contactNumber = document.querySelector('.contact-number').value;
+            
+            // Validate shipping info
+            if (!shippingEmail || !shippingName || !shippingAddress || !contactNumber) {
+                showAlert('Please fill in all shipping information!', 'warning');
+                return;
+            }
+            
+            // Prepare order data
+            const orderData = {
+                items: cart,
+                shipping: {
+                    email:shippingEmail,
+                    name: shippingName,
+                    address: shippingAddress,
+                    phone: contactNumber
+                },
+                subtotal: cart.reduce((sum, item) => sum + item.price * item.qty, 0),
+                shippingCost: 80, // fixed shipping cost
+                grandTotal: cart.reduce((sum, item) => sum + item.price * item.qty, 0) + 80
+            };
+            
+            try {
+                // Show processing alert
+                showAlert('Processing your order...', 'info');
+                
+                // Send order to server
+                const response = await fetch('/send-order', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(orderData)
+                });
+                
+                const result = await response.json();
+                
+                if (result.success) {
+                    // Success
+                    showAlert('Order placed successfully!', 'success');
+                    cart = [];
+                    cartCount.textContent = '0';
+                    cartModal.hide();
+                } else {
+                    showAlert(`Failed to place order: ${result.error || 'Please try again'}`, 'danger');
+                }
+            } catch (error) {
+                showAlert('Network error. Please try again.', 'danger');
+                console.error('Checkout error:', error);
+            }
+        });
+        
+        // Show alert function
+        function showAlert(message, type) {
+            // Remove existing alerts
+            const existingAlert = document.querySelector('.alert');
+            if (existingAlert) existingAlert.remove();
+            
+            const alertDiv = document.createElement('div');
+            alertDiv.className = `alert alert-${type} alert-dismissible fade show`;
+            alertDiv.style.position = 'fixed';
+            alertDiv.style.top = '20px';
+            alertDiv.style.right = '20px';
+            alertDiv.style.zIndex = '9999';
+            alertDiv.innerHTML = `
+                ${message}
+                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+            `;
+            
+            document.body.appendChild(alertDiv);
+            
+            // Auto remove after 3 seconds
+            setTimeout(() => {
+                alertDiv.remove();
+            }, 3000);
+        }
+    </script>
+</body>
+</html>
