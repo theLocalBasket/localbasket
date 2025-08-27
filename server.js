@@ -21,6 +21,7 @@ const apiLimiter = rateLimit({
 });
 
 // Middleware
+app.use(cors);
 app.use(bodyParser.json({ limit: '10kb' }));
 app.use(express.static('public', { 
   maxAge: '1d',
