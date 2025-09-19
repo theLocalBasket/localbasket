@@ -16,7 +16,7 @@
         <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
         <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Playfair+Display:wght@400;500;600;700&display=swap" rel="stylesheet">
         <link rel="stylesheet" href="styles.css">
-        <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90' fill='%23C5A47E'>L</text></svg>">
+        <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90' fill='%23C5A47E'>LB</text></svg>">
 
     </head>
 <body>
@@ -31,23 +31,12 @@
             
             <div class="collapse navbar-collapse" id="navbarNav">
                 <ul class="navbar-nav me-auto">
-                    <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle" href="#" id="categoriesDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                            Categories
-                        </a>
-                        <ul class="dropdown-menu" aria-labelledby="categoriesDropdown">
-                            <li><a class="dropdown-item" href="#">All Products</a></li>
-                            <li><a class="dropdown-item" href="cosmetic.html">Cosmetics</a></li>
-                            <li><a class="dropdown-item" href="stationary.html">Stationary</a></li>
-                            <li><a class="dropdown-item" href="#">Snacks</a></li>
-                            <li><a class="dropdown-item" href="#">Pickles</a></li>
-                        </ul>
-                    </li>
+                    
                     <li class="nav-item">
                         <a class="nav-link" href="#">New Arrivals</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="#">Best Sellers</a>
+                        <a class="nav-link" href="assignments.html">Solved Assignments</a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link" href="#">Special Offers</a>
@@ -93,21 +82,21 @@
         <!-- Featured Products -->
         <div class="category-banner">
             <h3>
-                <img src="https://cdn-icons-png.flaticon.com/512/5619/5619269.png"  alt="Snacks">
-                Featured Snacks
-                <img src="https://cdn-icons-png.flaticon.com/512/5619/5619269.png" alt="Snacks">
+                <img src="https://cdn-icons-png.flaticon.com/512/5619/5619269.png"  alt="Stationary">
+                Featured Stationary
+                <img src="https://cdn-icons-png.flaticon.com/512/5619/5619269.png" alt="stationary">
             </h3>
         </div>
 
         <div class="products-grid">
             <!-- Product 1 -->
             <div class="product-card">
-                <img src="images/Finger-Chips.PNG" class="product-img" alt="Finger Chips">
+                <img src="images/phone charging stand.jpg" class="product-img" alt="Phone Charging Stand">
                 <div class="product-body">
-                    <h5 class="product-title">Finger Chips</h5>
-                    <p class="text-muted">Crunchy and delicious potato snacks</p>
-                    <div class="product-price">₹49</div>
-                    <button class="btn btn-add-cart" onclick="addToCart('p1', 'Finger Chips', 49, 'images/Finger-Chips.PNG')">
+                    <h5 class="product-title">Phone Charging Stand</h5>
+                    <p class="text-muted">Stand for easy charging </p>
+                    <div class="product-price">₹160</div>
+                    <button class="btn btn-add-cart" onclick="addToCart('p1', 'Phone Charging Stand', 160, 'images/phone charging stand.jpg')">
                         <i class="bi bi-cart-plus me-1"></i> Add to Cart
                     </button>
                 </div>
@@ -115,12 +104,12 @@
             
             <!-- Product 2 -->
             <div class="product-card">
-                <img src="images/Banana Chips.PNG" class="product-img" alt="Banana Chips">
+                <img src="images/Phone Suction.jpg" class="product-img" alt="Phone Suction">
                 <div class="product-body">
-                    <h5 class="product-title">Banana Chips</h5>
-                    <p class="text-muted">Sweet and crispy banana slices</p>
-                    <div class="product-price">₹99</div>
-                    <button class="btn btn-add-cart" onclick="addToCart('p2', 'Banana Chips', 99, 'images/Banana Chips.PNG')">
+                    <h5 class="product-title">Phone Suction</h5>
+                    <p class="text-muted">Silicon Phone Anti-Slip Suction</p>
+                    <div class="product-price">₹110</div>
+                    <button class="btn btn-add-cart" onclick="addToCart('p2', 'Phone Suction', 110, 'images/Phone Suction.jpg')">
                         <i class="bi bi-cart-plus me-1"></i> Add to Cart
                     </button>
                 </div>
@@ -128,158 +117,269 @@
             
             <!-- Product 3 -->
             <div class="product-card">
-                <img src="images/Potato chips.PNG" class="product-img" alt="Potato Chips">
+                <img src="images/Phone Charmer.jpg" class="product-img" alt="Phone Charmer">
                 <div class="product-body">
-                    <h5 class="product-title">Potato Chips</h5>
-                    <p class="text-muted">Classic salted potato chips</p>
-                    <div class="product-price">₹99</div>
-                    <button class="btn btn-add-cart" onclick="addToCart('p3', 'Potato Chips', 99, 'images/Potato chips.PNG')">
+                    <h5 class="product-title">Phone Charm</h5>
+                    <p class="text-muted">  Dog Paw Phone Charmer</p>
+                    <div class="product-price">₹160</div>
+                    <button class="btn btn-add-cart" onclick="addToCart('p3', 'Phone Charmer', 160, 'images/Phone Charmer.jpg')">
                         <i class="bi bi-cart-plus me-1"></i> Add to Cart
                     </button>
                 </div>
             </div>
-            
-            <!-- Product 4 -->
-            <div class="product-card">
-                <img src="images/greenChilli Pickle.PNG" class="product-img" alt="Green Chilli Pickle">
-                <div class="product-body">
-                    <h5 class="product-title">Green Chilli Pickle</h5>
-                    <p class="text-muted">Spicy and tangy homemade pickle</p>
-                    <div class="product-price">₹199</div>
-                    <button class="btn btn-add-cart" onclick="addToCart('p4', 'Green Chilli Pickle', 199, 'images/greenChilli Pickle.PNG')">
-                        <i class="bi bi-cart-plus me-1"></i> Add to Cart
-                    </button>
-                </div>
-            </div>
-        </div>
 
-        <!-- Cosmetics Section -->
-        <div class="category-banner" style="background: linear-gradient(135deg, #f5e6ff 0%, #ffffff 100%);">
-            <h3>
-                <img src="https://cdn-icons-png.flaticon.com/512/1997/1997928.png" alt="Cosmetics">
-                Premium Cosmetics
-                <img src="https://cdn-icons-png.flaticon.com/512/1997/1997928.png" alt="Cosmetics">
-            </h3>
-        </div>
+             <!-- Product 4 -->
+              <div class="product-card">
+                <img src="images/Bracelet and Earing.jpg" class="product-img" alt="Bracelet and Earing">
+                <div class="product-body">
+                    <h5 class="product-title">Bracelet and Earing </h5>
+                    <p class="text-muted"> Handmade</p> <br>
+                    <p>Bracelet and Earing Combo </p>
+                    <div class="product-price">₹200</div>
+                    <button class="btn btn-add-cart" onclick="addToCart('p4', 'Bracelet and Earing', 200, 'images/Bracelet and Earing.jpg')">
+                        <i class="bi bi-cart-plus me-1"></i> Add to Cart
+                    </button>
+                </div>
+            </div>
+             <!-- Product 5 -->
+              <div class="product-card">
+                <img src="images/bouquet 1.jpg" class="product-img" alt="Crochet Bouquet">
+                <div class="product-body">
+                    <h5 class="product-title">Crochet Bouquet</h5>
+                    <p class="text-muted"> Handmade</p> <br>
+                    <p>Crochet Sunflower and Rose Bouquet </p>
+                    <div class="product-price">₹400</div>
+                    <button class="btn btn-add-cart" onclick="addToCart('p5', 'Crochet Bouquet',400, 'images/bouquet 1.jpg')">
+                        <i class="bi bi-cart-plus me-1"></i> Add to Cart
+                    </button>
+                </div>
+            </div>
+             <!-- Product 6 -->
+              <div class="product-card">
+                <img src="images/Pumpkin Keychain blue.jpg" class="product-img" alt="Keychain">
+                <div class="product-body">
+                    <h5 class="product-title">Keychain </h5>
+                    <p class="text-muted"> Handmade</p> <br>
+                    <p> Pumpkin Keychain colour blue </p>
+                    <div class="product-price">₹100</div>
+                    <button class="btn btn-add-cart" onclick="addToCart('p6', 'Keychain', 100, 'images/Pumpkin Keychain blue.jpg')">
+                        <i class="bi bi-cart-plus me-1"></i> Add to Cart
+                    </button>
+                </div>
+            </div>
 
-        <div class="products-grid">
-            <!-- Product 5 -->
-            <div class="product-card">
-                <img src="https://images.unsplash.com/photo-1596462502278-27bfdc403348?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=600&q=80" class="product-img" alt="Foundation">
-                <div class="product-body">
-                    <h5 class="product-title">Foundation</h5>
-                    <p class="text-muted">Full coverage liquid foundation</p>
-                    <div class="product-price">₹570</div>
-                    <button class="btn btn-add-cart" onclick="addToCart('p5', 'Foundation', 570, 'images/foundation.jpg')">
-                        <i class="bi bi-cart-plus me-1"></i> Add to Cart
-                    </button>
-                </div>
-            </div>
-            
-            <!-- Product 6 -->
-            <div class="product-card">
-                <img src="https://images.unsplash.com/photo-1625772299848-391b6a87d7b3?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=600&q=80" class="product-img" alt="Moisturizer">
-                <div class="product-body">
-                    <h5 class="product-title">Moisturizer</h5>
-                    <p class="text-muted">Hydrating daily face moisturizer</p>
-                    <div class="product-price">₹460</div>
-                    <button class="btn btn-add-cart" onclick="addToCart('p6', 'Moisturizer', 460, 'images/foxtale.jpg')">
-                        <i class="bi bi-cart-plus me-1"></i> Add to Cart
-                    </button>
-                </div>
-            </div>
-            
             <!-- Product 7 -->
             <div class="product-card">
-                <img src="https://images.unsplash.com/photo-1608571423902-eed4a5ad8108?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=600&q=80" class="product-img" alt="Face Serum">
+                <img src="images/bracelet pink.jpg" class="product-img" alt="Pearl Bracelet">
                 <div class="product-body">
-                    <h5 class="product-title">Face Serum</h5>
-                    <p class="text-muted">Vitamin C brightening serum</p>
-                    <div class="product-price">₹500</div>
-                    <button class="btn btn-add-cart" onclick="addToCart('p7', 'Face Serum', 500, 'images/Minimalist.jpg')">
+                    <h5 class="product-title">Pearl Bracelet</h5>
+                    <p class="text-muted">Handmade</p> <br>
+                    <p>  White and Pink Pearl Bracelet</p>
+                    <div class="product-price">₹150</div>
+                    <button class="btn btn-add-cart" onclick="addToCart('p7', 'Pearl Bracelet', 150, 'images/bracelet pink.jpg')">
                         <i class="bi bi-cart-plus me-1"></i> Add to Cart
                     </button>
                 </div>
             </div>
-            
             <!-- Product 8 -->
-            <div class="product-card">
-                <img src="https://images.unsplash.com/photo-1608248543828-18b8f0d5a5d2?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=600&q=80" class="product-img" alt="Sunscreen">
+              <div class="product-card">
+                <img src="images/Bracelet purple.jpg" class="product-img" alt="Bracelet">
                 <div class="product-body">
-                    <h5 class="product-title">Sunscreen</h5>
-                    <p class="text-muted">SPF 50+ protection for all skin types</p>
-                    <div class="product-price">₹390</div>
-                    <button class="btn btn-add-cart" onclick="addToCart('p8', 'Sunscreen', 390, 'images/suncreen.jpg')">
+                    <h5 class="product-title">Bracelet</h5>
+                    <p class="text-muted">Handmade</p> <br>
+                    <p> White and Purple Beads Bracelet</p>
+                    <div class="product-price">₹130</div>
+                    <button class="btn btn-add-cart" onclick="addToCart('p8', 'Bracelet', 130, 'images/Bracelet purple.jpg')">
                         <i class="bi bi-cart-plus me-1"></i> Add to Cart
                     </button>
                 </div>
             </div>
-        </div>
-
-        <!-- Stationary Section -->
-        <div class="category-banner" style="background: linear-gradient(135deg, #e1f0ff 0%, #ffffff 100%);">
-            <h3>
-                <img src="https://cdn-icons-png.flaticon.com/512/3075/3075977.png" alt="Stationary">
-                Creative Stationary
-                <img src="https://cdn-icons-png.flaticon.com/512/3075/3075977.png" alt="Stationary">
-            </h3>
-        </div>
-
-        <div class="products-grid">
             <!-- Product 9 -->
-            <div class="product-card">
-                <img src="https://images.unsplash.com/photo-1585336261022-680e295ce3fe?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=600&q=80" class="product-img" alt="Journal">
+              <div class="product-card">
+                <img src="images/bracelet blue.jpg" class="product-img" alt="Bracelet">
                 <div class="product-body">
-                    <h5 class="product-title">Premium Journal</h5>
-                    <p class="text-muted">Leather-bound writing journal</p>
-                    <div class="product-price">₹850</div>
-                    <button class="btn btn-add-cart" onclick="addToCart('p9', 'Premium Journal', 850, 'images/journal.jpg')">
+                    <h5 class="product-title">Bracelet</h5>
+                    <p class="text-muted"> Handmade </p> <br>
+                    <p>White and Blue Beads Bracelet</p>
+                    <div class="product-price">₹130</div>
+                    <button class="btn btn-add-cart" onclick="addToCart('p9', 'Bracelet', 130, 'images/bracelet blue.jpg')">
                         <i class="bi bi-cart-plus me-1"></i> Add to Cart
                     </button>
                 </div>
             </div>
             
             <!-- Product 10 -->
-            <div class="product-card">
-                <img src="https://images.unsplash.com/photo-1513364776144-60967b0f800f?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=600&q=80" class="product-img" alt="Pens">
+              <div class="product-card">
+                <img src="images/bracelet green.jpg" class="product-img" alt="Bracelet">
                 <div class="product-body">
-                    <h5 class="product-title">Artist Pens Set</h5>
-                    <p class="text-muted">12-color premium drawing pens</p>
-                    <div class="product-price">₹670</div>
-                    <button class="btn btn-add-cart" onclick="addToCart('p10', 'Artist Pens Set', 670, 'images/pens.jpg')">
+                    <h5 class="product-title"> Bracelet</h5>
+                    <p class="text-muted">Handmade</p> <br>
+                    <p> White and Green Pearl Bracelet</p>
+                    <div class="product-price">₹130</div>
+                    <button class="btn btn-add-cart" onclick="addToCart('p10', 'Bracelet', 130, 'images/bracelet green.jpg')">
                         <i class="bi bi-cart-plus me-1"></i> Add to Cart
                     </button>
                 </div>
             </div>
-            
             <!-- Product 11 -->
-            <div class="product-card">
-                <img src="https://images.unsplash.com/photo-1544787219-7f47ccb76574?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=600&q=80" class="product-img" alt="Notebook">
+              <div class="product-card">
+                <img src="images/Bracelet Orange.jpg" class="product-img" alt="Bracelet">
                 <div class="product-body">
-                    <h5 class="product-title">Designer Notebook</h5>
-                    <p class="text-muted">Hardcover with premium paper</p>
-                    <div class="product-price">₹350</div>
-                    <button class="btn btn-add-cart" onclick="addToCart('p11', 'Designer Notebook', 350, 'images/notebook.jpg')">
+                    <h5 class="product-title"> Bracelet</h5>
+                    <p class="text-muted">Handmade</p> <br>
+                    <p> White and orange Pearl Bracelet</p>
+                    <div class="product-price">₹130</div>
+                    <button class="btn btn-add-cart" onclick="addToCart('p11', 'Bracelet', 130, 'images/Bracelet Orange.jpg')">
+                        <i class="bi bi-cart-plus me-1"></i> Add to Cart
+                    </button>
+                </div>
+            </div>
+            <!-- Product 12 -->
+              <div class="product-card">
+                <img src="images/bracelet green1.jpg" class="product-img" alt="Bracelet">
+                <div class="product-body">
+                    <h5 class="product-title"> Bracelet</h5>
+                    <p class="text-muted">Handmade  </p> <br>
+                    <p>Pearl Bracelet</p>
+                    <div class="product-price">₹130</div>
+                    <button class="btn btn-add-cart" onclick="addToCart('p12', 'Bracelet', 130, 'images/bracelet green1.jpg')">
+                        <i class="bi bi-cart-plus me-1"></i> Add to Cart
+                    </button>
+                </div>
+            </div>
+            <!-- Product 13 -->
+              <div class="product-card">
+                <img src="images/Phone Charm pink.jpg" class="product-img" alt="Phone Charm">
+                <div class="product-body">
+                    <h5 class="product-title"> Phone Charm</h5>
+                    <p class="text-muted">Handmade</p> <br>
+                    <p>Phone Charmer</p>
+                    <div class="product-price">₹190</div>
+                    <button class="btn btn-add-cart" onclick="addToCart('p13', 'Bracelet', 190, 'images/Phone Charm pink.jpg')">
+                        <i class="bi bi-cart-plus me-1"></i> Add to Cart
+                    </button>
+                </div>
+            </div>
+            <!-- Product 14 -->
+              <div class="product-card">
+                <img src="images/Phone Charm purple.jpg" class="product-img" alt="Phone Charm">
+                <div class="product-body">
+                    <h5 class="product-title"> Phone Charm</h5>
+                    <p class="text-muted">Handmade </p> <br>
+                    <p>Phone Charm</p>
+                    <div class="product-price">₹190</div>
+                    <button class="btn btn-add-cart" onclick="addToCart('p14', 'Bracelet', 190, 'images/Phone Charm purple.jpg')">
+                        <i class="bi bi-cart-plus me-1"></i> Add to Cart
+                    </button>
+                </div>
+            </div>
+            <!-- Product 15 -->
+              <div class="product-card">
+                <img src="images/bracelet pink.jpg" class="product-img" alt="Pearl Bracelet">
+                <div class="product-body">
+                    <h5 class="product-title"> Pearl Bracelet</h5>
+                    <p class="text-muted">Handmade </p> <br>
+                    <p>Pearl Bracelet</p>
+                    <div class="product-price">₹140</div>
+                    <button class="btn btn-add-cart" onclick="addToCart('p15', 'Bracelet', 140, 'images/bracelet pink.jpg')">
+                        <i class="bi bi-cart-plus me-1"></i> Add to Cart
+                    </button>
+                </div>
+            </div>
+            <!-- Product 16 -->
+              <div class="product-card">
+                <img src="images/bracelet pearl.jpg" class="product-img" alt="Pearl Bracelet">
+                <div class="product-body">
+                    <h5 class="product-title"> Pearl Bracelet</h5>
+                    <p class="text-muted">Handmade</p> <br>
+                    <p> Pearl Bracelet</p>
+                    <div class="product-price">₹140</div>
+                    <button class="btn btn-add-cart" onclick="addToCart('p16', 'Bracelet', 140, 'images/bracelet pearl.jpg')">
+                        <i class="bi bi-cart-plus me-1"></i> Add to Cart
+                    </button>
+                </div>
+            </div>
+            <!-- Product 17 -->
+              <div class="product-card">
+                <img src="images/sunflower charm.jpg" class="product-img" alt=" Bag Charm">
+                <div class="product-body">
+                    <h5 class="product-title">  Bag Charm (Sunflower)</h5>
+                    <p class="text-muted">Handmade </p> <br>
+                    <p>Crochet Sunflower Bag Charmer</p>
+                    <div class="product-price">₹150</div>
+                    <button class="btn btn-add-cart" onclick="addToCart('p17', 'Bracelet', 140, 'images/sunflower charm.jpg')">
+                        <i class="bi bi-cart-plus me-1"></i> Add to Cart
+                    </button>
+                </div>
+            </div>
+            <!-- Product 18 -->
+              <div class="product-card">
+                <img src="images/phone charm01.jpg" class="product-img" alt="Phone Charmer">
+                <div class="product-body">
+                    <h5 class="product-title"> Phone Charm (Clock)</h5>
+                    <p class="text-muted">Handmade</p> <br>
+                    <p> Clock Shaped Phone Charmer</p>
+                    <div class="product-price">₹60</div>
+                    <button class="btn btn-add-cart" onclick="addToCart('p18', 'Bracelet', 60, 'images/phone charm01.jpg')">
+                        <i class="bi bi-cart-plus me-1"></i> Add to Cart
+                    </button>
+                </div>
+            </div>
+              <div class="product-card">
+                <img src="images/Phone charm02.jpg" class="product-img" alt="Phone Charmer">
+                <div class="product-body">
+                    <h5 class="product-title"> Phone Charm (Penguin)</h5>
+                    <p class="text-muted">Handmade </p> <br>
+                    <p> Penguin Shaped Phone Charmer</p>
+                    <div class="product-price">₹60</div>
+                    <button class="btn btn-add-cart" onclick="addToCart('p19', 'Bracelet', 60, 'images/Phone charm02.jpg')">
+                        <i class="bi bi-cart-plus me-1"></i> Add to Cart
+                    </button>
+                </div>
+            </div>
+              <div class="product-card">
+                <img src="images/Phone charm03.jpg" class="product-img" alt="Phone Charmer">
+                <div class="product-body">
+                    <h5 class="product-title"> Phone Charm (Panda)</h5>
+                    <p class="text-muted">Handmade</p> <br>
+                    <p>Panda Shaped Phone Charmer</p>
+                    <div class="product-price">₹60</div>
+                    <button class="btn btn-add-cart" onclick="addToCart('p20', 'Bracelet', 60, 'images/Phone charm03.jpg')">
+                        <i class="bi bi-cart-plus me-1"></i> Add to Cart
+                    </button>
+                </div>
+            </div>
+              <div class="product-card">
+                <img src="images/Phone charm04.jpg" class="product-img" alt="Phone Charmer">
+                <div class="product-body">
+                    <h5 class="product-title"> Phone Charm (Butterfly)</h5>
+                    <p class="text-muted">Handmade</p> <br>
+                    <p> Butterfly Shaped Phone Charmer</p>
+                    <div class="product-price">₹60</div>
+                    <button class="btn btn-add-cart" onclick="addToCart('p21', 'Bracelet', 60, 'images/Phone charm04.jpg')">
+                        <i class="bi bi-cart-plus me-1"></i> Add to Cart
+                    </button>
+                </div>
+            </div>
+              <div class="product-card">
+                <img src="images/Phone charm05.jpg" class="product-img" alt="Phone Charmer">
+                <div class="product-body">
+                    <h5 class="product-title"> Phone Charm (Maple Leaf)</h5>
+                    <p class="text-muted">Handmade</p> <br>
+                    <p>Maple Leaf Shaped Phone Charmer</p>
+                    <div class="product-price">₹60</div>
+                    <button class="btn btn-add-cart" onclick="addToCart('p22', 'Bracelet', 60, 'images/Phone charm05.jpg')">
                         <i class="bi bi-cart-plus me-1"></i> Add to Cart
                     </button>
                 </div>
             </div>
             
-            <!-- Product 12 -->
-            <div class="product-card">
-                <img src="https://images.unsplash.com/photo-1566150902887-9679ecc155ba?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=600&q=80" class="product-img" alt="Stickers">
-                <div class="product-body">
-                    <h5 class="product-title">Decorative Stickers</h5>
-                    <p class="text-muted">Assorted designs for planners</p>
-                    <div class="product-price">₹220</div>
-                    <button class="btn btn-add-cart" onclick="addToCart('p12', 'Decorative Stickers', 220, 'images/stickers.jpg')">
-                        <i class="bi bi-cart-plus me-1"></i> Add to Cart
-                    </button>
-                </div>
-            </div>
-        </div>
-    </div>
 
+        </div>
+       
+
+
+        
     <!-- Footer -->
     <footer class="footer">
         <div class="container">
@@ -332,7 +432,7 @@
             <div class="row">
                 <div class="col-12">
                     <div class="copyright">
-                        &copy; 2023 The Local Basket. All rights reserved.
+                        &copy; 2025 The Local Basket. All rights reserved.
                     </div>
                 </div>
             </div>
@@ -505,6 +605,9 @@
                 <div class="mt-4">
                     <h5><i class="bi bi-truck me-2"></i>Shipping Information</h5>
                     <div class="mb-3">
+                        <input type="email" class="form-control shipping-email" placeholder="Email" required>
+                    </div>
+                    <div class="mb-3">
                         <input type="text" class="form-control shipping-name" placeholder="Full Name" required>
                     </div>
                     <div class="mb-3">
@@ -526,12 +629,13 @@
             }
             
             // Collect shipping information
+            const shippingEmail = document.querySelector('.shipping-email').value;
             const shippingName = document.querySelector('.shipping-name').value;
             const shippingAddress = document.querySelector('.shipping-address').value;
             const contactNumber = document.querySelector('.contact-number').value;
             
             // Validate shipping info
-            if (!shippingName || !shippingAddress || !contactNumber) {
+            if (!shippingEmail || !shippingName || !shippingAddress || !contactNumber) {
                 showAlert('Please fill in all shipping information!', 'warning');
                 return;
             }
@@ -540,6 +644,7 @@
             const orderData = {
                 items: cart,
                 shipping: {
+                    email:shippingEmail,
                     name: shippingName,
                     address: shippingAddress,
                     phone: contactNumber
