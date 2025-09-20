@@ -17,57 +17,79 @@
         <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Playfair+Display:wght@400;500;600;700&display=swap" rel="stylesheet">
         <link rel="stylesheet" href="styles.css">
         <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90' fill='%23C5A47E'>LB</text></svg>">
+        <style>
+            /* Cart Button Style */
+            #openCartBtn {
+                position: relative;
+                font-size: 1.2rem;
+                border-radius: 50%;
+                width: 42px;
+                height: 42px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+            }
 
+            #openCartBtn .badge {
+                font-size: 0.7rem;
+            }
+        </style>
     </head>
 <body>
-    <!-- Nav Bar -->
-    <nav class="navbar navbar-expand-lg navbar-light fixed-top">
-        <div class="container">
-            <a class="navbar-brand" href="index.html">The Local Basket</a>
-            
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
-                <span class="navbar-toggler-icon"></span>
-            </button>
-            
-            <div class="collapse navbar-collapse" id="navbarNav">
-                <ul class="navbar-nav me-auto">
-                    
-                    <li class="nav-item">
-                        <a class="nav-link" href="#">New Arrivals</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="assignments.html">Solved Assignments</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="#">Special Offers</a>
-                    </li>
-                </ul>
-                
-                <div class="d-flex align-items-center">
-                    <form class="d-flex me-3">
-                        <div class="input-group">
-                            <input type="text" class="form-control" placeholder="Search products..." aria-label="Search">
-                            <button class="btn btn-outline-success" type="submit">
-                                <i class="bi bi-search"></i>
-                            </button>
-                        </div>
-                    </form>
-                    
-                    <div class="nav-item">
-                        <a class="nav-link" href="Login.html">
-                            <i class="bi bi-person-circle me-1"></i> Account
-                        </a>
+   <!-- Navbar -->
+<nav class="navbar navbar-expand-lg navbar-light fixed-top">
+    <div class="container">
+        <a class="navbar-brand" href="index.html">The Local Basket</a>
+
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav me-auto">
+                <li class="nav-item">
+                    <a class="nav-link" href="#">New Arrivals</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="assignments.html">Solved Assignments</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#">Special Offers</a>
+                </li>
+            </ul>
+
+            <div class="d-flex align-items-center">
+                <!-- Search Form -->
+                <form class="d-flex me-3">
+                    <div class="input-group">
+                        <input type="text" class="form-control" placeholder="Search products..." aria-label="Search">
+                        <button class="btn btn-outline-success" type="submit">
+                            <i class="bi bi-search"></i>
+                        </button>
                     </div>
+                </form>
+
+                <!-- Account Button -->
+                <div class="nav-item me-2">
+                    <a class="nav-link" href="Login.html">
+                        <i class="bi bi-person-circle me-1"></i> Account
+                    </a>
+                </div>
+
+                <!-- Cart Button -->
+                <div class="nav-item position-relative">
+                    <button class="btn btn-light" id="openCartBtn">
+                        <i class="bi bi-cart3"></i>
+                        <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger" id="cartCount">0</span>
+                    </button>
                 </div>
             </div>
         </div>
-    </nav>
+    </div>
+</nav>
 
-    <!-- Cart Button -->
-    <button class="btn btn-light cart-button" id="openCartBtn">
-        <i class="bi bi-cart3"></i>
-        <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger" id="cartCount">0</span>
-    </button>
+
+
     <!-- Main Content -->
     <div class="container">
         <!-- Hero Section -->
