@@ -170,11 +170,10 @@
             color: white;
             border: none;
             padding: 10px 15px;
-            font-weight: 100;
             transition: all 0.3s;
             margin-top: auto;
-            width: 90%;
-            height: 50px;
+            width: auto;
+            height: 70;
         }
         
         .btn-add-cart:hover {
