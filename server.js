@@ -139,8 +139,9 @@ app.post("/send-order", apiLimiter, async (req, res) => {
   try {
     const orderData = req.body;
 
-    if(!orderData.items || orderData.items.length === 0)
-      return res.status(400).json({ success:false, error:"No items in order" });
+    if (!orderData.items || orderData.items.length === 0) {
+      return res.status(400).json({ success: false, error: "No items in order" });
+    }
 
     const sanitizedOrder = {
       ...orderData,
@@ -148,25 +149,81 @@ app.post("/send-order", apiLimiter, async (req, res) => {
         name: sanitize(orderData.shipping.name),
         email: sanitize(orderData.shipping.email),
         address: sanitize(orderData.shipping.address),
-        phone: sanitize(orderData.shipping.phone)
+        phone: sanitize(orderData.shipping.phone),
       },
-      items: orderData.items.map(item => ({
+      items: orderData.items.map((item) => ({
         ...item,
-        name: sanitize(item.name)
-      }))
+        name: sanitize(item.name),
+      })),
     };
+
+    // Build styled items table
+    const itemsTable = `
+      <table style="width:100%; border-collapse: collapse; margin-top:15px; font-family: Arial, sans-serif;">
+        <thead>
+          <tr style="background:#198754; color:#fff;">
+            <th style="text-align:left; padding:8px;">Item</th>
+            <th style="text-align:right; padding:8px;">Rate (₹)</th>
+            <th style="text-align:right; padding:8px;">Qty</th>
+            <th style="text-align:right; padding:8px;">Total (₹)</th>
+          </tr>
+        </thead>
+        <tbody>
+          ${sanitizedOrder.items
+            .map(
+              (item) => `
+            <tr style="border-bottom:1px solid #ddd;">
+              <td style="padding:8px;">${item.name}</td>
+              <td style="padding:8px; text-align:right;">${item.price}</td>
+              <td style="padding:8px; text-align:right;">${item.qty}</td>
+              <td style="padding:8px; text-align:right;">${item.price * item.qty}</td>
+            </tr>`
+            )
+            .join("")}
+          <tr>
+
+            <td colspan="3" style="padding:8px; text-align:right; font-weight:bold;">Grand Total:</td>
+            <td colspan="3" style="padding:8px; text-align:right; font-weight:bold;">Shipping charges: Rs. 80</td>
+            <td style="padding:8px; text-align:right; font-weight:bold;">₹${sanitizedOrder.grandTotal}</td>
+          </tr>
+        </tbody>
+      </table>
+    `;
+
+    // Email wrapper template
+    const wrapEmail = (title, body) => `
+      <div style="max-width:600px; margin:0 auto; border:1px solid #eee; border-radius:8px; overflow:hidden; font-family:Arial, sans-serif;">
+        <div style="background:#198754; color:white; padding:15px; text-align:center;">
+          <h2 style="margin:0;">The Local Basket</h2>
+        </div>
+        <div style="padding:20px; color:#333; line-height:1.6;">
+          <h3 style="color:#198754;">${title}</h3>
+          ${body}
+          <p style="margin-top:20px; font-size:12px; color:#777;">This is an automated message from The Local Basket. Please do not reply directly.</p>
+        </div>
+        <div style="background:#f5f5f5; padding:10px; text-align:center; font-size:12px; color:#666;">
+          © ${new Date().getFullYear()} The Local Basket. All rights reserved.
+        </div>
+      </div>
+    `;
 
     // Admin email
     const adminMail = {
       from: `"New Order Notification" <${process.env.EMAIL_USER}>`,
       to: process.env.RECEIVER_EMAIL,
-      subject: `New Order - ₹${sanitizedOrder.grandTotal}`,
-      html: `<h3>New Order Received</h3>
-             <p>Name: ${sanitizedOrder.shipping.name}</p>
-             <p>Email: ${sanitizedOrder.shipping.email}</p>
-             <p>Phone: ${sanitizedOrder.shipping.phone}</p>
-             <p>Address: ${sanitizedOrder.shipping.address}</p>
-             <p>Payment ID: ${sanitizedOrder.paymentId}</p>`
+      subject: `🛒 New Order - ₹${sanitizedOrder.grandTotal}`,
+      html: wrapEmail(
+        "New Order Received",
+        `
+          <p><strong>Name:</strong> ${sanitizedOrder.shipping.name}</p>
+          <p><strong>Email:</strong> ${sanitizedOrder.shipping.email}</p>
+          <p><strong>Phone:</strong> ${sanitizedOrder.shipping.phone}</p>
+          <p><strong>Address:</strong> ${sanitizedOrder.shipping.address}</p>
+          <p><strong>Payment ID:</strong> ${sanitizedOrder.paymentId}</p>
+          <h4 style="margin-top:20px;">Order Details:</h4>
+          ${itemsTable}
+        `
+      ),
     };
     await transporter.sendMail(adminMail);
 
@@ -174,20 +231,27 @@ app.post("/send-order", apiLimiter, async (req, res) => {
     const customerMail = {
       from: `"The Local Basket" <${process.env.EMAIL_USER}>`,
       to: sanitizedOrder.shipping.email,
-      subject: `Order Confirmation - ₹${sanitizedOrder.grandTotal}`,
-      html: `<h3>Thank You for Your Order!</h3>
-             <p>Order Amount: ₹${sanitizedOrder.grandTotal}</p>
-             <p>Payment ID: ${sanitizedOrder.paymentId}</p>`
+      subject: `✅ Order Confirmation - ₹${sanitizedOrder.grandTotal}`,
+      html: wrapEmail(
+        "Thank You for Your Order!",
+        `
+          <p>Hi <strong>${sanitizedOrder.shipping.name}</strong>,</p>
+          <p>We have received your order and payment. Below are your order details:</p>
+          <p><strong>Payment ID:</strong> ${sanitizedOrder.paymentId}</p>
+          ${itemsTable}
+          <p style="margin-top:20px;">We’ll notify you once your order is out for delivery. Thank you for shopping with <strong>The Local Basket</strong>!</p>
+        `
+      ),
     };
     await transporter.sendMail(customerMail);
 
-    res.json({ success:true, message:"Order emails sent successfully" });
-
-  } catch(err) {
+    res.json({ success: true, message: "Order emails sent successfully" });
+  } catch (err) {
     console.error("Error sending order emails:", err);
-    res.status(500).json({ success:false, error: err.message });
+    res.status(500).json({ success: false, error: err.message });
   }
 });
+
 
 // 404 handler
 app.use((req, res) => {
