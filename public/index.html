@@ -1,41 +1,26 @@
-<!DOCTYPE html>
 <html lang="en">
-    <head>
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <meta http-equiv="Content-Security-Policy" content="
-            default-src 'self';
-            script-src 'self' https://cdn.jsdelivr.net 'unsafe-inline';
-            style-src 'self' https://cdn.jsdelivr.net https://fonts.googleapis.com 'unsafe-inline';
-            img-src 'self' data: https:;
-            font-src 'self' https://cdn.jsdelivr.net https://fonts.gstatic.com;
-            connect-src 'self' https://your-api-domain.com;
-        ">
-        <title>The Local Basket - Premium Local Products</title>
-        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.4/dist/css/bootstrap.min.css" rel="stylesheet">
-        <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
-        <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Playfair+Display:wght@400;500;600;700&display=swap" rel="stylesheet">
-        <link rel="stylesheet" href="styles.css">
-        <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90' fill='%23C5A47E'>LB</text></svg>">
-        <style>
-/* Cart Button Style */
-#openCartBtn {
-    font-size: 1.2rem;
-    border-radius: 50%;
-    width: 42px;
-    height: 42px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-}
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="Content-Security-Policy" content="
+  default-src 'self';
+  script-src 'self' https://cdn.jsdelivr.net https://checkout.razorpay.com 'unsafe-inline';
+  style-src 'self' https://cdn.jsdelivr.net https://fonts.googleapis.com 'unsafe-inline';
+  img-src 'self' data: https:;
+  font-src 'self' https://cdn.jsdelivr.net https://fonts.gstatic.com;
+  connect-src 'self' https://your-api-domain.com https://api.razorpay.com https://lumberjack.razorpay.com https://cdn.jsdelivr.net;
+  frame-src https://checkout.razorpay.com https://api.razorpay.com;
+">
 
-#openCartBtn .badge {
-    font-size: 0.7rem;
-}
-</style>
-    </head>
+
+  <title>The Local Basket - Premium Local Products</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.4/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Playfair+Display:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90' fill='%23C5A47E'>LB</text></svg>">
+</head>
 <body>
-    
         <!-- Navbar -->
 <nav class="navbar navbar-expand-lg navbar-light fixed-top bg-light">
     <div class="container">
@@ -125,295 +110,280 @@
             <small> All rates listed below are already offered at a 50% discount.</small>
         </div>
 
+        
         <div class="products-grid">
-            <!-- Product 1 -->
-            <div class="product-card">
-                <img src="images/phone charging stand.jpg" class="product-img" alt="Phone Charging Stand">
-                <div class="product-body">
-                    <h5 class="product-title">Phone Charging Stand</h5>
-                    <p class="product-description">Stand for easy charging </p>
-                    <div class="product-price">₹160</div>
-                    <button class="btn btn-add-cart" onclick="addToCart('p1', 'Phone Charging Stand', 160, 'images/phone charging stand.jpg')">
-                        <i class="bi bi-cart-plus"></i> add to cart
-                    </button>
-                </div>
-            </div>
-            
-            <!-- Product 2 -->
-            <div class="product-card">
-                <img src="images/Phone Suction.jpg" class="product-img" alt="Phone Suction">
-                <div class="product-body">
-                    <h5 class="product-title">Phone Suction</h5>
-                    <p class="product-description">Silicon Phone Anti-Slip Suction</p>
-                    <div class="product-price">₹110</div>
-                    <button class="btn btn-add-cart" onclick="">
-                        <i class="bi bi-cart-plus me-1"></i> out of stock
-                    </button>
-                </div>
-            </div>
-            
-            <!-- Product 3 -->
-            <div class="product-card">
-                <img src="images/Phone Charmer.jpg" class="product-img" alt="Phone Charmer">
-                <div class="product-body">
-                    <h5 class="product-title">Phone Charm</h5>
-                    <p class="product-description">  Dog Paw Phone Charmer</p>
-                    <div class="product-price">₹160</div>
-                    <button class="btn btn-add-cart" onclick="addToCart('p3', ' Paw Phone Charmer', 160, 'images/Phone Charmer.jpg')">
-                        <i class="bi bi-cart-plus me-1"></i> Add to Cart
-                    </button>
-                </div>
-            </div>
-
-             <!-- Product 4 -->
-              <div class="product-card">
-                <img src="images/Bracelet and Earing.jpg" class="product-img" alt="Bracelet and Earing">
-                <div class="product-body">
-                    <h5 class="product-title">Bracelet and Earing </h5>
-                    <p class="product-description"> Handmade</p> <br>
-                    <p>Bracelet and Earing Combo </p>
-                    <div class="product-price">₹200</div>
-                    <button class="btn btn-add-cart" onclick="addToCart('p4', 'Bracelet and Earing', 200, 'images/Bracelet and Earing.jpg')">
-                        <i class="bi bi-cart-plus me-1"></i> Add to Cart
-                    </button>
-                </div>
-            </div>
-             <!-- Product 5 -->
-              <div class="product-card">
-                <img src="images/crochet boquet 01.jpg" class="product-img" alt="Crochet Bouquet">
-                <div class="product-body">
-                    <h5 class="product-title">Crochet Bouquet</h5>
-                    <p class="product-description"> Handmade</p> <br>
-                    <p>Crochet Sunflower and Rose Bouquet </p>
-                    <div class="product-price">₹600</div>
-                    <button class="btn btn-add-cart" onclick="addToCart('p5', 'Crochet Sunflower Bouquet',400, 'images/crochet boquet 01.jpg')">
-                        <i class="bi bi-cart-plus me-1"></i> Add to Cart
-                    </button>
-                </div>
-            </div>
-             <!-- Product 6 -->
-              <div class="product-card">
-                <img src="images/Pumpkin Keychain blue.jpg" class="product-img" alt="Keychain">
-                <div class="product-body">
-                    <h5 class="product-title">Keychain </h5>
-                    <p class="product-description"> Handmade</p> <br>
-                    <p> Pumpkin Keychain colour blue </p>
-                    <div class="product-price">₹100</div>
-                    <button class="btn btn-add-cart" onclick="addToCart('p6', ' Pumpkin Keychain', 100, 'images/Pumpkin Keychain blue.jpg')">
-                        <i class="bi bi-cart-plus me-1"></i> Add to Cart
-                    </button>
-                </div>
-            </div>
-
-            <!-- Product 7 -->
-            <div class="product-card">
-                <img src="images/bracelet pink pearl.jpg" class="product-img" alt="Pearl Bracelet">
-                <div class="product-body">
-                    <h5 class="product-title"> Pink Pearl Bracelet</h5>
-                    <p class="product-description">Handmade</p> <br>
-                    <p>  White and Pink Pearl Bracelet</p>
-                    <div class="product-price">₹150</div>
-                    <button class="btn btn-add-cart" onclick="addToCart('p7', ' Pink Pearl Bracelet', 150, 'images/bracelet pink pearl.jpg')">
-                        <i class="bi bi-cart-plus me-1"></i> Add to Cart
-                    </button>
-                </div>
-            </div>
-            <!-- Product 8 -->
-              <div class="product-card">
-                <img src="images/Bracelet purple.jpg" class="product-img" alt="Bracelet">
-                <div class="product-body">
-                    <h5 class="product-title">Purple Pearl Bracelet</h5>
-                    <p class="product-description">Handmade</p> <br>
-                    <p> White and Purple Beads Bracelet</p>
-                    <div class="product-price">₹130</div>
-                    <button class="btn btn-add-cart" onclick="addToCart('p8', ' Purple Pearl Bracelet Bracelet', 130, 'images/Bracelet purple.jpg')">
-                        <i class="bi bi-cart-plus me-1"></i> Add to Cart
-                    </button>
-                </div>
-            </div>
-            <!-- Product 9 -->
-              <div class="product-card">
-                <img src="images/Blue Bracelet.jpg" class="product-img" alt="Bracelet">
-                <div class="product-body">
-                    <h5 class="product-title"> Blue Pearl Bracelet</h5>
-                    <p class="product-description"> Handmade </p> <br>
-                    <p>White and Blue Beads Bracelet</p>
-                    <div class="product-price">₹130</div>
-                    <button class="btn btn-add-cart" onclick="addToCart('p9', ' Blue Pearl Bracelet Bracelet', 130, 'images/Blue Bracelet.jpg')">
-                        <i class="bi bi-cart-plus me-1"></i> Add to Cart
-                    </button>
-                </div>
-            </div>
-            
-            <!-- Product 10 -->
-              <div class="product-card">
-                <img src="images/light green bracelet.jpg" class="product-img" alt="Bracelet">
-                <div class="product-body">
-                    <h5 class="product-title">  Light Green pearl Bracelet</h5>
-                    <p class="product-description">Handmade</p> <br>
-                    <p> White and Green Pearl Bracelet</p>
-                    <div class="product-price">₹130</div>
-                    <button class="btn btn-add-cart" onclick="addToCart('p10', ' Light Green Pearl Bracelet', 130, 'images/light green bracelet.jpg')">
-                        <i class="bi bi-cart-plus me-1"></i> Add to Cart
-                    </button>
-                </div>
-            </div>
-            <!-- Product 11 -->
-              <div class="product-card">
-                <img src="images/Bracelet Orange.jpg" class="product-img" alt="Bracelet">
-                <div class="product-body">
-                    <h5 class="product-title"> Orange Pearl Bracelet</h5>
-                    <p class="product-description">Handmade</p> <br>
-                    <p> White and orange Pearl Bracelet</p>
-                    <div class="product-price">₹150</div>
-                    <button class="btn btn-add-cart" onclick="addToCart('p11', ' Orange Pearl Bracelet', 130, 'images/Bracelet Orange.jpg')">
-                        <i class="bi bi-cart-plus me-1"></i> Add to Cart
-                    </button>
-                </div>
-            </div>
-            <!-- Product 12 -->
-              <div class="product-card">
-                <img src="images/Bracelet green pearl.jpg" class="product-img" alt="Bracelet">
-                <div class="product-body">
-                    <h5 class="product-title"> Green Pearl Bracelet</h5>
-                    <p class="product-description">Handmade  </p> <br>
-                    <p> Green Pearl Bracelet</p>
-                    <div class="product-price">₹150</div>
-                    <button class="btn btn-add-cart" onclick="addToCart('p12', ' Green Pearl Bracelet', 130, 'images/Bracelet green pearl.jpg')">
-                        <i class="bi bi-cart-plus me-1"></i> Add to Cart
-                    </button>
-                </div>
-            </div>
-            <!-- Product 13 -->
-              <div class="product-card">
-                <img src="images/phone charm pink1.jpg" class="product-img" alt="Phone Charm">
-                <div class="product-body">
-                    <h5 class="product-title">  Corchet Pink Phone Charm</h5>
-                    <p class="product-description">Handmade</p> <br>
-                    <p>Phone Charmer</p>
-                    <div class="product-price">₹190</div>
-                    <button class="btn btn-add-cart" onclick="addToCart('p13', 'Crochet Pink Phone Charm', 190, 'images/phone charm pink1.jpg')">
-                        <i class="bi bi-cart-plus me-1"></i> Add to Cart
-                    </button>
-                </div>
-            </div>
-            <!-- Product 14 -->
-              <div class="product-card">
-                <img src="images/Purple Phone charm.jpg" class="product-img" alt="Phone Charm">
-                <div class="product-body">
-                    <h5 class="product-title"> Crochet Purlple Phone Charm</h5>
-                    <p class="product-description">Handmade </p> <br>
-                    <p>Phone Charm</p>
-                    <div class="product-price">₹190</div>
-                    <button class="btn btn-add-cart" onclick="addToCart('p14', ' Crochet Purple Phone Charm', 190, 'images/Purple Phone charm.jpg')">
-                        <i class="bi bi-cart-plus me-1"></i> Add to Cart
-                    </button>
-                </div>
-            </div>
-            <!-- Product 15 -->
-              <div class="product-card">
-                <img src="images/bracelet pink pearl.jpg" class="product-img" alt="Pearl Bracelet">
-                <div class="product-body">
-                    <h5 class="product-title">Pink  Pearl Bracelet</h5>
-                    <p class="product-description">Handmade </p> <br>
-                    <p> Pink and White Pearl Bracelet</p>
-                    <div class="product-price">₹150</div>
-                    <button class="btn btn-add-cart" onclick="addToCart('p15', ' Pink Pearl Bracelet', 140, 'images/bracelet pink pearl.jpg')">
-                        <i class="bi bi-cart-plus me-1"></i> Add to Cart
-                    </button>
-                </div>
-            </div>
-            <!-- Product 16 -->
-              <div class="product-card">
-                <img src="images/white pearl bracelet.jpg" class="product-img" alt="Pearl Bracelet">
-                <div class="product-body">
-                    <h5 class="product-title"> White Pearl Bracelet</h5>
-                    <p class="product-description">Handmade</p> <br>
-                    <p>White  Pearl Bracelet</p>
-                    <div class="product-price">₹130</div>
-                    <button class="btn btn-add-cart" onclick="addToCart('p16', ' White pearl Bracelet', 140, 'images/white pearl bracelet.jpg')">
-                        <i class="bi bi-cart-plus me-1"></i> Add to Cart
-                    </button>
-                </div>
-            </div>
-            <!-- Product 17 -->
-              <div class="product-card">
-                <img src="images/Sunflower bag charm.jpg" class="product-img" alt=" Bag Charm">
-                <div class="product-body">
-                    <h5 class="product-title">  Bag Charm (Sunflower)</h5>
-                    <p class="product-description">Handmade </p> <br>
-                    <p>Crochet Sunflower Bag Charmer</p>
-                    <div class="product-price">₹199</div>
-                    <button class="btn btn-add-cart" onclick="addToCart('p17', 'Bag Charm (Sunflower)', 140, 'images/Sunflower bag charm.jpg')">
-                        <i class="bi bi-cart-plus me-1"></i> Add to Cart
-                    </button>
-                </div>
-            </div>
-            <!-- Product 18 -->
-              <div class="product-card">
-                <img src="images/phone charm01.jpg" class="product-img" alt="Phone Charmer">
-                <div class="product-body">
-                    <h5 class="product-title"> Phone Charm (Clock)</h5>
-                    <p class="product-description">Handmade</p> <br>
-                    <p> Clock Shaped Phone Charmer</p>
-                    <div class="product-price">₹60</div>
-                    <button class="btn btn-add-cart" onclick="addToCart('p18', 'Phone Charm (Clock)', 60, 'images/phone charm01.jpg')">
-                        <i class="bi bi-cart-plus me-1"></i> Add to Cart
-                    </button>
-                </div>
-            </div>
-              <div class="product-card">
-                <img src="images/Phone charm02.jpg" class="product-img" alt="Phone Charmer">
-                <div class="product-body">
-                    <h5 class="product-title"> Phone Charm (Penguin)</h5>
-                    <p class="product-description">Handmade </p> <br>
-                    <p> Penguin Shaped Phone Charmer</p>
-                    <div class="product-price">₹60</div>
-                    <button class="btn btn-add-cart" onclick="addToCart('p19', 'Phone Charm (Penguin)', 60, 'images/Phone charm02.jpg')">
-                        <i class="bi bi-cart-plus me-1"></i> Add to Cart
-                    </button>
-                </div>
-            </div>
-              <div class="product-card">
-                <img src="images/Phone charm03.jpg" class="product-img" alt="Phone Charmer">
-                <div class="product-body">
-                    <h5 class="product-title"> Phone Charm (Panda)</h5>
-                    <p class="product-description">Handmade</p> <br>
-                    <p>Panda Shaped Phone Charmer</p>
-                    <div class="product-price">₹60</div>
-                    <button class="btn btn-add-cart" onclick="addToCart('p20', 'Phone Charm (Panda)', 60, 'images/Phone charm03.jpg')">
-                        <i class="bi bi-cart-plus me-1"></i> Add to Cart
-                    </button>
-                </div>
-            </div>
-              <div class="product-card">
-                <img src="images/Phone charm04.jpg" class="product-img" alt="Phone Charmer">
-                <div class="product-body">
-                    <h5 class="product-title"> Phone Charm (Butterfly)</h5>
-                    <p class="product-description">Handmade</p> <br>
-                    <p> Butterfly Shaped Phone Charmer</p>
-                    <div class="product-price">₹60</div>
-                    <button class="btn btn-add-cart" onclick="addToCart('p21', 'Phone Charm (Butterfly)', 60, 'images/Phone charm04.jpg')">
-                        <i class="bi bi-cart-plus me-1"></i> Add to Cart
-                    </button>
-                </div>
-            </div>
-              <div class="product-card">
-                <img src="images/Phone charm05.jpg" class="product-img" alt="Phone Charmer">
-                <div class="product-body">
-                    <h5 class="product-title"> Phone Charm (Maple Leaf)</h5>
-                    <p class="product-description">Handmade</p> <br>
-                    <p>Maple Leaf Shaped Phone Charmer</p>
-                    <div class="product-price">₹60</div>
-                    <button class="btn btn-add-cart" onclick="addToCart('p22', 'Phone Charm (Maple Leaf)', 60, 'images/Phone charm05.jpg')">
-                        <i class="bi bi-cart-plus me-1"></i> Add to Cart
-                    </button>
-                </div>
-            </div>
-            
-
+    <!-- Product 1 -->
+    <div class="product-card" data-id="p0">
+        <img src="images/corchet_earrings.jpg" class="product-img" alt="Crochet earrings">
+        <div class="product-body">
+            <h5 class="product-title">Crochet Earring</h5>
+            <p class="product-description">Handmade with love. Perfect for any occasion.</p>
+            <div class="product-price">₹160</div>
+            <button class="btn btn-add-cart"><i class="bi bi-cart-plus"></i> Add to Cart</button>
         </div>
-       
+    </div>
+
+    <!-- Product 2 -->
+    <div class="product-card" data-id="p1">
+        <img src="images/phone charging stand.jpg" class="product-img" alt="Phone Charging Stand">
+        <div class="product-body">
+            <h5 class="product-title">Phone Charging Stand</h5>
+            <p class="product-description">Stand for easy charging</p>
+            <div class="product-price">₹160</div>
+            <button class="btn btn-add-cart"><i class="bi bi-cart-plus"></i> Add to Cart</button>
+        </div>
+    </div>
+
+    <!-- Product 3 (Out of Stock) -->
+    <div class="product-card" data-id="p2">
+        <img src="images/Phone Suction.jpg" class="product-img" alt="Phone Suction">
+        <div class="product-body">
+            <h5 class="product-title">Phone Suction</h5>
+            <p class="product-description">Silicon Phone Anti-Slip Suction</p>
+            <div class="product-price">₹110</div>
+            <button class="btn btn-add-cart" disabled><i class="bi bi-cart-plus me-1"></i> Out of Stock</button>
+        </div>
+    </div>
+
+    <!-- Product 4 -->
+    <div class="product-card" data-id="p3">
+        <img src="images/Phone Charmer.jpg" class="product-img" alt="Phone Charmer">
+        <div class="product-body">
+            <h5 class="product-title">Phone Charm</h5>
+            <p class="product-description">Dog Paw Phone Charmer</p>
+            <div class="product-price">₹160</div>
+            <button class="btn btn-add-cart"><i class="bi bi-cart-plus me-1"></i> Add to Cart</button>
+        </div>
+    </div>
+
+    <!-- Product 5 -->
+    <div class="product-card" data-id="p4">
+        <img src="images/Bracelet and Earing.jpg" class="product-img" alt="Bracelet and Earing">
+        <div class="product-body">
+            <h5 class="product-title">Bracelet and Earing</h5>
+            <p class="product-description">Handmade</p>
+            <p>Bracelet and Earing Combo</p>
+            <div class="product-price">₹200</div>
+            <button class="btn btn-add-cart"><i class="bi bi-cart-plus me-1"></i> Add to Cart</button>
+        </div>
+    </div>
+
+    <!-- Product 6 -->
+    <div class="product-card" data-id="p5">
+        <img src="images/crochet boquet 01.jpg" class="product-img" alt="Crochet Bouquet">
+        <div class="product-body">
+            <h5 class="product-title">Crochet Bouquet</h5>
+            <p class="product-description">Handmade</p>
+            <p>Crochet Sunflower and Rose Bouquet</p>
+            <div class="product-price">₹600</div>
+            <button class="btn btn-add-cart"><i class="bi bi-cart-plus me-1"></i> Add to Cart</button>
+        </div>
+    </div>
+
+    <!-- Product 7 -->
+    <div class="product-card" data-id="p6">
+        <img src="images/Pumpkin Keychain blue.jpg" class="product-img" alt="Keychain">
+        <div class="product-body">
+            <h5 class="product-title">Keychain</h5>
+            <p class="product-description">Handmade</p>
+            <p>Pumpkin Keychain colour blue</p>
+            <div class="product-price">₹100</div>
+            <button class="btn btn-add-cart"><i class="bi bi-cart-plus me-1"></i> Add to Cart</button>
+        </div>
+    </div>
+
+    <!-- Product 8 -->
+    <div class="product-card" data-id="p7">
+        <img src="images/bracelet pink pearl.jpg" class="product-img" alt="Pink Pearl Bracelet">
+        <div class="product-body">
+            <h5 class="product-title">Pink Pearl Bracelet</h5>
+            <p class="product-description">Handmade</p>
+            <p>White and Pink Pearl Bracelet</p>
+            <div class="product-price">₹150</div>
+            <button class="btn btn-add-cart"><i class="bi bi-cart-plus me-1"></i> Add to Cart</button>
+        </div>
+    </div>
+
+    <!-- Product 9 -->
+    <div class="product-card" data-id="p8">
+        <img src="images/Bracelet purple.jpg" class="product-img" alt="Purple Pearl Bracelet">
+        <div class="product-body">
+            <h5 class="product-title">Purple Pearl Bracelet</h5>
+            <p class="product-description">Handmade</p>
+            <p>White and Purple Beads Bracelet</p>
+            <div class="product-price">₹130</div>
+            <button class="btn btn-add-cart"><i class="bi bi-cart-plus me-1"></i> Add to Cart</button>
+        </div>
+    </div>
+
+    <!-- Product 10 -->
+    <div class="product-card" data-id="p9">
+        <img src="images/Blue Bracelet.jpg" class="product-img" alt="Blue Pearl Bracelet">
+        <div class="product-body">
+            <h5 class="product-title">Blue Pearl Bracelet</h5>
+            <p class="product-description">Handmade</p>
+            <p>White and Blue Beads Bracelet</p>
+            <div class="product-price">₹130</div>
+            <button class="btn btn-add-cart"><i class="bi bi-cart-plus me-1"></i> Add to Cart</button>
+        </div>
+    </div>
+
+    <!-- Product 11 -->
+    <div class="product-card" data-id="p10">
+        <img src="images/light green bracelet.jpg" class="product-img" alt="Light Green Pearl Bracelet">
+        <div class="product-body">
+            <h5 class="product-title">Light Green Pearl Bracelet</h5>
+            <p class="product-description">Handmade</p>
+            <p>White and Green Pearl Bracelet</p>
+            <div class="product-price">₹130</div>
+            <button class="btn btn-add-cart"><i class="bi bi-cart-plus me-1"></i> Add to Cart</button>
+        </div>
+    </div>
+
+    <!-- Product 12 -->
+    <div class="product-card" data-id="p11">
+        <img src="images/Bracelet Orange.jpg" class="product-img" alt="Orange Pearl Bracelet">
+        <div class="product-body">
+            <h5 class="product-title">Orange Pearl Bracelet</h5>
+            <p class="product-description">Handmade</p>
+            <p>White and Orange Pearl Bracelet</p>
+            <div class="product-price">₹150</div>
+            <button class="btn btn-add-cart"><i class="bi bi-cart-plus me-1"></i> Add to Cart</button>
+        </div>
+    </div>
+
+    <!-- Product 13 -->
+    <div class="product-card" data-id="p12">
+        <img src="images/Bracelet green pearl.jpg" class="product-img" alt="Green Pearl Bracelet">
+        <div class="product-body">
+            <h5 class="product-title">Green Pearl Bracelet</h5>
+            <p class="product-description">Handmade</p>
+            <p>Green Pearl Bracelet</p>
+            <div class="product-price">₹150</div>
+            <button class="btn btn-add-cart"><i class="bi bi-cart-plus me-1"></i> Add to Cart</button>
+        </div>
+    </div>
+
+    <!-- Product 14 -->
+    <div class="product-card" data-id="p13">
+        <img src="images/phone charm pink1.jpg" class="product-img" alt="Crochet Pink Phone Charm">
+        <div class="product-body">
+            <h5 class="product-title">Crochet Pink Phone Charm</h5>
+            <p class="product-description">Handmade</p>
+            <p>Phone Charmer</p>
+            <div class="product-price">₹190</div>
+            <button class="btn btn-add-cart"><i class="bi bi-cart-plus me-1"></i> Add to Cart</button>
+        </div>
+    </div>
+
+    <!-- Product 15 -->
+    <div class="product-card" data-id="p14">
+        <img src="images/Purple Phone charm.jpg" class="product-img" alt="Crochet Purple Phone Charm">
+        <div class="product-body">
+            <h5 class="product-title">Crochet Purple Phone Charm</h5>
+            <p class="product-description">Handmade</p>
+            <p>Phone Charmer</p>
+            <div class="product-price">₹190</div>
+            <button class="btn btn-add-cart"><i class="bi bi-cart-plus me-1"></i> Add to Cart</button>
+        </div>
+    </div>
+
+    <!-- Product 16 -->
+    <div class="product-card" data-id="p15">
+        <img src="images/white pearl bracelet.jpg" class="product-img" alt="White Pearl Bracelet">
+        <div class="product-body">
+            <h5 class="product-title">White Pearl Bracelet</h5>
+            <p class="product-description">Handmade</p>
+            <p>White Pearl Bracelet</p>
+            <div class="product-price">₹130</div>
+            <button class="btn btn-add-cart"><i class="bi bi-cart-plus me-1"></i> Add to Cart</button>
+        </div>
+    </div>
+
+    <!-- Product 17 -->
+    <div class="product-card" data-id="p16">
+        <img src="images/Sunflower bag charm.jpg" class="product-img" alt="Bag Charm (Sunflower)">
+        <div class="product-body">
+            <h5 class="product-title">Bag Charm (Sunflower)</h5>
+            <p class="product-description">Handmade</p>
+            <p>Crochet Sunflower Bag Charmer</p>
+            <div class="product-price">₹199</div>
+            <button class="btn btn-add-cart"><i class="bi bi-cart-plus me-1"></i> Add to Cart</button>
+        </div>
+    </div>
+
+    <!-- Product 18 (Out of Stock) -->
+    <div class="product-card" data-id="p17">
+        <img src="images/phone charm01.jpg" class="product-img" alt="Phone Charm (Clock)">
+        <div class="product-body">
+            <h5 class="product-title">Phone Charm (Clock)</h5>
+            <p class="product-description">Handmade</p>
+            <p>Clock Shaped Phone Charmer</p>
+            <div class="product-price">₹60</div>
+            <button class="btn btn-add-cart" disabled><i class="bi bi-cart-plus me-1"></i> Out of Stock</button>
+        </div>
+    </div>
+
+    <!-- Product 19 -->
+    <div class="product-card" data-id="p18">
+        <img src="images/Phone charm02.jpg" class="product-img" alt="Phone Charm (Penguin)">
+        <div class="product-body">
+            <h5 class="product-title">Phone Charm (Penguin)</h5>
+            <p class="product-description">Handmade</p>
+            <p>Penguin Shaped Phone Charmer</p>
+            <div class="product-price">₹60</div>
+            <button class="btn btn-add-cart"><i class="bi bi-cart-plus me-1"></i> Add to Cart</button>
+        </div>
+    </div>
+
+    <!-- Product 20 (Out of Stock) -->
+    <div class="product-card" data-id="p19">
+        <img src="images/Phone charm03.jpg" class="product-img" alt="Phone Charm (Panda)">
+        <div class="product-body">
+            <h5 class="product-title">Phone Charm (Panda)</h5>
+            <p class="product-description">Handmade</p>
+            <p>Panda Shaped Phone Charmer</p>
+            <div class="product-price">₹60</div>
+            <button class="btn btn-add-cart" disabled><i class="bi bi-cart-plus me-1"></i> Out of Stock</button>
+        </div>
+    </div>
+
+    <!-- Product 21 -->
+    <div class="product-card" data-id="p20">
+        <img src="images/Phone charm04.jpg" class="product-img" alt="Phone Charm (Butterfly)">
+        <div class="product-body">
+            <h5 class="product-title">Phone Charm (Butterfly)</h5>
+            <p class="product-description">Handmade</p>
+            <p>Butterfly Shaped Phone Charmer</p>
+            <div class="product-price">₹60</div>
+            <button class="btn btn-add-cart"><i class="bi bi-cart-plus me-1"></i> Add to Cart</button>
+        </div>
+    </div>
+
+    <!-- Product 22 -->
+    <div class="product-card" data-id="p21">
+        <img src="images/Phone charm05.jpg" class="product-img" alt="Phone Charm (Maple Leaf)">
+        <div class="product-body">
+            <h5 class="product-title">Phone Charm (Maple Leaf)</h5>
+            <p class="product-description">Handmade</p>
+            <p>Maple Leaf Shaped Phone Charmer</p>
+            <div class="product-price">₹60</div>
+            <button class="btn btn-add-cart"><i class="bi bi-cart-plus me-1"></i> Add to Cart</button>
+        </div>
+    </div>
+
+    <!-- Product 23 -->
+    <div class="product-card" data-id="p22">
+        <img src="images/Phone charm06.jpg" class="product-img" alt="Phone Charm (Moon)">
+        <div class="product-body">
+            <h5 class="product-title">Phone Charm (Moon)</h5>
+            <p class="product-description">Handmade</p>
+            <p>Moon Shaped Phone Charmer</p>
+            <div class="product-price">₹60</div>
+            <button class="btn btn-add-cart"><i class="bi bi-cart-plus me-1"></i> Add to Cart</button>
+        </div>
+    </div>
+        </div>
 
 
         
@@ -475,276 +445,210 @@
             </div>
         </div>
     </footer>
+    <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
 
-    <!-- Cart Modal -->
-    <div class="modal fade" id="cartModal" tabindex="-1">
-        <div class="modal-dialog modal-lg">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title"><i class="bi bi-cart3 me-2"></i>Your Shopping Cart</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-                </div>
-                <div class="modal-body" id="cartBody">
-                    <!-- Cart items will be rendered here -->
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Continue Shopping</button>
-                    <button type="button" class="btn btn-checkout" id="checkoutBtn">Proceed to Checkout</button>
-                </div>
-            </div>
-        </div>
+
+    <!-- CART MODAL -->
+<div class="modal fade" id="cartModal" tabindex="-1">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title"><i class="bi bi-cart3 me-2"></i>Your Shopping Cart</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+      </div>
+      <div class="modal-body" id="cartBody"></div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Continue Shopping</button>
+        <button type="button" class="btn btn-success" id="checkoutBtn">Place Order & Pay</button>
+      </div>
     </div>
+  </div>
+</div>
 
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.4/dist/js/bootstrap.bundle.min.js"></script>
-    <script>
-        // Cart array to store items
-        let cart = [];
-        
-        // DOM elements
-        const openCartBtn = document.getElementById('openCartBtn');
-        const cartModal = new bootstrap.Modal(document.getElementById('cartModal'));
-        const cartBody = document.getElementById('cartBody');
-        const cartCount = document.getElementById('cartCount');
-        const checkoutBtn = document.getElementById('checkoutBtn');
-        
-        // Open cart modal
-        openCartBtn.addEventListener('click', () => {
-            renderCart();
-            cartModal.show();
-        });
-        
-        // Add to cart function
-        function addToCart(id, name, price, imgSrc) {
-            const existingItem = cart.find(item => item.id === id);
-            
-            if (existingItem) {
-                existingItem.qty++;
-            } else {
-                cart.push({
-                    id: id,
-                    img: imgSrc,
-                    name: name,
-                    price: price,
-                    qty: 1
-                });
-            }
-            
-            // Update cart count
-            cartCount.textContent = cart.reduce((sum, item) => sum + item.qty, 0);
-            
-            // Show success message
-            showAlert(`${name} added to cart!`, 'success');
-            
-            // Re-render cart if modal is open
-            if (document.getElementById('cartModal').classList.contains('show')) {
-                renderCart();
-            }
-        }
-        
-        // Remove from cart function
-        function removeFromCart(id) {
-            cart = cart.filter(item => item.id !== id);
-            renderCart();
-            cartCount.textContent = cart.reduce((sum, item) => sum + item.qty, 0);
-        }
-        
-        // Increase quantity function
-        function increaseQty(id) {
-            const item = cart.find(item => item.id === id);
-            if (item) {
-                item.qty++;
-                renderCart();
-                cartCount.textContent = cart.reduce((sum, item) => sum + item.qty, 0);
-            }
-        }
-        
-        // Decrease quantity function
-        function decreaseQty(id) {
-            const item = cart.find(item => item.id === id);
-            if (item) {
-                item.qty--;
-                if (item.qty < 1) {
-                    removeFromCart(id);
-                } else {
-                    renderCart();
-                    cartCount.textContent = cart.reduce((sum, item) => sum + item.qty, 0);
-                }
-            }
-        }
-        
-        // Render cart function
-        function renderCart() {
-            cartBody.innerHTML = "";
-            
-            if (cart.length === 0) {
-                cartBody.innerHTML = `
-                    <div class="empty-cart">
-                        <i class="bi bi-cart-x"></i>
-                        <h4>Your cart is empty</h4>
-                        <p>Add some products to your cart</p>
-                    </div>
-                `;
-                return;
-            }
-            
-            cart.forEach(item => {
-                const itemDiv = document.createElement('div');
-                itemDiv.className = 'cart-item';
-                itemDiv.innerHTML = `
-                    <div class="row align-items-center">
-                        <div class="col-2">
-                            <img src="${item.img}" alt="${item.name}" class="img-fluid rounded">
-                        </div>
-                        <div class="col-4">
-                            <strong>${item.name}</strong>
-                            <div class="product-description">₹${item.price.toLocaleString()}</div>
-                        </div>
-                        <div class="col-3">
-                            <div class="d-flex align-items-center">
-                                <button class="btn btn-sm btn-outline-secondary quantity-btn" onclick="decreaseQty('${item.id}')">-</button>
-                                <span class="mx-2">${item.qty}</span>
-                                <button class="btn btn-sm btn-outline-secondary quantity-btn" onclick="increaseQty('${item.id}')">+</button>
-                            </div>
-                        </div>
-                        <div class="col-2 text-end fw-bold">
-                            ₹${(item.price * item.qty).toLocaleString()}
-                        </div>
-                        <div class="col-1 text-center">
-                            <button class="btn btn-sm btn-link text-danger" onclick="removeFromCart('${item.id}')">
-                                <i class="bi bi-trash"></i>
-                            </button>
-                        </div>
-                    </div>
-                `;
-                cartBody.appendChild(itemDiv);
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.4/dist/js/bootstrap.bundle.min.js"></script>
+<script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+
+
+
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+  let cart = [];
+  const cartModal = new bootstrap.Modal(document.getElementById('cartModal'));
+  const cartBody = document.getElementById('cartBody');
+  const cartCountSpans = document.querySelectorAll('#cartCount');
+  const checkoutBtn = document.getElementById('checkoutBtn');
+
+  // Open cart modal
+  document.querySelectorAll('#openCartBtn').forEach(btn => btn.addEventListener('click', () => cartModal.show()));
+
+  // Add to cart
+  document.querySelectorAll('.btn-add-cart').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const parent = btn.closest('.product-card');
+      const id = parent.dataset.id;
+      const name = parent.querySelector('.product-title').textContent;
+      const price = Number(parent.querySelector('.product-price').textContent.replace('₹',''));
+      const img = parent.querySelector('img').src;
+
+      const existing = cart.find(i => i.id === id);
+      if(existing) existing.qty++;
+      else cart.push({id, name, price, img, qty:1});
+
+      updateCartCount();
+      renderCart();
+      cartModal.show();
+    });
+  });
+
+  function removeFromCart(id){
+    cart = cart.filter(i => i.id !== id);
+    updateCartCount();
+    renderCart();
+  }
+
+  function increaseQty(id){
+    const item = cart.find(i => i.id === id);
+    if(item){ item.qty++; renderCart(); updateCartCount(); }
+  }
+
+  function decreaseQty(id){
+    const item = cart.find(i => i.id === id);
+    if(item){
+      item.qty--;
+      if(item.qty < 1) removeFromCart(id);
+      else { renderCart(); updateCartCount(); }
+    }
+  }
+
+  function updateCartCount(){
+    const count = cart.reduce((sum,i)=>sum+i.qty,0);
+    cartCountSpans.forEach(span => span.textContent = count);
+  }
+
+  function renderCart(){
+    cartBody.innerHTML = '';
+    if(cart.length === 0){
+      cartBody.innerHTML = `
+        <div class="text-center py-5">
+          <i class="bi bi-cart-x display-4 text-muted"></i>
+          <h4>Your cart is empty</h4>
+          <p>Add some products to your cart</p>
+        </div>`;
+      return;
+    }
+
+    let total = 0;
+    cart.forEach(item => total += item.price * item.qty);
+
+    cart.forEach(item => {
+      const div = document.createElement('div');
+      div.className = "cart-item border-bottom py-2";
+      div.innerHTML = `
+        <div class="row align-items-center">
+          <div class="col-2"><img src="${item.img}" alt="${item.name}" class="img-fluid rounded"></div>
+          <div class="col-4"><strong>${item.name}</strong><p class="text-muted small">₹${item.price}</p></div>
+          <div class="col-3 d-flex align-items-center">
+            <button class="btn btn-sm btn-outline-secondary quantity-btn" onclick="decreaseQty('${item.id}')">-</button>
+            <span class="mx-2">${item.qty}</span>
+            <button class="btn btn-sm btn-outline-secondary quantity-btn" onclick="increaseQty('${item.id}')">+</button>
+          </div>
+          <div class="col-2"><strong>₹${item.price*item.qty}</strong></div>
+          <div class="col-1 text-end">
+            <button class="btn btn-sm btn-danger" onclick="removeFromCart('${item.id}')"><i class="bi bi-trash"></i></button>
+          </div>
+        </div>`;
+      cartBody.appendChild(div);
+    });
+
+    const shipping = 80;
+    const grandTotal = total + shipping;
+
+    cartBody.innerHTML += `
+      <div class="text-end mt-3">
+        <h5>Subtotal: ₹${total}</h5>
+        <h5>Shipping: ₹${shipping}</h5>
+        <h4>Total: ₹${grandTotal}</h4>
+      </div>
+      <div class="mt-4">
+        <h5><i class="bi bi-truck me-2"></i>Shipping Information</h5>
+        <div class="mb-3"><input type="text" class="form-control shipping-name" placeholder="Full Name" required></div>
+        <div class="mb-3"><input type="email" class="form-control shipping-email" placeholder="Email" required></div>
+        <div class="mb-3"><textarea class="form-control shipping-address" placeholder="Full Address with PIN" rows="2" required></textarea></div>
+        <div class="mb-3"><input type="tel" class="form-control contact-number" placeholder="Contact Number" required maxlength="10"></div>
+      </div>`;
+  }
+
+  // Checkout
+  checkoutBtn.addEventListener('click', async () => {
+    if(cart.length === 0){ alert("Cart is empty"); return; }
+
+    const name = document.querySelector('.shipping-name').value;
+    const email = document.querySelector('.shipping-email').value;
+    const address = document.querySelector('.shipping-address').value;
+    const phone = document.querySelector('.contact-number').value;
+
+    if(!name || !email || !address || !phone){ alert("Fill all shipping details"); return; }
+
+    const totalAmount = cart.reduce((sum,i)=>sum+i.price*i.qty,0) + 80;
+
+    try {
+      // Create Razorpay order on backend
+      const orderRes = await fetch('/create-razorpay-order', {
+        method:'POST',
+        headers:{'Content-Type':'application/json'},
+        body: JSON.stringify({ amount: totalAmount, currency: "INR" })
+      });
+      const orderData = await orderRes.json();
+      if(!orderData.success){ alert("Failed to create payment order"); return; }
+
+      // Open Razorpay checkout
+      const options = {
+        key: orderData.order.key_id, // from server, PUBLIC key only
+        amount: orderData.order.amount,
+        currency: orderData.order.currency,
+        name: "The Local Basket",
+        description: "Order Payment",
+        order_id: orderData.order.id,
+        handler: async function (response) {
+          const orderDetails = {
+            items: cart,
+            shipping:{ name, email, address, phone },
+            paymentId: response.razorpay_payment_id,
+            grandTotal: totalAmount
+          };
+
+          try {
+            const res = await fetch('/send-order', {
+              method:'POST',
+              headers:{'Content-Type':'application/json'},
+              body: JSON.stringify(orderDetails)
             });
-            
-            const total = cart.reduce((sum, item) => sum + item.price * item.qty, 0);
-            const shipping = total > 0 ? 80 : 0;
-            const grandTotal = total + shipping;
-            
-            const totalDiv = document.createElement('div');
-            totalDiv.className = 'mt-4 pt-3 border-top';
-            totalDiv.innerHTML = `
-                <div class="d-flex justify-content-between mb-2">
-                    <div>Subtotal:</div>
-                    <div>₹${total.toLocaleString()}</div>
-                </div>
-                <div class="d-flex justify-content-between mb-2">
-                    <div>Shipping:</div>
-                    <div>₹${shipping.toLocaleString()}</div>
-                </div>
-                <div class="d-flex justify-content-between mb-3 fw-bold fs-5">
-                    <div>Total:</div>
-                    <div>₹${grandTotal.toLocaleString()}</div>
-                </div>
-                
-                <div class="mt-4">
-                    <h5><i class="bi bi-truck me-2"></i>Shipping Information</h5>
-                    <div class="mb-3">
-                        <input type="email" class="form-control shipping-email" placeholder="Email" required>
-                    </div>
-                    <div class="mb-3">
-                        <input type="text" class="form-control shipping-name" placeholder="Full Name" required>
-                    </div>
-                    <div class="mb-3">
-                        <textarea class="form-control shipping-address" placeholder="Shipping Address" rows="2" required></textarea>
-                    </div>
-                    <div class="mb-3">
-                        <input type="tel" class="form-control contact-number" placeholder="Contact Number" required maxlength="10">
-                    </div>
-                </div>
-            `;
-            cartBody.appendChild(totalDiv);
-        }
-        
-        // Checkout button handler - MODIFIED
-        checkoutBtn.addEventListener('click', async () => {
-            if (cart.length === 0) {
-                showAlert('Your cart is empty!', 'warning');
-                return;
-            }
-            
-            // Collect shipping information
-            const shippingEmail = document.querySelector('.shipping-email').value;
-            const shippingName = document.querySelector('.shipping-name').value;
-            const shippingAddress = document.querySelector('.shipping-address').value;
-            const contactNumber = document.querySelector('.contact-number').value;
-            
-            // Validate shipping info
-            if (!shippingEmail || !shippingName || !shippingAddress || !contactNumber) {
-                showAlert('Please fill in all shipping information!', 'warning');
-                return;
-            }
-            
-            // Prepare order data
-            const orderData = {
-                items: cart,
-                shipping: {
-                    email:shippingEmail,
-                    name: shippingName,
-                    address: shippingAddress,
-                    phone: contactNumber
-                },
-                subtotal: cart.reduce((sum, item) => sum + item.price * item.qty, 0),
-                shippingCost: 80, // fixed shipping cost
-                grandTotal: cart.reduce((sum, item) => sum + item.price * item.qty, 0) + 80
-            };
-            
-            try {
-                // Show processing alert
-                showAlert('Processing your order...', 'info');
-                
-                // Send order to server
-                const response = await fetch('/send-order', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify(orderData)
-                });
-                
-                const result = await response.json();
-                
-                if (result.success) {
-                    // Success
-                    showAlert('Order placed successfully!', 'success');
-                    cart = [];
-                    cartCount.textContent = '0';
-                    cartModal.hide();
-                } else {
-                    showAlert(`Failed to place order: ${result.error || 'Please try again'}`, 'danger');
-                }
-            } catch (error) {
-                showAlert('Network error. Please try again.', 'danger');
-                console.error('Checkout error:', error);
-            }
-        });
-        
-        // Show alert function
-        function showAlert(message, type) {
-            // Remove existing alerts
-            const existingAlert = document.querySelector('.alert');
-            if (existingAlert) existingAlert.remove();
-            
-            const alertDiv = document.createElement('div');
-            alertDiv.className = `alert alert-${type} alert-dismissible fade show`;
-            alertDiv.style.position = 'fixed';
-            alertDiv.style.top = '20px';
-            alertDiv.style.right = '20px';
-            alertDiv.style.zIndex = '9999';
-            alertDiv.innerHTML = `
-                ${message}
-                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-            `;
-            
-            document.body.appendChild(alertDiv);
-            
-            // Auto remove after 3 seconds
-            setTimeout(() => {
-                alertDiv.remove();
-            }, 3000);
-        }
-    </script>
+            const result = await res.json();
+            if(result.success){
+              alert("Order placed successfully! Check your email.");
+              cart = []; updateCartCount(); cartModal.hide(); renderCart();
+            } else alert("Failed to place order. Try again.");
+          } catch(err) { console.error(err); alert("Error sending order email"); }
+        },
+        prefill:{ name, email, contact: phone },
+        theme:{ color: "#198754" }
+      };
+
+      const rzp = new Razorpay(options);
+      rzp.open();
+
+    } catch(err){
+      console.error(err);
+      alert("Error initiating payment");
+    }
+  });
+
+  // Make functions global for inline onclick
+  window.increaseQty = increaseQty;
+  window.decreaseQty = decreaseQty;
+  window.removeFromCart = removeFromCart;
+});
+</script>
+
 </body>
 </html>
