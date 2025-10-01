@@ -20,25 +20,29 @@
   <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90' fill='%23C5A47E'>LB</text></svg>">
 </head>
 <body>
+  
   <!-- Navbar -->
-<nav class="navbar navbar-expand-lg navbar-light fixed-top bg-white shadow-sm py-2">
-  <div class="container d-flex align-items-center justify-content-between">
+<nav class="navbar navbar-light fixed-top bg-white shadow-sm py-2">
+  <div class="container-fluid d-flex align-items-center justify-content-between">
 
     <!-- Brand with Logo -->
-    <a class="navbar-brand" href="index.html">
-      <img src="images/logo.png" alt="The Local Basket" height="40">
+    <a class="navbar-brand me-2" href="index.html">
+      <img src="images/logo.png" alt="The Local Basket" 
+           style="height: 35px; max-height: 8vw;" class="d-inline-block align-top">
     </a>
 
-    <!-- Search Bar (centered, flex-grow) -->
-    <div class="flex-grow-1 mx-3">
-      <input type="text" id="searchInput" class="form-control rounded shadow-sm" placeholder="Search products...">
+    <!-- Search Bar -->
+    <div class="flex-grow-1 mx-2">
+      <input type="text" id="searchInput" 
+             class="form-control rounded shadow-sm w-100" 
+             placeholder="Search products...">
     </div>
 
     <!-- Right side: Account & Cart -->
-    <div class="d-flex align-items-center">
+    <div class="d-flex align-items-center flex-shrink-0 ms-2">
 
       <!-- Account -->
-      <a class="nav-link text-dark me-3 d-flex align-items-center" href="Login.html">
+      <a class="nav-link text-dark me-2 d-flex align-items-center" href="Login.html">
         <i class="bi bi-person-circle fs-5"></i>
       </a>
 
@@ -46,7 +50,8 @@
       <div class="position-relative">
         <button class="btn btn-light openCartBtn shadow-sm">
           <i class="bi bi-cart3 fs-5"></i>
-          <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger cart-count">0</span>
+          <span class="position-absolute top-0 start-100 translate-middle 
+                       badge rounded-pill bg-danger cart-count">0</span>
         </button>
       </div>
 
@@ -57,7 +62,7 @@
 
 
   <!-- Main Content -->
-  <div class="container mt-5 pt-4">
+  <div class="container mt-3 pt-1">
     <!-- Hero Section -->
     <section class="hero-section mb-4">
       <video autoplay loop muted playsinline class="w-100 rounded">
@@ -65,10 +70,7 @@
         Your browser does not support the video tag.
       </video>
     </section>
-    <div class="search-container">
-  <input type="text" id="searchInput" placeholder="Search products..." class="form-control">
-</div>
-
+   
     <!-- Featured Products -->
     <div class="category-banner mb-3">
       <h3 class="text-center">
