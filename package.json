@@ -19,5 +19,9 @@
     "helmet": "^8.1.0",
     "nodemailer": "^7.0.4",
     "razorpay": "^2.9.6"
+  },
+  "devDependencies": {
+    "esbuild": "^0.25.10",
+    "javascript-obfuscator": "^4.1.1"
   }
 }

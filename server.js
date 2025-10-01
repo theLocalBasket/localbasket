@@ -20,6 +20,11 @@ const db = new Database("./products.db");
 // Security & Middleware
 // ========================
 
+// ---------- Block direct access to raw JS ----------
+app.use('/js', (req, res) => res.status(404).send('Not found'));
+app.use('/css', (req, res) => res.status(404).send('Not found'));
+
+
 app.use(express.json());
 
 app.disable("x-powered-by");
@@ -301,7 +306,6 @@ app.use((err, req, res, next) => {
   console.error("Server error:", err.stack);
   res.status(500).json({ success:false, error:"Internal server error" });
 });
-
 
 
 
