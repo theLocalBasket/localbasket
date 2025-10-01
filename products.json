@@ -154,5 +154,18 @@
     "description": "Strong and stylish anti-slip pad for phones.",
     "price": 110,
     "image": "images/phone silicon suction.jpg"
+  },
+  {
+    "name": "Red Heart Crochet Earrings ❤️",
+    "description": "Handmade red heart earrings, cute & playful for any outfit.",
+    "price": 130,
+    "image": "images/heart earrings.jpg"
+  },
+  {
+    "name": "Teddy Bear Crochet Keychain 🧸",
+    "description": "Soft teddy bear keychain, a perfect gift for your keys.",
+    "price": 160,
+    "image": "images/crochet keychain.jpg"
   }
+
 ]

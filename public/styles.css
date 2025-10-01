@@ -28,38 +28,7 @@
             color: var(--primary);
         }
         
-        /* Navbar Styles */
-        .navbar {
-            background-color: white;
-            box-shadow: 0 2px 15px rgba(0, 0, 0, 0.1);
-            padding: 15px 0;
-        }
-        
-        .navbar-brand {
-            font-family: 'Playfair Display', serif;
-            font-weight: 700;
-            color: var(--primary) !important;
-            font-size: 1.8rem;
-        }
-        
-        .navbar-nav .nav-link {
-            color: var(--dark) !important;
-            font-weight: 500;
-            padding: 8px 15px;
-            border-radius: 4px;
-            transition: all 0.3s;
-            margin: 0 5px;
-        }
-        
-        .navbar-nav .nav-link:hover {
-            background-color: var(--secondary);
-            color: var(--primary) !important;
-        }
-        
-        .navbar-nav .nav-link.active {
-            background-color: var(--primary);
-            color: white !important;
-        }
+       
         
         /* Hero Section */
         .hero-section {
@@ -385,4 +354,23 @@
     .product-img {
         height: 150px;
     }
+}
+
+
+.myNav{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color: white;
+    padding:10px;
+    position:fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+}
+.headerItems{
+    height: 80px;
+    width: auto;
+    border: 2px solid #000;
+    gap:30px;
 }
