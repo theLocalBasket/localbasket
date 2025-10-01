@@ -243,7 +243,7 @@
         cartBody.querySelectorAll(".remove-item").forEach(btn => btn.addEventListener("click", () => removeFromCart(btn.dataset.id)));
       }
 
-      // ---------- Fetch Products ----------
+     // ---------- Fetch Products ----------
       try {
         const res = await fetch("/api/products");
         const data = await res.json();
@@ -253,25 +253,40 @@
 
         data.products.forEach(product => {
           const div = document.createElement("div");
-          div.className = "product-card"; 
+          div.className = "product-card";
           div.dataset.id = product.id;
-         
 
+          // Use placeholder image + lazy loading
           div.innerHTML = `
-            <img src="${product.image}" class="product-img w-100 rounded" alt="${product.name}">
+            <img src="images/placeholder.jpg" data-src="${product.image}" class="product-img w-100 rounded" alt="${product.name}" loading="lazy">
             <div class="product-body p-2">
                 <h5 class="product-title">${product.name}</h5>
                 <p class="product-description small">${product.description}</p>
                 <div class="product-price fw-bold">₹${product.price}</div>
                 <button class="btn btn-success btn-add-cart w-100 mt-2">
-                <i class="bi bi-cart-plus me-1"></i> Add to Cart
+                  <i class="bi bi-cart-plus me-1"></i> Add to Cart
                 </button>
             </div>
-            `;
+          `;
+
           productsGrid.appendChild(div);
         });
 
-        // Image modal
+        // ---------- Lazy Load Images ----------
+        const lazyImages = document.querySelectorAll("img[data-src]");
+        const observer = new IntersectionObserver(entries => {
+          entries.forEach(entry => {
+            if (entry.isIntersecting) {
+              const img = entry.target;
+              img.src = img.dataset.src;
+              img.removeAttribute("data-src");
+              observer.unobserve(img);
+            }
+          });
+        });
+        lazyImages.forEach(img => observer.observe(img));
+
+        // ---------- Image Modal ----------
         productsGrid.querySelectorAll(".product-img").forEach(img => {
           img.addEventListener("click", () => {
             const imageModal = new bootstrap.Modal(document.getElementById("imageModal"));
@@ -282,35 +297,27 @@
           });
         });
 
-
-        // filter records
+        // ---------- Filter/Search ----------
         const searchInput = document.getElementById('searchInput');
-
         searchInput.addEventListener('input', () => {
-            const query = searchInput.value.toLowerCase();
-            const productCards = document.querySelectorAll('.product-card');
+          const query = searchInput.value.toLowerCase();
+          const productCards = document.querySelectorAll('.product-card');
 
-            productCards.forEach(card => {
-                const title = card.querySelector('.product-title').textContent.toLowerCase();
-                const description = card.querySelector('.product-description')?.textContent.toLowerCase() || '';
-                
-                if (title.includes(query) || description.includes(query)) {
-                    card.style.display = 'flex'; // Show
-                } else {
-                    card.style.display = 'none'; // Hide
-                }
-            });
+          productCards.forEach(card => {
+            const title = card.querySelector('.product-title').textContent.toLowerCase();
+            const description = card.querySelector('.product-description')?.textContent.toLowerCase() || '';
+
+            card.style.display = (title.includes(query) || description.includes(query)) ? 'flex' : 'none';
+          });
         });
 
-
-
-        // Add to cart
+        // ---------- Add to Cart ----------
         productsGrid.querySelectorAll(".btn-add-cart").forEach(btn => {
           btn.addEventListener("click", () => {
             const parent = btn.closest(".product-card");
             const id = parent.dataset.id;
             const name = parent.querySelector(".product-title").textContent;
-            const price = Number(parent.querySelector(".product-price").textContent.replace("₹",""));
+            const price = Number(parent.querySelector(".product-price").textContent.replace("₹", ""));
             const img = parent.querySelector("img").src;
 
             const existing = cart.find(i => i.id === id);
@@ -323,10 +330,13 @@
           });
         });
 
-      } catch(err){
+        console.log("Products loaded. From cache:", data.cached);
+
+      } catch (err) {
         console.error(err);
         productsGrid.innerHTML = "<p class='text-danger'>Failed to load products. Please try again later.</p>";
       }
+
 
       // ---------- Open Cart ----------
       document.querySelectorAll(".openCartBtn").forEach(btn => btn.addEventListener("click", () => cartModal.show()));
