@@ -12,9 +12,16 @@ const Razorpay = require("razorpay");
 const app = express();
 const PORT = process.env.PORT || 3000;
 
+const Database = require("better-sqlite3");
+const db = new Database("./products.db");
+
+
 // ========================
 // Security & Middleware
 // ========================
+
+app.use(express.json());
+
 app.disable("x-powered-by");
 
 // Initialize Razorpay
@@ -253,6 +260,19 @@ app.post("/send-order", apiLimiter, async (req, res) => {
 });
 
 
+
+app.get("/api/products", (req, res) => {
+  try {
+    const products = db.prepare("SELECT * FROM products").all();
+    res.json({ success: true, products });
+  } catch (err) {
+    console.error("Error fetching products:", err);
+    res.status(500).json({ success: false, error: "Failed to fetch products" });
+  }
+});
+
+
+
 // 404 handler
 app.use((req, res) => {
   res.status(404).json({ success:false, error:"Resource not found" });
@@ -263,6 +283,9 @@ app.use((err, req, res, next) => {
   console.error("Server error:", err.stack);
   res.status(500).json({ success:false, error:"Internal server error" });
 });
+
+
+
 
 // ========================
 // Start Server
