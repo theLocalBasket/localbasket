@@ -260,16 +260,34 @@ app.post("/send-order", apiLimiter, async (req, res) => {
 });
 
 
+let productCache = null;
+let lastFetchTime = 0; // timestamp in ms
+const CACHE_DURATION = 5 * 60 * 1000; // 5 minutes
 
 app.get("/api/products", (req, res) => {
   try {
+    const now = Date.now();
+
+    // ✅ Use cache if fresh
+    if (productCache && (now - lastFetchTime < CACHE_DURATION)) {
+      return res.json({ success: true, products: productCache, cached: true });
+    }
+
+    // ❌ If cache expired → query SQLite
     const products = db.prepare("SELECT * FROM products").all();
-    res.json({ success: true, products });
+
+    // ✅ Save to cache
+    productCache = products;
+    lastFetchTime = now;
+
+    res.json({ success: true, products, cached: false });
+
   } catch (err) {
     console.error("Error fetching products:", err);
     res.status(500).json({ success: false, error: "Failed to fetch products" });
   }
 });
+
 
 
 
