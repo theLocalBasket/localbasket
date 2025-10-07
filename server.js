@@ -21,8 +21,8 @@ const db = new Database("./products.db");
 // ========================
 
 // ---------- Block direct access to raw JS ----------
-app.use('/js', (req, res) => res.status(404).send('Not found'));
-app.use('/css', (req, res) => res.status(404).send('Not found'));
+//app.use('/js', (req, res) => res.status(404).send('Not found'));
+//app.use('/css', (req, res) => res.status(404).send('Not found'));
 
 
 app.use(express.json());

@@ -24,20 +24,18 @@ document.addEventListener("DOMContentLoaded", async () => {
     if (!item) return;
     item.qty += delta;
     if (item.qty < 1) removeFromCart(id);
-    else {
-      renderCart();
-      updateCartCount();
-    }
+    else { renderCart(); updateCartCount(); }
   }
 
   function calculateTotals() {
     const subtotal = cart.reduce((sum, i) => sum + i.price * i.qty, 0);
-    const shipping = subtotal >= 400 ? 0 : 80; // free shipping above 400
+    // Shipping ₹80 only if subtotal <= 400
+    const shipping = subtotal > 400 ? 0 : 80;
     return { subtotal, shipping, grandTotal: subtotal + shipping };
   }
 
   function renderCart() {
-    cartBody.innerHTML = "";
+    cartBody.innerHTML = '';
     if (cart.length === 0) {
       cartBody.innerHTML = `
         <div class="text-center py-5">
@@ -51,7 +49,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     const { subtotal, shipping, grandTotal } = calculateTotals();
 
     cart.forEach(item => {
-      const div = document.createElement("div");
+      const div = document.createElement('div');
       div.className = "cart-item border-bottom py-2";
       div.innerHTML = `
         <div class="row align-items-center">
@@ -75,6 +73,10 @@ document.addEventListener("DOMContentLoaded", async () => {
         <h5>Subtotal: ₹${subtotal}</h5>
         <h5>Shipping: ₹${shipping}</h5>
         <h4>Total: ₹${grandTotal}</h4>
+        <p class="text-muted small mt-1">
+          *Shipping charge of ₹80 applies if subtotal is ₹400 or less.
+        </p>
+
       </div>
       <div class="mt-4">
         <h5><i class="bi bi-truck me-2"></i>Shipping Information</h5>
@@ -84,7 +86,6 @@ document.addEventListener("DOMContentLoaded", async () => {
         <div class="mb-3"><input type="tel" class="form-control contact-number" placeholder="Contact Number" required maxlength="10"></div>
       </div>`;
 
-    // Event listeners
     cartBody.querySelectorAll(".increase").forEach(btn => btn.addEventListener("click", () => changeQty(btn.dataset.id, 1)));
     cartBody.querySelectorAll(".decrease").forEach(btn => btn.addEventListener("click", () => changeQty(btn.dataset.id, -1)));
     cartBody.querySelectorAll(".remove-item").forEach(btn => btn.addEventListener("click", () => removeFromCart(btn.dataset.id)));
@@ -97,11 +98,11 @@ document.addEventListener("DOMContentLoaded", async () => {
     if (!data.success) throw new Error("Failed to fetch products");
 
     productsGrid.innerHTML = "";
-
     data.products.forEach(product => {
       const div = document.createElement("div");
       div.className = "product-card";
       div.dataset.id = product.id;
+
       div.innerHTML = `
         <img src="images/placeholder.jpg" data-src="${product.image}" class="product-img w-100 rounded" alt="${product.name}" loading="lazy">
         <div class="product-body p-2">
@@ -115,7 +116,7 @@ document.addEventListener("DOMContentLoaded", async () => {
       productsGrid.appendChild(div);
     });
 
-    // Lazy load
+    // Lazy load images
     const lazyImages = document.querySelectorAll("img[data-src]");
     const observer = new IntersectionObserver(entries => {
       entries.forEach(entry => {
@@ -129,7 +130,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     });
     lazyImages.forEach(img => observer.observe(img));
 
-    // Image Modal
+    // Image modal
     productsGrid.querySelectorAll(".product-img").forEach(img => {
       img.addEventListener("click", () => {
         const imageModal = new bootstrap.Modal(document.getElementById("imageModal"));
@@ -140,18 +141,18 @@ document.addEventListener("DOMContentLoaded", async () => {
       });
     });
 
-    // Search
-    const searchInput = document.getElementById("searchInput");
-    searchInput.addEventListener("input", () => {
+    // Search/filter
+    const searchInput = document.getElementById('searchInput');
+    searchInput.addEventListener('input', () => {
       const query = searchInput.value.toLowerCase();
-      document.querySelectorAll(".product-card").forEach(card => {
-        const title = card.querySelector(".product-title").textContent.toLowerCase();
-        const desc = card.querySelector(".product-description")?.textContent.toLowerCase() || "";
-        card.style.display = title.includes(query) || desc.includes(query) ? "flex" : "none";
+      document.querySelectorAll('.product-card').forEach(card => {
+        const title = card.querySelector('.product-title').textContent.toLowerCase();
+        const desc = card.querySelector('.product-description')?.textContent.toLowerCase() || '';
+        card.style.display = title.includes(query) || desc.includes(query) ? 'flex' : 'none';
       });
     });
 
-    // Add to Cart
+    // Add to cart
     productsGrid.querySelectorAll(".btn-add-cart").forEach(btn => {
       btn.addEventListener("click", () => {
         const parent = btn.closest(".product-card");
@@ -169,6 +170,7 @@ document.addEventListener("DOMContentLoaded", async () => {
         cartModal.show();
       });
     });
+
   } catch (err) {
     console.error(err);
     productsGrid.innerHTML = "<p class='text-danger'>Failed to load products. Please try again later.</p>";
@@ -179,24 +181,25 @@ document.addEventListener("DOMContentLoaded", async () => {
 
   // ---------- Checkout ----------
   checkoutBtn.addEventListener("click", async () => {
-    if (cart.length === 0) return alert("Cart is empty");
+    if (cart.length === 0){ alert("Cart is empty"); return; }
 
-    const name = document.querySelector(".shipping-name").value;
-    const email = document.querySelector(".shipping-email").value;
-    const address = document.querySelector(".shipping-address").value;
-    const phone = document.querySelector(".contact-number").value;
-    if (!name || !email || !address || !phone) return alert("Please fill all shipping details");
+    const name = document.querySelector('.shipping-name').value;
+    const email = document.querySelector('.shipping-email').value;
+    const address = document.querySelector('.shipping-address').value;
+    const phone = document.querySelector('.contact-number').value;
+
+    if (!name || !email || !address || !phone){ alert("Fill all shipping details"); return; }
 
     const { subtotal, shipping, grandTotal } = calculateTotals();
 
     try {
-      const orderRes = await fetch("/create-razorpay-order", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
+      const orderRes = await fetch('/create-razorpay-order', {
+        method:'POST',
+        headers:{'Content-Type':'application/json'},
         body: JSON.stringify({ amount: grandTotal, currency: "INR" })
       });
       const orderData = await orderRes.json();
-      if (!orderData.success) return alert("Failed to create payment order");
+      if(!orderData.success){ alert("Failed to create payment order"); return; }
 
       const options = {
         key: orderData.order.key_id,
@@ -205,34 +208,32 @@ document.addEventListener("DOMContentLoaded", async () => {
         name: "The Local Basket",
         description: "Order Payment",
         order_id: orderData.order.id,
-        handler: function (response) {
-          // Save order to sessionStorage and redirect
-          sessionStorage.setItem(
-            "orderDetails",
-            JSON.stringify({
-              items: cart,
-              shipping: { name, email, address, phone },
-              paymentId: response.razorpay_payment_id,
-              grandTotal
-            })
-          );
-
+        handler: function(response) {
+          const orderDetails = { items: cart, shipping:{ name,email,address,phone }, paymentId: response.razorpay_payment_id, grandTotal };
+          
+          // Clear cart immediately
           cart = [];
           updateCartCount();
           renderCart();
-          cartModal.hide();
 
-          window.location.href = "/processing.html";
+          // Redirect to Thank You page immediately
+          window.location.href = `/thankyou.html?pid=${response.razorpay_payment_id}`;
+
+          // Send order/email in background
+          fetch('/send-order', {
+            method:'POST',
+            headers:{'Content-Type':'application/json'},
+            body: JSON.stringify(orderDetails)
+          }).then(res=>res.json())
+            .then(result=>console.log("Order background result:", result))
+            .catch(err=>console.error("Background order error:", err));
         },
-        prefill: { name, email, contact: phone },
-        theme: { color: "#198754" }
+        prefill:{ name,email,contact:phone },
+        theme:{ color:"#198754" }
       };
-
       const rzp = new Razorpay(options);
       rzp.open();
-    } catch (err) {
-      console.error(err);
-      alert("Error initiating payment");
-    }
+    }catch(err){ console.error(err); alert("Error initiating payment"); }
   });
+
 });
