@@ -32,7 +32,7 @@ document.addEventListener("DOMContentLoaded", async () => {
 
   function calculateTotals() {
     const subtotal = cart.reduce((sum, i) => sum + i.price * i.qty, 0);
-    const shipping = subtotal >= 400 ? 0 : 80;
+    const shipping = subtotal >= 400 ? 0 : 80; // free shipping above 400
     return { subtotal, shipping, grandTotal: subtotal + shipping };
   }
 
@@ -185,7 +185,6 @@ document.addEventListener("DOMContentLoaded", async () => {
     const email = document.querySelector(".shipping-email").value;
     const address = document.querySelector(".shipping-address").value;
     const phone = document.querySelector(".contact-number").value;
-
     if (!name || !email || !address || !phone) return alert("Please fill all shipping details");
 
     const { subtotal, shipping, grandTotal } = calculateTotals();
@@ -206,8 +205,8 @@ document.addEventListener("DOMContentLoaded", async () => {
         name: "The Local Basket",
         description: "Order Payment",
         order_id: orderData.order.id,
-        handler: async function (response) {
-          // Redirect to processing page instead of overlay
+        handler: function (response) {
+          // Save order to sessionStorage and redirect
           sessionStorage.setItem(
             "orderDetails",
             JSON.stringify({
@@ -221,8 +220,8 @@ document.addEventListener("DOMContentLoaded", async () => {
           cart = [];
           updateCartCount();
           renderCart();
-
           cartModal.hide();
+
           window.location.href = "/processing.html";
         },
         prefill: { name, email, contact: phone },
