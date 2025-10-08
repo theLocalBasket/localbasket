@@ -161,6 +161,7 @@ app.post("/send-order", apiLimiter, async (req, res) => {
         name: sanitize(orderData.shipping.name),
         email: sanitize(orderData.shipping.email),
         address: sanitize(orderData.shipping.address),
+        pincode: sanitize(orderData.shipping.pincode),
         phone: sanitize(orderData.shipping.phone),
       },
       items: orderData.items.map((item) => ({
@@ -231,6 +232,7 @@ app.post("/send-order", apiLimiter, async (req, res) => {
           <p><strong>Email:</strong> ${sanitizedOrder.shipping.email}</p>
           <p><strong>Phone:</strong> ${sanitizedOrder.shipping.phone}</p>
           <p><strong>Address:</strong> ${sanitizedOrder.shipping.address}</p>
+          <p><strong>Pincode:</strong> ${sanitizedOrder.shipping.pincode}</p>
           <p><strong>Payment ID:</strong> ${sanitizedOrder.paymentId}</p>
           <h4 style="margin-top:20px;">Order Details:</h4>
           ${itemsTable}
