@@ -3,175 +3,210 @@
     "name": "Crochet Earrings ✨",
     "description": "Handmade earrings, just for you!",
     "price": 130,
+    "qty": 10,
     "image": "images/crochet earrings 05.jpg"
   },
   {
     "name": "Elegant Crochet Earrings ✨",
     "description": "Handmade earrings that charm any outfit.",
     "price": 160,
+    "qty": 10,
     "image": "images/crochet_earrings.jpg"
   },
   {
     "name": "Sleek Phone Charging Stand ⚡",
     "description": "Stylish stand to keep your phone powered upright.",
     "price": 160,
+    "qty": 10,
     "image": "images/phone charging stand.jpg"
   },
   {
     "name": "Silicon Anti-Slip Phone Suction",
     "description": "Durable pad to secure your phone anywhere.",
     "price": 110,
+    "qty": 10,
     "image": "images/Phone Suction.jpg"
   },
   {
     "name": "Adorable Dog Paw Phone Charm 🐾",
     "description": "Cute handcrafted dog paw charm for your phone.",
     "price": 160,
+    "qty": 10,
     "image": "images/Phone Charmer.jpg"
   },
   {
     "name": "Chic Bracelet & Earring Combo",
     "description": "Elegant matching bracelet and earrings set.",
     "price": 200,
+    "qty": 10,
     "image": "images/Bracelet and Earing.jpg"
   },
   {
     "name": "Handmade Crochet Sunflower & Rose Bouquet 🌼",
     "description": "Vibrant handcrafted bouquet, perfect to gift or decorate.",
     "price": 600,
+    "qty": 10,
     "image": "images/crochet boquet 01.jpg"
   },
   {
     "name": "Pumpkin Keychain – Blue Edition 🎃",
     "description": "Playful handcrafted pumpkin keychain.",
     "price": 100,
+    "qty": 10,
     "image": "images/Pumpkin Keychain blue.jpg"
   },
   {
     "name": "Pink & White Pearl Bracelet 🌸",
     "description": "Elegant bracelet with pink and white pearls.",
     "price": 150,
+    "qty": 10,
     "image": "images/bracelet pink pearl.jpg"
   },
   {
     "name": "Purple & White Pearl Bracelet 💜",
     "description": "Beautiful bracelet with purple and white pearls.",
     "price": 130,
+    "qty": 10,
     "image": "images/Bracelet purple.jpg"
   },
   {
     "name": "Blue & White Pearl Bracelet 💙",
     "description": "Handmade blue and white pearl bracelet.",
     "price": 130,
+    "qty": 10,
     "image": "images/Blue Bracelet.jpg"
   },
   {
     "name": "Green & White Pearl Bracelet 🌿",
     "description": "Fresh and elegant green-white pearl bracelet.",
     "price": 130,
+    "qty": 10,
     "image": "images/light green bracelet.jpg"
   },
   {
     "name": "Orange & White Pearl Bracelet 🍊",
     "description": "Vibrant orange and white pearl bracelet.",
     "price": 150,
+    "qty": 10,
     "image": "images/Bracelet Orange.jpg"
   },
   {
     "name": "Green Pearl Bracelet 🌱",
     "description": "Subtle and elegant green pearl bracelet.",
     "price": 150,
+    "qty": 10,
     "image": "images/Bracelet green pearl.jpg"
   },
   {
     "name": "Pink Crochet Phone Charm 💖",
     "description": "Handmade pink charm to personalize your phone.",
     "price": 190,
+    "qty": 10,
     "image": "images/phone charm pink1.jpg"
   },
   {
     "name": "Purple Crochet Phone Charm 💜",
     "description": "Chic handcrafted purple phone charm.",
     "price": 190,
+    "qty": 10,
     "image": "images/Purple Phone charm.jpg"
   },
   {
     "name": "White Pearl Bracelet 🤍",
     "description": "Timeless handmade white pearl bracelet.",
     "price": 130,
+    "qty": 10,
     "image": "images/white pearl bracelet.jpg"
   },
   {
     "name": "Crochet Sunflower Bag Charm 🌻",
     "description": "Bright sunflower charm to jazz up your bag.",
     "price": 199,
+    "qty": 10,
     "image": "images/Sunflower bag charm.jpg"
   },
   {
     "name": "Handmade Crochet Bouquet 🌸",
     "description": "Everlasting handcrafted bouquet for gifting or decor.",
     "price": 600,
+    "qty": 10,
     "image": "images/crochet boquet 02.jpg"
   },
   {
     "name": "Clock-Shaped Phone Charm 🕰️",
     "description": "Elegant clock-themed handcrafted phone charm.",
     "price": 60,
+    "qty": 0,
     "image": "images/phone charm01.jpg"
   },
   {
     "name": "Penguin Phone Charm 🐧",
     "description": "Fun handcrafted penguin charm for your device.",
     "price": 60,
+    "qty": 10,
     "image": "images/Phone charm02.jpg"
   },
   {
     "name": "Panda Phone Charm 🐼",
     "description": "Cute handmade panda charm for animal lovers.",
     "price": 60,
+    "qty": 10,
     "image": "images/Phone charm03.jpg"
   },
   {
     "name": "Butterfly Phone Charm 🦋",
     "description": "Delicate handcrafted butterfly charm.",
     "price": 60,
+    "qty": 10,
     "image": "images/Phone charm04.jpg"
   },
   {
     "name": "Maple Leaf Phone Charm 🍁",
     "description": "Autumn-inspired handmade maple leaf charm.",
     "price": 60,
+    "qty": 10,
     "image": "images/Phone charm05.jpg"
   },
   {
     "name": "Moon Phone Charm 🌙",
     "description": "Charming handcrafted moon phone charm.",
     "price": 60,
+    "qty": 0,
     "image": "images/Phone charm06.jpg"
   },
   {
     "name": "Mini Crochet Bouquet 🌸",
     "description": "Pocket-sized handcrafted bouquet, perfect to gift.",
     "price": 300,
+    "qty": 10,
     "image": "images/crochet boquet 03.jpg"
   },
   {
     "name": "Silicon Anti-Slip Phone Suction Pad",
     "description": "Strong and stylish anti-slip pad for phones.",
     "price": 110,
+    "qty": 10,
     "image": "images/phone silicon suction.jpg"
   },
   {
     "name": "Red Heart Crochet Earrings ❤️",
     "description": "Handmade red heart earrings, cute & playful for any outfit.",
     "price": 130,
+    "qty": 10,
     "image": "images/heart earrings.jpg"
   },
   {
     "name": "Teddy Bear Crochet Keychain 🧸",
     "description": "Soft teddy bear keychain, a perfect gift for your keys.",
     "price": 250,
+    "qty": 10,
     "image": "images/crochet keychain.jpg"
+  },
+  {
+    "name": "Flower Crochet Earring - Purple 🌸",
+    "description": "A little bit of handcrafted happines for your ears.",
+    "price": 130,
+    "qty": 10,
+    "image": "images/crochet purple earring.jpg"
   }
-
 ]

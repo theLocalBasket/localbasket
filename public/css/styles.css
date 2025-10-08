@@ -374,3 +374,14 @@
     border: 2px solid #000;
     gap:30px;
 }
+
+
+.cart-item:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+  transition: all 0.2s ease-in-out;
+}
+.summary-box h4 {
+  font-weight: 700;
+  color: #007bff;
+}

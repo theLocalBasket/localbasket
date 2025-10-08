@@ -14,6 +14,7 @@ db.prepare(`
     name TEXT NOT NULL,
     description TEXT,
     price REAL NOT NULL,
+    qty REAL NOT NULL,
     image TEXT
   )
 `).run();
@@ -24,17 +25,16 @@ db.prepare(`
 const jsonPath = path.join(__dirname, "products.json");
 
 if (!fs.existsSync(jsonPath)) {
-  console.error("products.json not found!");
+  console.error("❌ products.json not found!");
   process.exit(1);
 }
 
-const rawData = fs.readFileSync(jsonPath, "utf-8");
 let products;
-
 try {
+  const rawData = fs.readFileSync(jsonPath, "utf-8");
   products = JSON.parse(rawData);
 } catch (err) {
-  console.error("Invalid JSON:", err);
+  console.error("❌ Invalid JSON:", err);
   process.exit(1);
 }
 
@@ -42,20 +42,25 @@ try {
 // Insert/update products in DB
 // ================================
 const insertStmt = db.prepare(`
-  INSERT INTO products (name, description, price, image)
-  VALUES (?, ?, ?, ?)
+  INSERT INTO products (name, description, price, qty, image)
+  VALUES (?, ?, ?, ?, ?)
 `);
 
-// Loop through products
+const updateStmt = db.prepare(`
+  UPDATE products
+  SET description = ?, price = ?, qty = ?, image = ?
+  WHERE name = ?
+`);
+
 for (const p of products) {
-  // Check if product already exists by name
-  const exists = db.prepare("SELECT * FROM products WHERE name = ?").get(p.name);
+  const exists = db.prepare("SELECT id FROM products WHERE name = ?").get(p.name);
 
   if (!exists) {
-    insertStmt.run(p.name, p.description, p.price, p.image);
+    insertStmt.run(p.name, p.description, p.price, p.qty ?? 0, p.image);
     console.log(`✅ Added: ${p.name}`);
   } else {
-    console.log(`ℹ️  Exists: ${p.name}`);
+    updateStmt.run(p.description, p.price, p.qty ?? 0, p.image, p.name);
+    console.log(`🔄 Updated: ${p.name}`);
   }
 }
 
@@ -63,5 +68,5 @@ for (const p of products) {
 // Fetch all products to verify
 // ================================
 const allProducts = db.prepare("SELECT * FROM products").all();
-console.log("\nAll products in DB:");
+console.log("\n📦 All products in DB:");
 console.table(allProducts);

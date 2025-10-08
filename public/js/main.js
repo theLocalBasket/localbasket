@@ -51,84 +51,132 @@ document.addEventListener("DOMContentLoaded", async () => {
     cart.forEach(item => {
       const div = document.createElement('div');
       div.className = "cart-item border-bottom py-2";
-      div.innerHTML = `
-        <div class="row align-items-center">
-          <div class="col-2"><img src="${item.img}" alt="${item.name}" class="img-fluid rounded"></div>
-          <div class="col-4"><strong>${item.name}</strong><p class="text-muted small">₹${item.price}</p></div>
-          <div class="col-3 d-flex align-items-center">
-            <button class="btn btn-sm btn-outline-secondary quantity-btn decrease" data-id="${item.id}">-</button>
-            <span class="mx-2">${item.qty}</span>
-            <button class="btn btn-sm btn-outline-secondary quantity-btn increase" data-id="${item.id}">+</button>
-          </div>
-          <div class="col-2"><strong>₹${item.price * item.qty}</strong></div>
-          <div class="col-1 text-end">
-            <button class="btn btn-sm btn-danger remove-item" data-id="${item.id}"><i class="bi bi-trash"></i></button>
-          </div>
-        </div>`;
-      cartBody.appendChild(div);
-    });
-
-    cartBody.innerHTML += `
-      <div class="text-end mt-3">
-        <h5>Subtotal: ₹${subtotal}</h5>
-        <h5>Shipping: ₹${shipping}</h5>
-        <h4>Total: ₹${grandTotal}</h4>
-        <p class="text-muted small mt-1">
-          *Shipping charge of ₹80 applies if subtotal is ₹400 or less.
-        </p>
-
+    div.innerHTML = `
+  <div class="cart-item border rounded-3 p-3 mb-3 bg-white shadow-sm hover-shadow transition-all">
+    <div class="row align-items-center g-3">
+      <div class="col-2 text-center">
+        <img src="${item.img}" alt="${item.name}" class="img-fluid rounded-3 border">
       </div>
-      <div class="mt-4">
-        <h5><i class="bi bi-truck me-2"></i>Shipping Information</h5>
-        <div class="mb-3"><input type="text" class="form-control shipping-name" placeholder="Full Name" required></div>
-        <div class="mb-3"><input type="email" class="form-control shipping-email" placeholder="Email" required></div>
-        <div class="mb-3"><textarea class="form-control shipping-address" placeholder="Full Address with PIN" rows="2" required></textarea></div>
-        <div class="mb-3"><input type="tel" class="form-control contact-number" placeholder="Contact Number" required maxlength="10"></div>
-      </div>`;
+      <div class="col-4">
+        <h6 class="mb-1 fw-semibold text-dark">${item.name}</h6>
+        <p class="text-muted small mb-0">₹${item.price}</p>
+      </div>
+      <div class="col-3 d-flex align-items-center justify-content-center">
+        <button class="btn btn-sm btn-outline-secondary quantity-btn decrease rounded-circle" data-id="${item.id}">
+          <i class="bi bi-dash"></i>
+        </button>
+        <span class="mx-2 fw-semibold">${item.qty}</span>
+        <button class="btn btn-sm btn-outline-secondary quantity-btn increase rounded-circle" data-id="${item.id}">
+          <i class="bi bi-plus"></i>
+        </button>
+      </div>
+      <div class="col-2 text-center">
+        <span class="fw-bold text-success">₹${item.price * item.qty}</span>
+      </div>
+      <div class="col-1 text-end">
+        <button class="btn btn-sm btn-outline-danger remove-item rounded-circle" data-id="${item.id}" title="Remove item">
+          <i class="bi bi-trash"></i>
+        </button>
+      </div>
+    </div>
+  </div>`;
+cartBody.appendChild(div);
+});
+
+cartBody.innerHTML += `
+  <div class="summary-box text-end mt-4 p-4 border rounded-3 bg-light shadow-sm">
+    <h6 class="text-muted mb-1">Subtotal: <span class="fw-semibold text-dark">₹${subtotal}</span></h6>
+    <h6 class="text-muted mb-1">Shipping: <span class="fw-semibold text-dark">₹${shipping}</span></h6>
+    <hr class="my-2">
+    <h4 class="fw-bold text-primary mb-0">Total: ₹${grandTotal}</h4>
+    <p class="text-muted small mt-2 fst-italic">
+      *A ₹80 shipping charge applies if subtotal is ₹400 or less.
+    </p>
+  </div>
+
+  <div class="shipping-info mt-4 p-4 border rounded-3 bg-white shadow-sm">
+    <h5 class="mb-3 text-dark"><i class="bi bi-truck me-2 text-primary"></i>Shipping Information</h5>
+    <div class="row g-3">
+      <div class="col-md-6">
+        <input type="text" class="form-control shipping-name" placeholder="Full Name" required>
+      </div>
+      <div class="col-md-6">
+        <input type="tel" class="form-control contact-number" placeholder="Contact Number" required maxlength="10">
+      </div>
+      <div class="col-md-6">
+        <input type="email" class="form-control shipping-email" placeholder="Email" required>
+      </div>
+      <div class="col-md-6">
+        <input type="text" class="form-control shipping-pincode" placeholder="PIN Code" required maxlength="6">
+      </div>
+      <div class="col-12">
+        <textarea class="form-control shipping-address" placeholder="Full Address with Landmark" rows="2" required></textarea>
+      </div>
+    </div>
+  </div>`;
+
 
     cartBody.querySelectorAll(".increase").forEach(btn => btn.addEventListener("click", () => changeQty(btn.dataset.id, 1)));
     cartBody.querySelectorAll(".decrease").forEach(btn => btn.addEventListener("click", () => changeQty(btn.dataset.id, -1)));
     cartBody.querySelectorAll(".remove-item").forEach(btn => btn.addEventListener("click", () => removeFromCart(btn.dataset.id)));
   }
 
-  // ---------- Fetch Products ----------
-  try {
-    const res = await fetch("/api/products");
-    const data = await res.json();
-    if (!data.success) throw new Error("Failed to fetch products");
+// ---------- Fetch Products ----------
+try {
+  const res = await fetch("/api/products");
+  const data = await res.json();
+  if (!data.success) throw new Error("Failed to fetch products");
 
-    productsGrid.innerHTML = "";
-    data.products.forEach(product => {
-      const div = document.createElement("div");
-      div.className = "product-card";
-      div.dataset.id = product.id;
+  productsGrid.innerHTML = "";
+  data.products.forEach(product => {
+    const div = document.createElement("div");
+    div.className = "product-card";
+    div.dataset.id = product.id;
 
-      div.innerHTML = `
+    // Check stock
+    const isOutOfStock = product.qty === 0;
+
+    // Button HTML
+    const buttonHTML = isOutOfStock
+      ? `<button class="btn btn-secondary w-100 mt-2" disabled>Out of Stock</button>`
+      : `<button class="btn btn-success btn-add-cart w-100 mt-2">
+           <i class="bi bi-cart-plus me-1"></i> Add to Cart
+         </button>`;
+
+    // Optional Out of Stock badge
+    const badgeHTML = isOutOfStock
+      ? `<span class="badge bg-danger position-absolute top-0 end-0 m-2">Out of Stock</span>`
+      : "";
+
+    div.innerHTML = `
+      <div class="position-relative">
+        ${badgeHTML}
         <img src="images/placeholder.jpg" data-src="${product.image}" class="product-img w-100 rounded" alt="${product.name}" loading="lazy">
-        <div class="product-body p-2">
-            <h5 class="product-title">${product.name}</h5>
-            <p class="product-description small">${product.description}</p>
-            <div class="product-price fw-bold">₹${product.price}</div>
-            <button class="btn btn-success btn-add-cart w-100 mt-2">
-              <i class="bi bi-cart-plus me-1"></i> Add to Cart
-            </button>
-        </div>`;
-      productsGrid.appendChild(div);
-    });
+      </div>
+      <div class="product-body p-2">
+          <h5 class="product-title">${product.name}</h5>
+          <p class="product-description small">${product.description}</p>
+          <div class="product-price fw-bold">₹${product.price}</div>
+          ${buttonHTML}
+      </div>`;
+      
+    productsGrid.appendChild(div);
+  });
 
-    // Lazy load images
-    const lazyImages = document.querySelectorAll("img[data-src]");
-    const observer = new IntersectionObserver(entries => {
-      entries.forEach(entry => {
-        if (entry.isIntersecting) {
-          const img = entry.target;
-          img.src = img.dataset.src;
-          img.removeAttribute("data-src");
-          observer.unobserve(img);
-        }
-      });
+  // Lazy load images
+  const lazyImages = document.querySelectorAll("img[data-src]");
+  const observer = new IntersectionObserver(entries => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        const img = entry.target;
+        img.src = img.dataset.src;
+        img.removeAttribute("data-src");
+        observer.unobserve(img);
+      }
     });
-    lazyImages.forEach(img => observer.observe(img));
+  });
+  lazyImages.forEach(img => observer.observe(img));
+
 
     // Image modal
     productsGrid.querySelectorAll(".product-img").forEach(img => {
@@ -186,9 +234,10 @@ document.addEventListener("DOMContentLoaded", async () => {
     const name = document.querySelector('.shipping-name').value;
     const email = document.querySelector('.shipping-email').value;
     const address = document.querySelector('.shipping-address').value;
+    const pincode = document.querySelector('.shipping-pincode').value;
     const phone = document.querySelector('.contact-number').value;
 
-    if (!name || !email || !address || !phone){ alert("Fill all shipping details"); return; }
+    if (!name || !email || !address || !phone || !pincode){ alert("Fill all shipping details"); return; }
 
     const { subtotal, shipping, grandTotal } = calculateTotals();
 
@@ -209,7 +258,7 @@ document.addEventListener("DOMContentLoaded", async () => {
         description: "Order Payment",
         order_id: orderData.order.id,
         handler: function(response) {
-          const orderDetails = { items: cart, shipping:{ name,email,address,phone }, paymentId: response.razorpay_payment_id, grandTotal };
+          const orderDetails = { items: cart, shipping:{ name,email,address,phone, pincode }, paymentId: response.razorpay_payment_id, grandTotal };
           
           // Clear cart immediately
           cart = [];
