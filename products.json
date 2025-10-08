@@ -208,5 +208,13 @@
     "price": 130,
     "qty": 10,
     "image": "images/crochet purple earring.jpg"
+  },
+  {
+    "name": "Flower Phone Charm 🌸",
+    "description": "Black flower phone charm",
+    "price": 60,
+    "qty": 10,
+    "image": "images/flower phone charm.jpg"
   }
+
 ]
