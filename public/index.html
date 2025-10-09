@@ -1,168 +1,153 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta http-equiv="Content-Security-Policy" content="
-    default-src 'self';
-    script-src 'self' https://cdn.jsdelivr.net https://checkout.razorpay.com 'unsafe-inline';
-    style-src 'self' https://cdn.jsdelivr.net https://fonts.googleapis.com 'unsafe-inline';
-    img-src 'self' data: https:;
-    font-src 'self' https://cdn.jsdelivr.net https://fonts.gstatic.com;
-    connect-src 'self' https://your-api-domain.com https://api.razorpay.com https://lumberjack.razorpay.com https://cdn.jsdelivr.net;
-    frame-src https://checkout.razorpay.com https://api.razorpay.com;
-  ">
-  <title>The Local Basket - Premium Local Products</title>
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.4/dist/css/bootstrap.min.css" rel="stylesheet">
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
-  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Playfair+Display:wght@400;500;600;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="css-min/styles.min.css">
-  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90' fill='%23C5A47E'>LB</text></svg>">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>The Local Basket - Premium Local Products</title>
+
+<meta http-equiv="Content-Security-Policy" content="
+  default-src 'self';
+  script-src 'self' https://cdn.jsdelivr.net https://checkout.razorpay.com 'unsafe-inline';
+  style-src 'self' https://cdn.jsdelivr.net https://fonts.googleapis.com 'unsafe-inline';
+  img-src 'self' data: https:;
+  font-src 'self' https://cdn.jsdelivr.net https://fonts.gstatic.com;
+  connect-src 'self' https://your-api-domain.com https://api.razorpay.com https://lumberjack.razorpay.com https://cdn.jsdelivr.net;
+  frame-src https://checkout.razorpay.com https://api.razorpay.com;
+">
+
+<!-- Fonts & Icons -->
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Playfair+Display:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.4/dist/css/bootstrap.min.css" rel="stylesheet">
+<link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
+<link rel="stylesheet" href="css/styles.css">
+
+<!-- Custom CSS -->
+
 </head>
 <body>
-  
-  
-    <!-- Navbar -->
+
+<!-- Navbar -->
 <nav class="myNav">
-  <div class="container-fluid d-flex align-items-center justify-content-between">
-
-    <!-- Brand with Logo -->
-    <a class="me-2" href="index.html">
-      <img src="images/logo.PNG" alt="The Local Basket" 
-           style="height: 50px; max-height: 50px;" class="d-inline-block align-top">
-    </a>
-
-    <!-- Search Bar -->
-    <div class="mx-2 flex-shrink-1" style="flex: 0 1 62%;">
-      <input type="text" id="searchInput" 
-             class="form-control rounded shadow-sm w-100" 
-             placeholder="search products...">
-    </div>
-
-    <!-- Right side: Account & Cart -->
-    <div class="d-flex align-items-center flex-shrink-0 ms-2">
-
-      <!-- Account -->
-      <a class="text-dark me-2 d-flex align-items-center" href="Login.html">
-        <i class="bi bi-person-circle fs-5"></i>
-      </a>
-
-      <!-- Cart -->
-      <div class="position-relative">
-        <button class="btn btn-light openCartBtn shadow-sm">
-          <i class="bi bi-cart3 fs-5"></i>
-          <span class="position-absolute top-0 start-100 translate-middle 
-                       badge rounded-pill bg-danger cart-count">0</span>
-        </button>
-      </div>
-
-    </div>
-    
+  <div class="container-fluid">
+    <a href="index.html"><img src="images/logo.PNG" alt="The Local Basket" style="height:50px;"></a>
+    <input type="text" id="searchInput" placeholder="Search products...">
+    <button id="floatingCartBtn" class="btn-cart"><i class="bi bi-cart3 fs-4"></i><span class="cart-count badge bg-danger">0</span></button>
   </div>
 </nav>
+<!-- Hero Section -->
+<section class="hero-section">
+  <img src="images/images.png" alt="Premium Products" class="hero-image">
 
-  <!-- Main Content -->
-  <div class="container mt-3 pt-1">
-    <!-- Hero Section -->
-    <section class="hero-section mb-4">
-      <video autoplay loop muted playsinline class="w-100 rounded">
-        <source src="images/offer.mp4" type="video/mp4">
-        Your browser does not support the video tag.
-      </video>
-    </section>
-   
-    <!-- Featured Products -->
-    <div class="category-banner mb-3">
-      <h3 class="text-center">
-        <img src="https://cdn-icons-png.flaticon.com/512/5619/5619269.png" alt="Stationary">
-        Featured Products
-        <img src="https://cdn-icons-png.flaticon.com/512/5619/5619269.png" alt="Stationary">
-      </h3>
-      <p class="text-center small">All rates listed below are already offered at a 50% discount.</p>
-    </div>
-
-    <div class="products-grid">
-      <!-- Products will be injected here -->
-    </div>
+  <div class="hero-overlay">
+    <h1>Premium Local Products</h1>
+    <p>Curated selection from local artisans & businesses. Quality you can trust.</p>
+    <a href="#featured" class="btn-accent">Shop Now</a>
   </div>
 
-  <!-- ================== Image Modal ================== -->
-  <div class="modal fade" id="imageModal" tabindex="-1" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered modal-lg">
-      <div class="modal-content bg-transparent border-0 shadow-none">
-        <button type="button" class="btn-close ms-auto me-2 mt-2" data-bs-dismiss="modal"></button>
-        <img id="modalImage" src="" class="img-fluid rounded shadow" alt="Product Preview">
+  <!-- Optional Floating Shapes for Premium Feel -->
+  <span class="shape shape1"></span>
+  <span class="shape shape2"></span>
+  <span class="shape shape3"></span>
+</section>
+
+
+
+
+<!-- Products Grid -->
+<section id="featured" class="container">
+  <div class="products-grid">
+    <!-- Products will be dynamically injected here by your JS -->
+  </div>
+</section>
+
+<!-- Image Modal -->
+<div class="modal fade" id="imageModal" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered modal-lg">
+    <div class="modal-content bg-transparent border-0 shadow-none">
+      <button type="button" class="btn-close ms-auto me-2 mt-2" data-bs-dismiss="modal"></button>
+      <img id="modalImage" src="" class="img-fluid rounded shadow" alt="Product Preview">
+    </div>
+  </div>
+</div>
+
+<!-- Cart Modal -->
+<div class="modal fade" id="cartModal" tabindex="-1">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content rounded-4 shadow">
+      <div class="modal-header border-0">
+        <h5 class="modal-title"><i class="bi bi-cart3 me-2"></i>Your Cart</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+      </div>
+      <div class="modal-body" id="cartBody"></div>
+      <div class="modal-footer border-0">
+        <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Continue Shopping</button>
+        <button type="button" class="btn btn-primary" id="checkoutBtn">Place Order & Pay</button>
       </div>
     </div>
   </div>
+</div>
 
-  <!-- ================== Cart Modal ================== -->
-  <div class="modal fade" id="cartModal" tabindex="-1">
-    <div class="modal-dialog modal-lg">
-      <div class="modal-content">
-        <div class="modal-header">
-          <h5 class="modal-title"><i class="bi bi-cart3 me-2"></i>Your Shopping Cart</h5>
-          <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-        </div>
-        <div class="modal-body" id="cartBody"></div>
-        <div class="modal-footer">
-          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Continue Shopping</button>
-          <button type="button" class="btn btn-success" id="checkoutBtn">Place Order & Pay</button>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <!-- ================== Footer ================== -->
-<footer class="footer bg-light pt-5 mt-5">
+<!-- Footer -->
+<footer class="footer">
   <div class="container">
     <div class="row">
-
-      <!-- About Section -->
       <div class="col-md-4 mb-4 mb-md-0">
         <h5>The Local Basket</h5>
-        <p>Your premier destination for locally sourced, high-quality products. Supporting local businesses and artisans since 2025.</p>
-        <div class="d-flex gap-3 mt-3">
-          <a href="#" class="text-dark fs-5"><i class="bi bi-facebook"></i></a>
-          <a href="https://www.instagram.com/thelocal_basket25" target="_blank" class="text-dark fs-5"><i class="bi bi-instagram"></i></a>
-          <a href="https://wa.me/+919609010193" target="_blank" class="text-dark fs-5"><i class="bi bi-whatsapp"></i></a>
+        <p>Curated, locally sourced products supporting artisans & small businesses.</p>
+        <div class="d-flex gap-3 mt-3 social-links">
+          <a href="#"><i class="bi bi-facebook"></i></a>
+          <a href="https://www.instagram.com/thelocal_basket25" target="_blank"><i class="bi bi-instagram"></i></a>
+          <a href="https://wa.me/+919609010193" target="_blank"><i class="bi bi-whatsapp"></i></a>
         </div>
       </div>
-
-      <!-- Help Section -->
       <div class="col-md-2 mb-4 mb-md-0">
         <h5>Help</h5>
-       <ul class="list-unstyled">
-            <li><a href="FAQs.html" target="_blank" class="text-decoration-none" style="color: white;">FAQs</a></li>
-            <li><a href="shipping.html" target="_blank" class="text-decoration-none" style="color: white;">Shipping</a></li>
-            <li><a href="return.html" target="_blank" class="text-decoration-none" style="color: white;">Returns</a></li>
-            <li><a href="contactus.html" target="_blank" class="text-decoration-none" style="color: white;">Contact us</a></li>
+        <ul class="list-unstyled">
+          <li><a href="FAQs.html">FAQs</a></li>
+          <li><a href="shipping.html">Shipping</a></li>
+          <li><a href="return.html">Returns</a></li>
+          <li><a href="contactus.html">Contact Us</a></li>
         </ul>
-
       </div>
-
     </div>
-
-        <div class="col-12 text-center" style="color: #f8f9fa;">
-             &copy; 2025 The Local Basket. All rights reserved.
-        </div>
-
+    <div class="col-12 text-center mt-4 text-white">&copy; 2025 The Local Basket. All rights reserved.</div>
   </div>
 </footer>
-<!-- Order Processing Overlay -->
-<div id="orderStatusOverlay" class="d-none position-fixed top-0 start-0 w-100 h-100 bg-white d-flex flex-column justify-content-center align-items-center" style="z-index: 2000;">
+
+<!-- Order Overlay -->
+<div id="orderStatusOverlay" class="d-none position-fixed top-0 start-0 w-100 h-100 bg-white d-flex flex-column justify-content-center align-items-center" style="z-index:2000;">
   <div class="text-center">
-    <div class="spinner-border text-success mb-3" style="width: 3rem; height: 3rem;"></div>
+    <div class="spinner-border text-success mb-3" style="width:3rem;height:3rem;"></div>
     <h4 class="status-text text-success">Processing your order...</h4>
     <p class="text-muted mt-2">Please wait while we confirm your payment and send the order details to your email.</p>
   </div>
 </div>
 
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.4/dist/js/bootstrap.bundle.min.js"></script>
+<script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+<script src="/js-min/main.min.js"></script>
+<script>
+// Animate hero overlay
+window.addEventListener('load', () => {
+    const heroOverlay = document.querySelector('.hero-overlay');
+    heroOverlay.classList.add('visible');
+});
 
-  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.4/dist/js/bootstrap.bundle.min.js"></script>
-  <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
-  <script src="/js-min/main.min.js"></script>
+// Animate products on scroll
+const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+        if(entry.isIntersecting){
+            entry.target.classList.add('visible');
+            observer.unobserve(entry.target); // animate only once
+        }
+    });
+}, { threshold: 0.2 });
 
+document.querySelectorAll('.products-grid .product-card').forEach(card => {
+    card.classList.add('fade-up'); // initial state
+    observer.observe(card);
+});
+</script>
 
 </body>
 </html>
