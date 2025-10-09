@@ -1,407 +1,264 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.4/dist/css/bootstrap.min.css" rel="stylesheet">
-      <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90' fill='%23C5A47E'>LB</text></svg>">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.4/dist/css/bootstrap.min.css" rel="stylesheet">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90' fill='%23C5A47E'>LB</text></svg>">
+<title>FAQs - Local Basket</title>
+<style>
+:root {
+  --primary:#2b3a2b;
+  --secondary:#fdfcf8;
+  --accent:#f08a5d;
+  --accent2:#f4a261;
+  --success:#28a745;
+  --info:#17a2b8;
+  --dark:#212529;
+  --light:#f8f9fa;
+}
 
-    <title>FAQs - Local Basket</title>
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
+/* Reset */
+* {margin:0; padding:0; box-sizing:border-box;}
+body {font-family:'Poppins', sans-serif; background:var(--secondary); color:var(--dark);}
+h1,h2,h3,h4,h5 {font-family:'Playfair Display', serif; color:var(--primary);}
 
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
-            min-height: 100vh;
-            padding: 20px;
-        }
+/* Navbar */
+.navbar {background:var(--secondary); box-shadow:0 3px 15px rgba(0,0,0,0.08); position:fixed; width:100%; top:0; z-index:999;}
+.navbar-brand {font-weight:700; font-size:1.5rem; display:flex; align-items:center; color:var(--primary); text-decoration:none;}
+.navbar-brand:hover {color:var(--accent); transition:0.3s;}
+.navbar-brand img {height:40px; margin-right:10px; border-radius:8px; box-shadow:0 3px 8px rgba(0,0,0,0.15);}
 
-        .container {
-            max-width: 1000px;
-            margin: 0 auto;
-            background: white;
-            border-radius: 20px;
-            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.1);
-            overflow: hidden;
-        }
+/* Hero / Banner */
+.hero {
+  background: linear-gradient(135deg, var(--primary), var(--accent));
+  color: var(--secondary);
+  padding:100px 30px 50px 30px;
+  text-align:center;
+  border-radius:0 0 50% 50% / 0 0 15% 15%;
+  box-shadow:0 20px 50px rgba(0,0,0,0.1);
+}
+.hero h1 {font-size:3rem; margin-bottom:15px;}
+.hero p {font-size:1.2rem; opacity:0.9; max-width:700px; margin:0 auto;}
 
-        .content {
-            padding: 50px 40px;
-        }
+/* Content Container */
+.container-main {
+  max-width:1000px; margin:0 auto; padding:50px 20px 100px 20px;
+}
 
-        .faq-banner {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-            padding: 30px;
-            border-radius: 15px;
-            margin-bottom: 40px;
-            text-align: center;
-        }
+/* FAQ Cards */
+.faq-item {
+  background:var(--secondary);
+  border-radius:15px;
+  margin-bottom:20px;
+  overflow:hidden;
+  border-left:5px solid var(--accent);
+  box-shadow:0 5px 20px rgba(0,0,0,0.08);
+  transition:transform 0.3s ease, box-shadow 0.3s ease;
+}
+.faq-item:hover {transform:translateY(-3px); box-shadow:0 10px 25px rgba(0,0,0,0.12);}
+.faq-question {padding:25px 30px; cursor:pointer; display:flex; justify-content:space-between; align-items:center; transition: background 0.2s;}
+.faq-question:hover {background: rgba(240,138,93,0.05);}
+.faq-question h3 {font-size:1.2em; font-weight:600; color:var(--primary);}
+.faq-toggle {width:35px; height:35px; background:var(--accent); color:var(--secondary); border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:1.3em; font-weight:bold; transition:transform 0.3s ease;}
+.faq-item.active .faq-toggle {transform:rotate(45deg);}
+.faq-answer {max-height:0; overflow:hidden; transition:max-height 0.4s ease, padding 0.4s ease; padding:0 30px;}
+.faq-answer.active {max-height:600px; padding:0 30px 20px 30px;}
+.faq-answer p {margin:0; line-height:1.8; color:var(--dark); font-size:1.05em;}
 
-        .faq-banner h2 {
-            font-size: 2em;
-            margin-bottom: 10px;
-        }
+/* Section Title */
+.section-title {
+  font-size:1.6em; font-weight:700;
+  margin-bottom:25px;
+  background: linear-gradient(135deg, var(--accent), var(--accent2));
+  color: var(--secondary);
+  padding:20px 30px; border-radius:15px;
+  box-shadow:0 5px 15px rgba(0,0,0,0.05);
+  text-align:center;
+}
 
-        .faq-banner p {
-            font-size: 1.2em;
-            opacity: 0.95;
-        }
+/* Contact Box */
+.contact-box {
+  background: linear-gradient(135deg, var(--accent2), var(--accent));
+  padding:40px 30px;
+  border-radius:20px;
+  text-align:center;
+  margin-top:50px;
+  box-shadow:0 10px 25px rgba(0,0,0,0.08);
+}
+.contact-box h3 {font-size:2rem; color:var(--secondary); margin-bottom:15px;}
+.contact-box p {color:var(--secondary); font-size:1.1em; line-height:1.6;}
+.contact-button {
+  display:inline-block; background:var(--primary); color:var(--secondary);
+  padding:15px 35px; border-radius:30px; font-weight:700; margin-top:20px; text-decoration:none;
+  transition:all 0.3s ease;
+}
+.contact-button:hover {transform:translateY(-3px); background:var(--accent); color:var(--secondary);}
 
-        .faq-section {
-            margin-bottom: 30px;
-        }
+/* Footer */
+.faq-footer {text-align:center; margin-top:80px; color:var(--dark); font-size:0.9em;}
 
-        .section-title {
-            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
-            color: white;
-            padding: 20px 30px;
-            border-radius: 12px;
-            margin-bottom: 20px;
-            font-size: 1.5em;
-            font-weight: 600;
-        }
-
-        .faq-item {
-            background: #f8f9fa;
-            margin-bottom: 15px;
-            border-radius: 12px;
-            overflow: hidden;
-            border-left: 4px solid #667eea;
-            transition: transform 0.2s ease, box-shadow 0.2s ease;
-        }
-
-        .faq-item:hover {
-            transform: translateX(5px);
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
-        }
-
-        .faq-question {
-            padding: 20px 25px;
-            cursor: pointer;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            user-select: none;
-        }
-
-        .faq-question h3 {
-            color: #667eea;
-            font-size: 1.15em;
-            margin: 0;
-            font-weight: 600;
-        }
-
-        .faq-toggle {
-            width: 30px;
-            height: 30px;
-            background: #667eea;
-            color: white;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 1.2em;
-            font-weight: bold;
-            transition: transform 0.3s ease;
-        }
-
-        .faq-answer {
-            max-height: 0;
-            overflow: hidden;
-            transition: max-height 0.3s ease, padding 0.3s ease;
-            padding: 0 25px;
-        }
-
-        .faq-answer.active {
-            max-height: 500px;
-            padding: 0 25px 20px 25px;
-        }
-
-        .faq-answer p {
-            color: #555;
-            line-height: 1.8;
-            font-size: 1.05em;
-            margin: 0;
-        }
-
-        .faq-item.active .faq-toggle {
-            transform: rotate(45deg);
-        }
-
-        .contact-box {
-            background: linear-gradient(135deg, #a8edea 0%, #fed6e3 100%);
-            padding: 30px;
-            border-radius: 15px;
-            text-align: center;
-            margin-top: 40px;
-        }
-
-        .contact-box h3 {
-            color: #333;
-            font-size: 1.6em;
-            margin-bottom: 15px;
-        }
-
-        .contact-box p {
-            color: #555;
-            font-size: 1.1em;
-            line-height: 1.6;
-        }
-
-        .contact-button {
-            display: inline-block;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-            padding: 12px 30px;
-            border-radius: 25px;
-            font-weight: 600;
-            margin-top: 15px;
-            text-decoration: none;
-            transition: transform 0.2s ease;
-        }
-
-        .contact-button:hover {
-            transform: translateY(-2px);
-            color: white;
-        }
-
-        @media (max-width: 768px) {
-            .content {
-                padding: 30px 20px;
-            }
-
-            .faq-banner h2 {
-                font-size: 1.5em;
-            }
-
-            .section-title {
-                font-size: 1.3em;
-                padding: 15px 20px;
-            }
-
-            .faq-question h3 {
-                font-size: 1.05em;
-            }
-        }
-    </style>
+/* Responsive */
+@media(max-width:768px){
+  .hero h1 {font-size:2rem;}
+  .hero p {font-size:1rem;}
+  .faq-question h3 {font-size:1.05em;}
+  .section-title {font-size:1.3em; padding:15px 20px;}
+}
+</style>
 </head>
 <body>
 
-  <!-- Navbar -->
-<nav class="navbar navbar-expand-lg navbar-light fixed-top bg-white shadow-sm py-2">
-  <div class="container d-flex align-items-center justify-content-between">
-
-    <!-- Brand with Logo -->
+<!-- Navbar -->
+<nav class="navbar navbar-expand-lg">
+  <div class="container">
     <a class="navbar-brand" href="index.html">
+      <img src="images/logo.png" alt="LB Logo">
       The Local Basket
     </a>
-
-    
   </div>
 </nav>
-<br><br>
 
-    <div class="container">
+<!-- Hero Section -->
+<div class="hero">
+  <h1>❓ Frequently Asked Questions</h1>
+  <p>All your shipping, payment, and product queries answered quickly.</p>
+</div>
 
-        <div class="content">
-            <div class="faq-banner">
-                <h2>❓ Frequently Asked Questions</h2>
-                <p>Find answers to common questions about shipping and returns</p>
-            </div>
+<!-- Main Content -->
+<div class="container-main">
 
-            <!-- Shipping FAQs -->
-            <div class="faq-section">
-                <div class="section-title">📦 Shipping Questions</div>
+  <!-- Shipping FAQs -->
+  <div class="faq-section">
+    <div class="section-title">📦 Shipping Questions</div>
 
-                <div class="faq-item">
-                    <div class="faq-question" onclick="toggleFAQ(this)">
-                        <h3>How long does delivery take?</h3>
-                        <div class="faq-toggle">+</div>
-                    </div>
-                    <div class="faq-answer">
-                        <p>We deliver your products within 2-3 business days from the date of order confirmation. Orders placed on weekends or holidays will be processed on the next business day.</p>
-                    </div>
-                </div>
-
-                <div class="faq-item">
-                    <div class="faq-question" onclick="toggleFAQ(this)">
-                        <h3>Which areas do you deliver to?</h3>
-                        <div class="faq-toggle">+</div>
-                    </div>
-                    <div class="faq-answer">
-                        <p>We offer PAN India shipping! We deliver to every corner of India, from metro cities to remote villages across all states and union territories.</p>
-                    </div>
-                </div>
-
-                <div class="faq-item">
-                    <div class="faq-question" onclick="toggleFAQ(this)">
-                        <h3>Which courier services do you use?</h3>
-                        <div class="faq-toggle">+</div>
-                    </div>
-                    <div class="faq-answer">
-                        <p>We ship via Standard Delivery service and India Post Speedpost to ensure your orders reach you safely and on time. You'll receive tracking details once your order is dispatched.</p>
-                    </div>
-                </div>
-
-                <div class="faq-item">
-                    <div class="faq-question" onclick="toggleFAQ(this)">
-                        <h3>Can I track my order?</h3>
-                        <div class="faq-toggle">+</div>
-                    </div>
-                    <div class="faq-answer">
-                        <p>Yes! You can track your order in real-time using our tracking system. Once your order is dispatched, you'll receive a tracking number via email and SMS.</p>
-                    </div>
-                </div>
-
-                <div class="faq-item">
-                    <div class="faq-question" onclick="toggleFAQ(this)">
-                        <h3>What if I'm not available during delivery?</h3>
-                        <div class="faq-toggle">+</div>
-                    </div>
-                    <div class="faq-answer">
-                        <p>Our delivery partners will attempt delivery 2-3 times. If you're unavailable, they'll leave a delivery notice. You can also contact our support team to reschedule the delivery at your convenience.</p>
-                    </div>
-                </div>
-
-                <div class="faq-item">
-                    <div class="faq-question" onclick="toggleFAQ(this)">
-                        <h3>Are there any shipping charges?</h3>
-                        <div class="faq-toggle">+</div>
-                    </div>
-                    <div class="faq-answer">
-                        <p>Shipping charges may vary based on your location and order value. Many orders qualify for free shipping. You'll see the exact shipping cost at checkout before placing your order.</p>
-                    </div>
-                </div>
-
-                <div class="faq-item">
-                    <div class="faq-question" onclick="toggleFAQ(this)">
-                        <h3>How is my order packaged?</h3>
-                        <div class="faq-toggle">+</div>
-                    </div>
-                    <div class="faq-answer">
-                        <p>All products are carefully packed and quality-checked before dispatch. We use secure packaging materials to ensure your items reach you in perfect condition.</p>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Return & Refund FAQs -->
-            <div class="faq-section">
-                <div class="section-title">🔄 Return & Refund Questions</div>
-
-                <div class="faq-item">
-                    <div class="faq-question" onclick="toggleFAQ(this)">
-                        <h3>What is your return policy?</h3>
-                        <div class="faq-toggle">+</div>
-                    </div>
-                    <div class="faq-answer">
-                        <p>We offer a 3-day return window. You can return products within 3 days after delivery for a full refund or exchange, provided the item meets our return conditions.</p>
-                    </div>
-                </div>
-
-                <div class="faq-item">
-                    <div class="faq-question" onclick="toggleFAQ(this)">
-                        <h3>How do I initiate a return?</h3>
-                        <div class="faq-toggle">+</div>
-                    </div>
-                    <div class="faq-answer">
-                        <p>Contact our customer support team via phone, email, or through our website within 3 days of delivery. Provide your order details and reason for return. We'll guide you through the process and provide a return authorization.</p>
-                    </div>
-                </div>
-
-                <div class="faq-item">
-                    <div class="faq-question" onclick="toggleFAQ(this)">
-                        <h3>What items can be returned?</h3>
-                        <div class="faq-toggle">+</div>
-                    </div>
-                    <div class="faq-answer">
-                        <p>You can return products that are damaged, defective, wrong items delivered, don't match description, or if you've changed your mind (for unused items). The product must be in its original condition with all tags and packaging intact.</p>
-                    </div>
-                </div>
-
-                <div class="faq-item">
-                    <div class="faq-question" onclick="toggleFAQ(this)">
-                        <h3>What items cannot be returned?</h3>
-                        <div class="faq-toggle">+</div>
-                    </div>
-                    <div class="faq-answer">
-                        <p>Non-returnable items include perishable goods, personal care and hygiene products, intimate items, clearance sale items (unless defective), customized products, and digital products.</p>
-                    </div>
-                </div>
-
-                <div class="faq-item">
-                    <div class="faq-question" onclick="toggleFAQ(this)">
-                        <h3>How long does the refund take?</h3>
-                        <div class="faq-toggle">+</div>
-                    </div>
-                    <div class="faq-answer">
-                        <p>Once we receive and verify your returned item, refunds will be processed within 5-7 business days. The amount will be credited to your original payment method.</p>
-                    </div>
-                </div>
-
-                <div class="faq-item">
-                    <div class="faq-question" onclick="toggleFAQ(this)">
-                        <h3>Do I need to pay for return shipping?</h3>
-                        <div class="faq-toggle">+</div>
-                    </div>
-                    <div class="faq-answer">
-                        <p>For damaged or defective products, we provide a free return shipping label. For other returns, return shipping charges may apply based on the reason for return. Our support team will clarify this when you initiate the return.</p>
-                    </div>
-                </div>
-
-                <div class="faq-item">
-                    <div class="faq-question" onclick="toggleFAQ(this)">
-                        <h3>Can I exchange an item instead of returning it?</h3>
-                        <div class="faq-toggle">+</div>
-                    </div>
-                    <div class="faq-answer">
-                        <p>Yes! You can request an exchange for a different size, color, or variant within the 3-day return window. Contact our support team to arrange an exchange, subject to product availability.</p>
-                    </div>
-                </div>
-
-                <div class="faq-item">
-                    <div class="faq-question" onclick="toggleFAQ(this)">
-                        <h3>What conditions must be met for a successful return?</h3>
-                        <div class="faq-toggle">+</div>
-                    </div>
-                    <div class="faq-answer">
-                        <p>Items must be returned within 3 days, in unused and unwashed condition, with original packaging, tags, and labels intact. All accessories and free gifts must be included. The product should not be damaged due to misuse.</p>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Contact Box -->
-            <div class="contact-box">
-                <h3>Still Have Questions?</h3>
-                <p>Our customer support team is here to help! Reach out to us and we'll be happy to assist you.</p>
-                <a href="contactus.html" class="contact-button">Contact Support</a>
-            </div>
-        </div>
+    <div class="faq-item">
+      <div class="faq-question" onclick="toggleFAQ(this)">
+        <h3>How long does delivery take?</h3>
+        <div class="faq-toggle">+</div>
+      </div>
+      <div class="faq-answer">
+        <p>We deliver your products within 2-3 business days from order confirmation. Weekends and holidays are processed on the next business day.</p>
+      </div>
     </div>
 
-    <script>
-        function toggleFAQ(element) {
-            const faqItem = element.parentElement;
-            const answer = faqItem.querySelector('.faq-answer');
-            const allFAQs = document.querySelectorAll('.faq-item');
-            
-            // Close all other FAQs
-            allFAQs.forEach(item => {
-                if (item !== faqItem) {
-                    item.classList.remove('active');
-                    item.querySelector('.faq-answer').classList.remove('active');
-                }
-            });
-            
-            // Toggle current FAQ
-            faqItem.classList.toggle('active');
-            answer.classList.toggle('active');
-        }
-    </script>
+    <div class="faq-item">
+      <div class="faq-question" onclick="toggleFAQ(this)">
+        <h3>Which areas do you deliver to?</h3>
+        <div class="faq-toggle">+</div>
+      </div>
+      <div class="faq-answer">
+        <p>PAN India shipping! From metro cities to remote villages across all states and union territories.</p>
+      </div>
+    </div>
+
+    <div class="faq-item">
+      <div class="faq-question" onclick="toggleFAQ(this)">
+        <h3>Can I track my order?</h3>
+        <div class="faq-toggle">+</div>
+      </div>
+      <div class="faq-answer">
+        <p>Yes! Once dispatched, you'll receive a tracking number via email and SMS for real-time updates.</p>
+      </div>
+    </div>
+
+    <div class="faq-item">
+      <div class="faq-question" onclick="toggleFAQ(this)">
+        <h3>Are there any shipping charges?</h3>
+        <div class="faq-toggle">+</div>
+      </div>
+      <div class="faq-answer">
+        <p>Shipping charges vary by location and order value. Many orders qualify for free shipping. Checkout page shows exact shipping cost before payment.</p>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- Payment & Order FAQs -->
+  <div class="faq-section">
+    <div class="section-title">💳 Payment & Orders</div>
+
+    <div class="faq-item">
+      <div class="faq-question" onclick="toggleFAQ(this)">
+        <h3>Which payment methods do you accept?</h3>
+        <div class="faq-toggle">+</div>
+      </div>
+      <div class="faq-answer">
+        <p>We accept UPI, credit/debit cards, net banking, and popular wallets. All transactions are secure and encrypted.</p>
+      </div>
+    </div>
+
+    <div class="faq-item">
+      <div class="faq-question" onclick="toggleFAQ(this)">
+        <h3>Can I modify or cancel my order?</h3>
+        <div class="faq-toggle">+</div>
+      </div>
+      <div class="faq-answer">
+        <p>You can modify or cancel your order within 1 hour of placing it. Contact our support immediately to request changes.</p>
+      </div>
+    </div>
+
+    <div class="faq-item">
+      <div class="faq-question" onclick="toggleFAQ(this)">
+        <h3>Can I buy as a gift and include a note?</h3>
+        <div class="faq-toggle">+</div>
+      </div>
+      <div class="faq-answer">
+        <p>Yes! During checkout, select “Gift Option” to include a personalized message with your order.</p>
+      </div>
+    </div>
+
+    <div class="faq-item">
+      <div class="faq-question" onclick="toggleFAQ(this)">
+        <h3>Are all products handmade and authentic?</h3>
+        <div class="faq-toggle">+</div>
+      </div>
+      <div class="faq-answer">
+        <p>Absolutely. Each product is handmade with care, ensuring authenticity and premium quality.</p>
+      </div>
+    </div>
+
+    <div class="faq-item">
+      <div class="faq-question" onclick="toggleFAQ(this)">
+        <h3>Do you provide bulk order discounts?</h3>
+        <div class="faq-toggle">+</div>
+      </div>
+      <div class="faq-answer">
+        <p>Yes, we offer bulk order discounts for businesses or special events. Contact our support team for a quotation.</p>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- Contact Box -->
+  <div class="contact-box">
+    <h3>Still Have Questions?</h3>
+    <p>Our support team is here to help! Reach out and we’ll assist you promptly.</p>
+    <a href="contactus.html" class="contact-button">Contact Support</a>
+  </div>
+
+  <!-- Footer -->
+  <div class="faq-footer">
+    &copy; 2025 The Local Basket. All rights reserved.
+  </div>
+
+</div>
+
+<script>
+function toggleFAQ(element) {
+  const faqItem = element.parentElement;
+  const answer = faqItem.querySelector('.faq-answer');
+  const allFAQs = document.querySelectorAll('.faq-item');
+  allFAQs.forEach(item=>{
+    if(item!==faqItem){
+      item.classList.remove('active');
+      item.querySelector('.faq-answer').classList.remove('active');
+    }
+  });
+  faqItem.classList.toggle('active');
+  answer.classList.toggle('active');
+}
+</script>
+
 </body>
 </html>

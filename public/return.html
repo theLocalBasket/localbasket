@@ -1,353 +1,207 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.4/dist/css/bootstrap.min.css" rel="stylesheet">
-    <title>Return Policy - Local Basket</title>
-      <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90' fill='%23C5A47E'>LB</text></svg>">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Return Policy - Local Basket</title>
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.4/dist/css/bootstrap.min.css" rel="stylesheet">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90' fill='%23C5A47E'>LB</text></svg>">
+<link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css" rel="stylesheet">
+<style>
+:root {
+    --primary:#2b3a2b;
+    --secondary:#fdfcf8;
+    --accent:#f08a5d;
+    --accent2:#f4a261;
+    --light:#f8f9fa;
+    --dark:#212529;
+}
 
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
+/* Reset */
+* {margin:0; padding:0; box-sizing:border-box;}
+body {font-family:'Poppins', sans-serif; background:var(--secondary); color:var(--dark);}
 
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
-            min-height: 100vh;
-            padding: 20px;
-        }
+/* Navbar */
+.navbar {background:var(--secondary); box-shadow:0 4px 15px rgba(0,0,0,0.08);}
+.navbar-brand {font-weight:700; font-size:1.5rem; color:var(--primary);}
+.navbar-brand:hover {color:var(--accent);}
 
-        .container {
-            max-width: 1000px;
-            margin: 0 auto;
-            background: white;
-            border-radius: 20px;
-            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.1);
-            overflow: hidden;
-        }
+/* Hero */
+.hero {
+    background: linear-gradient(135deg, var(--primary), var(--accent));
+    color:white;
+    text-align:center;
+    padding:80px 20px;
+    border-radius:0 0 50% 50% / 0 0 15% 15%;
+    box-shadow:0 15px 50px rgba(0,0,0,0.1);
+}
+.hero h1 {font-size:3rem; font-weight:700; margin-bottom:15px;}
+.hero p {font-size:1.2rem; opacity:0.9;}
 
-        .content {
-            padding: 50px 40px;
-        }
+/* Main container */
+.container {max-width:1100px; margin:0 auto; padding:40px 20px;}
 
-        .return-banner {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-            padding: 30px;
-            border-radius: 15px;
-            margin-bottom: 40px;
-            text-align: center;
-        }
+/* Info Cards Grid */
+.info-grid {display:grid; grid-template-columns:repeat(auto-fit, minmax(280px,1fr)); gap:30px; margin-bottom:50px;}
+.info-card {
+    background:white; padding:30px; border-radius:20px;
+    box-shadow:0 8px 25px rgba(0,0,0,0.08); transition:all 0.3s ease;
+    display:flex; flex-direction:column; align-items:flex-start;
+}
+.info-card:hover {transform:translateY(-5px); box-shadow:0 12px 35px rgba(0,0,0,0.15);}
+.info-card h3 {font-size:1.4rem; margin-bottom:12px; color:var(--primary); display:flex; align-items:center; gap:12px;}
+.info-card p {color:#555; font-size:1.05rem; line-height:1.7;}
+.info-card ul {margin-top:10px; padding-left:20px; color:#555; font-size:1.05rem; line-height:1.7;}
+.icon-circle {
+    width:40px; height:40px; background:var(--accent); border-radius:50%;
+    display:flex; align-items:center; justify-content:center; color:white; font-weight:bold; font-size:1.2rem;
+}
 
-        .return-banner h2 {
-            font-size: 2em;
-            margin-bottom: 10px;
-        }
+/* Highlight Box */
+.highlight-box {
+    background: linear-gradient(135deg, #f093fb, #f5576c);
+    color:white; padding:35px; border-radius:20px; text-align:center; margin-bottom:50px;
+}
+.highlight-box h3 {font-size:1.8rem; margin-bottom:10px;}
+.highlight-box p {font-size:1.1rem; opacity:0.95;}
 
-        .return-banner p {
-            font-size: 1.2em;
-            opacity: 0.95;
-        }
+/* Process Section */
+.process-section {margin-bottom:50px;}
+.process-section h2 {text-align:center; font-size:2rem; color:var(--primary); margin-bottom:30px;}
+.process-grid {display:grid; grid-template-columns:repeat(auto-fit, minmax(200px,1fr)); gap:25px;}
+.process-card {
+    background:white; padding:25px; border-radius:15px; text-align:center;
+    box-shadow:0 8px 25px rgba(0,0,0,0.08); transition:all 0.3s ease;
+}
+.process-card:hover {transform:translateY(-5px); box-shadow:0 12px 35px rgba(0,0,0,0.12);}
+.process-number {
+    width:50px; height:50px; background:linear-gradient(135deg, var(--primary), var(--accent));
+    color:white; border-radius:50%; display:flex; align-items:center; justify-content:center;
+    font-size:1.5rem; font-weight:bold; margin-bottom:15px;
+}
+.process-card h4 {color:var(--primary); font-size:1.25rem; margin-bottom:10px;}
+.process-card p {color:#555; font-size:1rem; line-height:1.5;}
 
-        .highlight-box {
-            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
-            color: white;
-            padding: 25px;
-            border-radius: 15px;
-            margin-bottom: 40px;
-            text-align: center;
-        }
+/* Conditions Section */
+.conditions-section, .non-returnable {
+    padding:35px; border-radius:20px; margin-bottom:40px;
+}
+.conditions-section {background:#fff5e6; border:2px dashed #ffa726;}
+.conditions-section h3 {color:#e65100; font-size:1.7rem; margin-bottom:20px; text-align:center;}
+.conditions-list {padding-left:20px; color:#555; font-size:1.05rem; line-height:1.7;}
+.non-returnable {background:#ffebee; border:2px dashed #ef5350;}
+.non-returnable h3 {color:#c62828; font-size:1.7rem; margin-bottom:20px; text-align:center;}
+.non-returnable ul {padding-left:20px; color:#555; font-size:1.05rem; line-height:1.7;}
 
-        .highlight-box h3 {
-            font-size: 1.8em;
-            margin-bottom: 10px;
-        }
-
-        .highlight-box p {
-            font-size: 1.1em;
-            opacity: 0.95;
-        }
-
-        .info-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-            gap: 30px;
-            margin-bottom: 40px;
-        }
-
-        .info-card {
-            background: #f8f9fa;
-            padding: 30px;
-            border-radius: 15px;
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
-            border-left: 4px solid #667eea;
-        }
-
-        .info-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
-        }
-
-        .info-card h3 {
-            color: #667eea;
-            font-size: 1.4em;
-            margin-bottom: 15px;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-
-        .info-card p {
-            color: #555;
-            line-height: 1.8;
-            font-size: 1.05em;
-        }
-
-        .info-card ul {
-            color: #555;
-            line-height: 1.8;
-            font-size: 1.05em;
-            margin-top: 10px;
-            padding-left: 20px;
-        }
-
-        .icon {
-            width: 30px;
-            height: 30px;
-            background: #667eea;
-            border-radius: 50%;
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            color: white;
-            font-weight: bold;
-        }
-
-        .process-section {
-            background: linear-gradient(135deg, #a8edea 0%, #fed6e3 100%);
-            padding: 40px;
-            border-radius: 15px;
-            margin-bottom: 40px;
-        }
-
-        .process-section h2 {
-            color: #333;
-            font-size: 1.8em;
-            margin-bottom: 25px;
-            text-align: center;
-        }
-
-        .process-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 20px;
-        }
-
-        .process-card {
-            background: white;
-            padding: 25px;
-            border-radius: 12px;
-            text-align: center;
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
-        }
-
-        .process-number {
-            width: 50px;
-            height: 50px;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-            border-radius: 50%;
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 1.5em;
-            font-weight: bold;
-            margin-bottom: 15px;
-        }
-
-        .process-card h4 {
-            color: #667eea;
-            font-size: 1.2em;
-            margin-bottom: 10px;
-        }
-
-        .process-card p {
-            color: #666;
-            font-size: 0.95em;
-        }
-
-        .conditions-section {
-            background: #fff5e6;
-            padding: 30px;
-            border-radius: 15px;
-            border: 2px dashed #ffa726;
-            margin-bottom: 40px;
-        }
-
-        .conditions-section h3 {
-            color: #e65100;
-            font-size: 1.6em;
-            margin-bottom: 20px;
-            text-align: center;
-        }
-
-        .conditions-list {
-            color: #555;
-            font-size: 1.05em;
-            line-height: 1.8;
-            padding-left: 20px;
-        }
-
-        .conditions-list li {
-            margin-bottom: 10px;
-        }
-
-        .non-returnable {
-            background: #ffebee;
-            padding: 30px;
-            border-radius: 15px;
-            border: 2px dashed #ef5350;
-        }
-
-        .non-returnable h3 {
-            color: #c62828;
-            font-size: 1.6em;
-            margin-bottom: 20px;
-            text-align: center;
-        }
-
-        .non-returnable ul {
-            color: #555;
-            font-size: 1.05em;
-            line-height: 1.8;
-            padding-left: 20px;
-        }
-
-        .non-returnable li {
-            margin-bottom: 10px;
-        }
-
-        @media (max-width: 768px) {
-            .content {
-                padding: 30px 20px;
-            }
-
-            .return-banner h2 {
-                font-size: 1.5em;
-            }
-
-            .info-grid {
-                grid-template-columns: 1fr;
-            }
-        }
-    </style>
+/* Responsive */
+@media(max-width:768px){
+    .hero h1 {font-size:2rem;}
+    .hero p {font-size:1rem;}
+    .info-grid, .process-grid {grid-template-columns:1fr;}
+}
+</style>
 </head>
 <body>
 
-  <!-- Navbar -->
-<nav class="navbar navbar-expand-lg navbar-light fixed-top bg-white shadow-sm py-2">
-  <div class="container d-flex align-items-center justify-content-between">
-
-    <!-- Brand with Logo -->
-    <a class="navbar-brand" href="index.html">
-      The Local Basket
-    </a>
-
-    
+<!-- Navbar -->
+<nav class="navbar navbar-expand-lg fixed-top">
+  <div class="container">
+    <a class="navbar-brand" href="index.html">The Local Basket</a>
   </div>
 </nav>
 <br><br>
 
-    <div class="container">
+<!-- Hero -->
+<div class="hero">
+    <h1>🔄 Easy Returns & Refunds</h1>
+    <p>Your satisfaction is our top priority</p>
+</div>
 
-        <div class="content">
-            <div class="return-banner">
-                <h2>🔄 Easy Returns & Refunds</h2>
-                <p>Your satisfaction is our priority</p>
+<!-- Main Content -->
+<div class="container">
+
+    <!-- Highlight Box -->
+    <div class="highlight-box">
+        <h3>⏰ 3-Day Return Window</h3>
+        <p>Return products within 3 days after delivery for a full refund or exchange</p>
+    </div>
+
+    <!-- Info Cards -->
+    <div class="info-grid">
+        <div class="info-card">
+            <h3><span class="icon-circle">✓</span> Eligible Returns</h3>
+            <p>Products can be returned if:</p>
+            <ul>
+                <li>Damaged or defective</li>
+                <li>Wrong item delivered</li>
+                <li>Doesn’t match description</li>
+                <li>Unused and changed your mind</li>
+            </ul>
+        </div>
+        <div class="info-card">
+            <h3><span class="icon-circle">💰</span> Refund Process</h3>
+            <p>Refunds processed within 5-7 business days to your original payment method after verification.</p>
+        </div>
+        <div class="info-card">
+            <h3><span class="icon-circle">📞</span> Easy to Initiate</h3>
+            <p>Contact support via phone, email, or website to start the return process. We guide you every step.</p>
+        </div>
+    </div>
+
+    <!-- Process Section -->
+    <div class="process-section">
+        <h2>📋 How to Return Your Order</h2>
+        <div class="process-grid">
+            <div class="process-card">
+                <div class="process-number">1</div>
+                <h4>Contact Us</h4>
+                <p>Reach out within 3 days of delivery</p>
             </div>
-
-            <div class="highlight-box">
-                <h3>⏰ 3-Day Return Window</h3>
-                <p>Return your products within 3 days after delivery for a full refund or exchange</p>
+            <div class="process-card">
+                <div class="process-number">2</div>
+                <h4>Get Approval</h4>
+                <p>Receive return authorization and instructions</p>
             </div>
-
-            <div class="info-grid">
-                <div class="info-card">
-                    <h3><span class="icon">✓</span> Eligible Returns</h3>
-                    <p>You can return products if:</p>
-                    <ul>
-                        <li>Product is damaged or defective</li>
-                        <li>Wrong item was delivered</li>
-                        <li>Product doesn't match description</li>
-                        <li>You changed your mind (unused items)</li>
-                    </ul>
-                </div>
-
-                <div class="info-card">
-                    <h3><span class="icon">💰</span> Refund Process</h3>
-                    <p>Once we receive and verify your returned item, refunds will be processed within 5-7 business days to your original payment method.</p>
-                </div>
-
-                <div class="info-card">
-                    <h3><span class="icon">📞</span> Easy to Initiate</h3>
-                    <p>Contact our customer support team via phone, email, or website to initiate a return. We'll guide you through the simple process.</p>
-                </div>
+            <div class="process-card">
+                <div class="process-number">3</div>
+                <h4>Pack Securely</h4>
+                <p>Use original packaging with all accessories</p>
             </div>
-
-            <div class="process-section">
-                <h2>📋 How to Return Your Order</h2>
-                <div class="process-grid">
-                    <div class="process-card">
-                        <div class="process-number">1</div>
-                        <h4>Contact Us</h4>
-                        <p>Reach out within 3 days of delivery</p>
-                    </div>
-                    <div class="process-card">
-                        <div class="process-number">2</div>
-                        <h4>Get Approval</h4>
-                        <p>Receive return authorization and instructions</p>
-                    </div>
-                    <div class="process-card">
-                        <div class="process-number">3</div>
-                        <h4>Pack Securely</h4>
-                        <p>Pack item in original packaging with all accessories</p>
-                    </div>
-                    <div class="process-card">
-                        <div class="process-number">4</div>
-                        <h4>Ship Back</h4>
-                        <p>Send the package via our provided shipping label</p>
-                    </div>
-                </div>
-            </div>
-
-            <div class="conditions-section">
-                <h3>📝 Return Conditions</h3>
-                <ul class="conditions-list">
-                    <li><strong>Return within 3 days:</strong> Products must be returned within 3 days from the delivery date</li>
-                    <li><strong>Original condition:</strong> Items should be unused, unwashed, and in their original condition</li>
-                    <li><strong>Original packaging:</strong> All tags, labels, and packaging must be intact</li>
-                    <li><strong>Accessories included:</strong> All accessories, manuals, and free gifts must be returned</li>
-                    <li><strong>Proof of purchase:</strong> Invoice or order confirmation must be provided</li>
-                    <li><strong>No damage:</strong> Product should not be damaged due to misuse</li>
-                </ul>
-            </div>
-
-            <div class="non-returnable">
-                <h3>❌ Non-Returnable Items</h3>
-                <ul>
-                    <li>Perishable goods (food items, flowers, etc.)</li>
-                    <li>Personal care and hygiene products</li>
-                    <li>Intimate or sanitary goods</li>
-                    <li>Items on sale or clearance (unless defective)</li>
-                    <li>Customized or personalized products</li>
-                    <li>Digital products or software</li>
-                </ul>
+            <div class="process-card">
+                <div class="process-number">4</div>
+                <h4>Ship Back</h4>
+                <p>Send the package via our provided shipping label</p>
             </div>
         </div>
     </div>
+
+    <!-- Conditions Section -->
+    <div class="conditions-section">
+        <h3>📝 Return Conditions</h3>
+        <ul class="conditions-list">
+            <li>Return within 3 days from delivery</li>
+            <li>Items unused, unwashed, in original condition</li>
+            <li>All tags, labels, and packaging intact</li>
+            <li>Include all accessories, manuals, free gifts</li>
+            <li>Invoice or order confirmation required</li>
+            <li>No damage due to misuse</li>
+        </ul>
+    </div>
+
+    <!-- Non-returnable Items -->
+    <div class="non-returnable">
+        <h3>❌ Non-Returnable Items</h3>
+        <ul>
+            <li>Perishable goods (food, flowers, etc.)</li>
+            <li>Personal care & hygiene products</li>
+            <li>Intimate or sanitary items</li>
+            <li>Sale or clearance items (unless defective)</li>
+            <li>Customized/personalized products</li>
+            <li>Digital products or software</li>
+        </ul>
+    </div>
+
+</div>
+
 </body>
 </html>
