@@ -31,7 +31,10 @@
   <div class="container-fluid">
     <a href="index.html"><img src="images/logo.PNG" alt="The Local Basket" style="height:50px;"></a>
     <input type="text" id="searchInput" placeholder="Search products...">
-    <button id="floatingCartBtn" class="btn-cart"><i class="bi bi-cart3 fs-4"></i><span class="cart-count badge bg-danger">0</span></button>
+<button type="button" class="btn-cart" data-bs-toggle="modal" data-bs-target="#cartModal">
+  <i class="bi bi-cart3 fs-4"></i>
+  <span class="cart-count badge bg-danger">0</span>
+</button>
   </div>
 </nav>
 <!-- Hero Section -->
