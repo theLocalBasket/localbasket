@@ -130,3 +130,19 @@ h1,h2,h3,h4,h5{font-family:'Playfair Display', serif; color:var(--primary);}
   .product-title{font-size:1.1rem;}
   .product-price{font-size:1.1rem;}
 }
+
+.cartMsg{
+
+
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    background-color: #28a745;
+    color: white;
+    padding: 10px 20px;
+    border-radius: 5px;
+    display: none;
+    z-index: 9999;
+    font-weight: bold;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.2);
+}

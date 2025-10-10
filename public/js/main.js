@@ -188,6 +188,15 @@ try {
         imageModal.show();
       });
     });
+    function showCartMessage() {
+        const msg = document.getElementById("cart-message");
+        msg.style.display = "block";
+
+        // Hide after 2 seconds
+        setTimeout(() => {
+          msg.style.display = "none";
+        }, 2000);
+      }
 
     // Search/filter
     const searchInput = document.getElementById('searchInput');
@@ -215,7 +224,9 @@ try {
 
         updateCartCount();
         renderCart();
-        cartModal.show();
+        //cartModal.show();
+          showCartMessage();
+
       });
     });
 
