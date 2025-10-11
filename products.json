@@ -28,11 +28,19 @@
     "image": "images/Phone Suction.jpg"
   },
   {
+<<<<<<< HEAD
     "name": "Mr. Bean's Teddy Keychain",
     "description": "little bundle of joy🧸",
     "price": 250,
     "qty": 10,
     "image": "images/Mr. Bean's Teddy.jpg"
+=======
+    "name": "Adorable Dog Paw Phone Charm 🐾",
+    "description": "Cute handcrafted dog paw charm for your phone.",
+    "price": 160,
+    "qty": 0,
+    "image": "images/Phone Charmer.jpg"
+>>>>>>> 21c1938 (added by admin)
   },
   {
     "name": "Chic Bracelet & Earring Combo",

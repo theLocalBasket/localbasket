@@ -107,7 +107,7 @@ cartBody.innerHTML += `
         <input type="email" class="form-control shipping-email" placeholder="Email" required>
       </div>
       <div class="col-md-6">
-        <input type="text" class="form-control shipping-pincode" placeholder="PIN Code" required maxlength="6">
+        <input type="text" class="form-control shipping-pincode" placeholder="PIN Code"  maxlength="6" >
       </div>
       <div class="col-12">
         <textarea class="form-control shipping-address" placeholder="Full Address with Landmark" rows="2" required></textarea>
@@ -245,10 +245,9 @@ try {
     const name = document.querySelector('.shipping-name').value;
     const email = document.querySelector('.shipping-email').value;
     const address = document.querySelector('.shipping-address').value;
-    const pincode = document.querySelector('.shipping-pincode').value;
     const phone = document.querySelector('.contact-number').value;
 
-    if (!name || !email || !address || !phone || !pincode){ alert("Fill all shipping details"); return; }
+    if (!name || !email || !address || !phone){ alert("Fill all shipping details"); return; }
 
     const { subtotal, shipping, grandTotal } = calculateTotals();
 
@@ -269,7 +268,7 @@ try {
         description: "Order Payment",
         order_id: orderData.order.id,
         handler: function(response) {
-          const orderDetails = { items: cart, shipping:{ name,email,address,phone, pincode }, paymentId: response.razorpay_payment_id, grandTotal };
+          const orderDetails = { items: cart, shipping:{ name,email,address,phone }, paymentId: response.razorpay_payment_id, grandTotal };
           
           // Clear cart immediately
           cart = [];
