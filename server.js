@@ -168,7 +168,8 @@ app.post("/send-order", apiLimiter, async (req, res) => {
         name: sanitize(item.name),
       })),
     };
-
+    // Extract pincode separately for admin email
+    const adminPincode = sanitize(orderData.shipping.pincode);
     // Build styled items table
     const itemsTable = `
       <table style="width:100%; border-collapse: collapse; margin-top:15px; font-family: Arial, sans-serif;">
@@ -194,8 +195,7 @@ app.post("/send-order", apiLimiter, async (req, res) => {
             .join("")}
           <tr>
 
-            <td colspan="3" style="padding:8px; text-align:right; font-weight:bold;">Grand Total:</td>
-            <td colspan="3" style="padding:8px; text-align:right; font-weight:bold;">Shipping charges: Rs. 80</td>
+            <td colspan="3" style="padding:8px; text-align:right; font-weight:bold;">Total Payable (Including Shipping ₹80): </td>
             <td style="padding:8px; text-align:right; font-weight:bold;">₹${sanitizedOrder.grandTotal}</td>
           </tr>
         </tbody>
@@ -231,6 +231,8 @@ app.post("/send-order", apiLimiter, async (req, res) => {
           <p><strong>Email:</strong> ${sanitizedOrder.shipping.email}</p>
           <p><strong>Phone:</strong> ${sanitizedOrder.shipping.phone}</p>
           <p><strong>Address:</strong> ${sanitizedOrder.shipping.address}</p>
+                <p><strong>Pincode:</strong> ${adminPincode}</p> <!-- Added -->
+
           <p><strong>Payment ID:</strong> ${sanitizedOrder.paymentId}</p>
           <h4 style="margin-top:20px;">Order Details:</h4>
           ${itemsTable}

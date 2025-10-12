@@ -21,6 +21,7 @@
     "razorpay": "^2.9.6"
   },
   "devDependencies": {
+    "clean-css-cli": "^5.6.3",
     "esbuild": "^0.25.10",
     "javascript-obfuscator": "^4.1.1"
   }

@@ -18,7 +18,6 @@
     position: relative;
   }
 
-  /* Confetti container */
   .confetti {
     position: absolute;
     width: 100%;
@@ -34,16 +33,15 @@
     position: absolute;
     width: 8px;
     height: 8px;
-    background: linear-gradient(45deg, #ffd700, #ff6347);
-    opacity: 0.8;
     border-radius: 50%;
+    opacity: 0.9;
     animation: fall linear infinite;
   }
 
   @keyframes fall {
     0% { transform: translateY(-10%) rotate(0deg); opacity: 0; }
     10% { opacity: 1; }
-    100% { transform: translateY(110vh) rotate(360deg); opacity: 0.8; }
+    100% { transform: translateY(110vh) rotate(360deg); opacity: 0.9; }
   }
 
   .thankyou-box {
@@ -51,12 +49,20 @@
     background: #ffffff;
     padding: 3rem 2rem;
     border-radius: 25px;
-    box-shadow: 0 20px 40px rgba(0,0,0,0.08);
+    box-shadow: 0 25px 50px rgba(0,0,0,0.1);
     max-width: 500px;
     width: 100%;
     position: relative;
     z-index: 1;
     animation: fadeIn 0.8s ease-out;
+  }
+
+  .thankyou-box .store-name {
+    font-size: 1.2rem;
+    font-weight: 700;
+    color: #198754;
+    letter-spacing: 1px;
+    margin-bottom: 0.5rem;
   }
 
   .thankyou-box i {
@@ -80,7 +86,7 @@
   }
 
   .thankyou-box h1 {
-    font-size: 1.1rem;
+    font-size: 1rem;
     color: #c0392b;
     margin-top: 1rem;
     font-weight: 500;
@@ -94,7 +100,7 @@
 
   .btn-home {
     margin-top: 1.5rem;
-    padding: 0.6rem 1.5rem;
+    padding: 0.6rem 1.8rem;
     font-size: 1rem;
     border-radius: 50px;
     background: linear-gradient(135deg, #198754, #28a745);
@@ -122,7 +128,7 @@
   @media(max-width:576px){
     .thankyou-box { padding: 2rem 1.5rem; }
     .thankyou-box h2 { font-size: 1.6rem; }
-    .thankyou-box h1 { font-size: 1rem; }
+    .thankyou-box h1 { font-size: 0.95rem; }
     .thankyou-box i { font-size: 3.5rem; }
   }
 </style>
@@ -132,18 +138,19 @@
 <div class="confetti" id="confetti"></div>
 
 <div class="thankyou-box">
+  <div class="store-name">The Local Basket</div>
   <i class="bi bi-check-circle-fill"></i>
   <h2>Thank You!</h2>
   <p>Your order has been successfully placed.<br>
   We have received your payment and a confirmation email has been sent to you.</p>
-  <h1>Do not close or Refresh this page....</h1>
-  <div class="countdown">Redirecting to home in <span id="seconds">5</span> seconds...</div>
-  <button class="btn-home" onclick="window.location.href='/'">Go to Home</button>
+  <h1>Do not close or refresh this page...</h1>
+  <div class="countdown">Redirecting to home in <span id="seconds">10</span> seconds...</div>
+  <button class="btn-home" onclick="window.location.href='/'">Shop More</button>
 </div>
 
 <script>
   // Countdown
-  let countdown = 5;
+  let countdown = 10;
   const secondsEl = document.getElementById("seconds");
   const interval = setInterval(() => {
     countdown--;
