@@ -75,44 +75,85 @@
     </div>
   </div>
 </div>
-
-<footer class="footer">
+<footer class="footer py-5" style="background-color: var(--primary); color: var(--secondary);">
   <div class="container">
-    <div class="row">
-      <div class="col-md-4 mb-4 mb-md-0">
-        <h5>The Local Basket</h5>
-        <p>Curated, locally sourced products supporting artisans & small businesses.</p>
-        <div class="d-flex gap-3 mt-3 social-links">
-          <a href="#"><i class="bi bi-facebook"></i></a>
-          <a href="https://www.instagram.com/thelocal_basket25" target="_blank"><i class="bi bi-instagram"></i></a>
-          <a href="https://wa.me/+919609010193" target="_blank"><i class="bi bi-whatsapp"></i></a>
+    <div class="row gy-4 align-items-start">
+      
+      <!-- Brand Info -->
+      <div class="col-md-4">
+        <h5 class="fw-bold mb-3" style="color: var(--accent);">The Local Basket</h5>
+        <p class="small mb-4" style="opacity: 0.85;">
+          Curated, locally sourced products supporting artisans & small businesses.
+        </p>
+        <div class="d-flex gap-3 social-links">
+          <a href="#" class="footer-icon"><i class="bi bi-facebook"></i></a>
+          <a href="https://www.instagram.com/thelocal_basket25" target="_blank" class="footer-icon"><i class="bi bi-instagram"></i></a>
+          <a href="https://wa.me/+919609010193" target="_blank" class="footer-icon"><i class="bi bi-whatsapp"></i></a>
         </div>
       </div>
-      <div class="col-md-2 mb-4 mb-md-0">
-        <h5>Help</h5>
-        <ul class="list-unstyled">
-          <li><a href="FAQs.html">FAQs</a></li>
-          <li><a href="shipping.html">Shipping</a></li>
-          <li><a href="return.html">Returns</a></li>
-          <li><a href="contactus.html">Contact Us</a></li>
+
+      <!-- Help Section -->
+      <div class="col-6 col-md-2">
+        <h6 class="fw-semibold mb-3" style="color: var(--accent);">Help</h6>
+        <ul class="list-unstyled small">
+          <li><a href="FAQs.html" class="footer-link">FAQs</a></li>
+          <li><a href="shipping.html" class="footer-link">Shipping</a></li>
+          <li><a href="return.html" class="footer-link">Returns</a></li>
+          <li><a href="contactus.html" class="footer-link">Contact Us</a></li>
         </ul>
       </div>
+
+      <!-- Quick Links (Optional for balance) -->
+      <div class="col-6 col-md-2">
+        <h6 class="fw-semibold mb-3" style="color: var(--accent);">Shop</h6>
+        <ul class="list-unstyled small">
+          <li><a href="#" id="scrollToTop" class="footer-link">All Products</a></li>
+          <li><a href="#" id="newArrivals" class="footer-link">New Arrivals</a></li>
+          <li><a href="#" id="offers" class="footer-link">Offers</a></li>
+        </ul>
+      </div>
+
+      <!-- Contact Info -->
+      <div class="col-md-4">
+        <h6 class="fw-semibold mb-3" style="color: var(--accent);">Get in Touch</h6>
+        <p class="small mb-1"><i class="bi bi-geo-alt me-2"></i>New Market, Pakyong, East Sikkim</p>
+        <p class="small mb-1"><i class="bi bi-envelope me-2"></i>tlbpkg@gmail.com</p>
+        <p class="small"><i class="bi bi-phone me-2"></i>+919609010193 | +917872778009 | +918116134446 | +918348945765</p>
+      </div>
     </div>
-    <div class="col-12 text-center mt-4 text-white">&copy; 2025 The Local Basket. All rights reserved.</div>
+
+    <hr class="border-secondary mt-4 mb-3" style="opacity: 0.3;">
+
+    <div class="text-center small" style="opacity: 0.8;">
+      &copy; 2025 <span style="color: var(--accent); font-weight: 600;">The Local Basket</span>. All rights reserved.
+    </div>
   </div>
 </footer>
 
-<div id="orderStatusOverlay" class="d-none position-fixed top-0 start-0 w-100 h-100 bg-white d-flex flex-column justify-content-center align-items-center" style="z-index:2000;">
-  <div class="text-center">
-    <div class="spinner-border text-success mb-3" style="width:3rem;height:3rem;"></div>
-    <h4 class="status-text text-success">Processing your order...</h4>
-    <p class="text-muted mt-2">Please wait while we confirm your payment and send the order details to your email.</p>
-  </div>
-</div>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.4/dist/js/bootstrap.bundle.min.js"></script>
 <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
 <script src="/js-min/main.min.js" defer></script>
+<script>
+  document.getElementById("scrollToTop").addEventListener("click", function (e) {
+    e.preventDefault();
+    window.scrollTo({
+      top: 0,
+      behavior: "smooth"
+    });
+  });
+
+  // Coming soon alerts
+  document.getElementById("newArrivals").addEventListener("click", function (e) {
+    e.preventDefault();
+    alert("🛍️ New Arrivals - Coming Soon!");
+  });
+
+  document.getElementById("offers").addEventListener("click", function (e) {
+    e.preventDefault();
+    alert("🎁 Exciting Offers - Coming Soon!");
+  });
+</script>
 
 </body>
 </html>

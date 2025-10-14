@@ -8,92 +8,67 @@ const helmet = require("helmet");
 const rateLimit = require("express-rate-limit");
 require("dotenv").config();
 const Razorpay = require("razorpay");
+const crypto = require("crypto");
 
 const app = express();
 const PORT = process.env.PORT || 3000;
 
+// ========================
+// Database Setup
+// ========================
 const Database = require("better-sqlite3");
 const db = new Database("./products.db");
 
-
 // ========================
-// Security & Middleware
+// Middleware & Security
 // ========================
-
-// ---------- Block direct access to raw JS ----------
-//app.use('/js', (req, res) => res.status(404).send('Not found'));
-//app.use('/css', (req, res) => res.status(404).send('Not found'));
-
-
-app.use(express.json());
-
-app.disable("x-powered-by");
-
-// Initialize Razorpay
-const razorpay = new Razorpay({
-  key_id: process.env.RAZORPAY_KEY_ID,        // PUBLIC
-  key_secret: process.env.RAZORPAY_KEY_SECRET // SECRET, never expose to frontend
-});
-
-// Rate limiter
-const apiLimiter = rateLimit({
-  windowMs: 15 * 60 * 1000, // 15 min
-  max: 100,
-  standardHeaders: true,
-  legacyHeaders: false,
-  message: "Too many requests, please try again later."
-});
-
-// Core middleware
 app.use(cors());
 app.use(express.json({ limit: "10kb" }));
 app.use(express.static("public"));
+app.disable("x-powered-by");
 
-// Security headers
+const apiLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000,
+  max: 100,
+  standardHeaders: true,
+  legacyHeaders: false,
+  message: "Too many requests, please try again later.",
+});
+
 app.use(
   helmet.contentSecurityPolicy({
     directives: {
       defaultSrc: ["'self'"],
-      scriptSrc: [
-        "'self'",
-        "https://cdn.jsdelivr.net",
-        "https://checkout.razorpay.com",
-        "'unsafe-inline'"
-      ],
-      styleSrc: [
-        "'self'",
-        "https://cdn.jsdelivr.net",
-        "https://fonts.googleapis.com",
-        "'unsafe-inline'"
-      ],
+      scriptSrc: ["'self'", "https://cdn.jsdelivr.net", "https://checkout.razorpay.com", "'unsafe-inline'"],
+      styleSrc: ["'self'", "https://cdn.jsdelivr.net", "https://fonts.googleapis.com", "'unsafe-inline'"],
       imgSrc: ["'self'", "data:", "https:"],
       fontSrc: ["'self'", "https://fonts.gstatic.com"],
-      connectSrc: [
-        "'self'",
-        "https://api.razorpay.com",
-        "https://lumberjack.razorpay.com",
-        process.env.FRONTEND_URL || "'self'"
-      ],
+      connectSrc: ["'self'", "https://api.razorpay.com", "https://lumberjack.razorpay.com", process.env.FRONTEND_URL || "'self'"],
       frameSrc: ["https://checkout.razorpay.com"],
-      objectSrc: ["'none'"]
-    }
+      objectSrc: ["'none'"],
+    },
   })
 );
+
+// ========================
+// Razorpay Setup
+// ========================
+const razorpay = new Razorpay({
+  key_id: process.env.RAZORPAY_KEY_ID,
+  key_secret: process.env.RAZORPAY_KEY_SECRET,
+});
 
 // ========================
 // Nodemailer Setup
 // ========================
 const transporter = nodemailer.createTransport({
   service: "gmail",
-  auth: {
-    user: process.env.EMAIL_USER,
-    pass: process.env.EMAIL_PASS
-  },
+  auth: { user: process.env.EMAIL_USER, pass: process.env.EMAIL_PASS },
   pool: true,
   maxConnections: 5,
   maxMessages: 100,
   rateDelta: 60000,
-  rateLimit: 10
+  rateLimit: 10,
 });
 
 // ========================
@@ -102,59 +77,10 @@ const transporter = nodemailer.createTransport({
 const sanitize = (str = "") => str.replace(/</g, "&lt;").replace(/>/g, "&gt;");
 
 // ========================
-// Routes
+// Send Emails
 // ========================
-
-// Health check
-app.get("/health", (req, res) => {
-  res.status(200).json({
-    status: "OK",
-    timestamp: new Date().toISOString(),
-    service: "Email + Razorpay API",
-    version: "1.0.0"
-  });
-});
-
-// Create Razorpay order
-app.post("/create-razorpay-order", async (req, res) => {
+async function sendOrderEmails(orderData) {
   try {
-    const { amount, currency } = req.body;
-
-    if(!amount || amount <= 0) return res.status(400).json({ success:false, error:"Invalid amount" });
-
-    const options = {
-      amount: amount * 100, // amount in paise
-      currency: currency || "INR",
-      receipt: "order_rcptid_" + Date.now()
-    };
-
-    const order = await razorpay.orders.create(options);
-
-    res.json({
-      success: true,
-      order: {
-        id: order.id,
-        amount: order.amount,
-        currency: order.currency,
-        key_id: process.env.RAZORPAY_KEY_ID // send PUBLIC key to frontend
-      }
-    });
-
-  } catch (err) {
-    console.error("Razorpay order error:", err);
-    res.status(500).json({ success:false, error: err.message });
-  }
-});
-
-// Send order email
-app.post("/send-order", apiLimiter, async (req, res) => {
-  try {
-    const orderData = req.body;
-
-    if (!orderData.items || orderData.items.length === 0) {
-      return res.status(400).json({ success: false, error: "No items in order" });
-    }
-
     const sanitizedOrder = {
       ...orderData,
       shipping: {
@@ -162,15 +88,11 @@ app.post("/send-order", apiLimiter, async (req, res) => {
         email: sanitize(orderData.shipping.email),
         address: sanitize(orderData.shipping.address),
         phone: sanitize(orderData.shipping.phone),
+        pincode: sanitize(orderData.shipping.pincode),
       },
-      items: orderData.items.map((item) => ({
-        ...item,
-        name: sanitize(item.name),
-      })),
+      items: (orderData.items || []).map((item) => ({ ...item, name: sanitize(item.name) })),
     };
-    // Extract pincode separately for admin email
-    const adminPincode = sanitize(orderData.shipping.pincode);
-    // Build styled items table
+
     const itemsTable = `
       <table style="width:100%; border-collapse: collapse; margin-top:15px; font-family: Arial, sans-serif;">
         <thead>
@@ -182,7 +104,7 @@ app.post("/send-order", apiLimiter, async (req, res) => {
           </tr>
         </thead>
         <tbody>
-          ${sanitizedOrder.items
+          ${(sanitizedOrder.items || [])
             .map(
               (item) => `
             <tr style="border-bottom:1px solid #ddd;">
@@ -194,15 +116,13 @@ app.post("/send-order", apiLimiter, async (req, res) => {
             )
             .join("")}
           <tr>
-
-            <td colspan="3" style="padding:8px; text-align:right; font-weight:bold;">Total Payable (Including Shipping ₹80): </td>
+            <td colspan="3" style="padding:8px; text-align:right; font-weight:bold;">Total Payable (Incl. Shipping ₹80): </td>
             <td style="padding:8px; text-align:right; font-weight:bold;">₹${sanitizedOrder.grandTotal}</td>
           </tr>
         </tbody>
       </table>
     `;
 
-    // Email wrapper template
     const wrapEmail = (title, body) => `
       <div style="max-width:600px; margin:0 auto; border:1px solid #eee; border-radius:8px; overflow:hidden; font-family:Arial, sans-serif;">
         <div style="background:#198754; color:white; padding:15px; text-align:center;">
@@ -211,109 +131,118 @@ app.post("/send-order", apiLimiter, async (req, res) => {
         <div style="padding:20px; color:#333; line-height:1.6;">
           <h3 style="color:#198754;">${title}</h3>
           ${body}
-          <p style="margin-top:20px; font-size:12px; color:#777;">This is an automated message from The Local Basket. Please do not reply directly.</p>
+          <p style="margin-top:20px; font-size:12px; color:#777;">This is an automated message. Do not reply.</p>
         </div>
         <div style="background:#f5f5f5; padding:10px; text-align:center; font-size:12px; color:#666;">
-          © ${new Date().getFullYear()} The Local Basket. All rights reserved.
+          © ${new Date().getFullYear()} The Local Basket
         </div>
       </div>
     `;
 
-    // Admin email
     const adminMail = {
       from: `"New Order Notification" <${process.env.EMAIL_USER}>`,
       to: process.env.RECEIVER_EMAIL,
       subject: `🛒 New Order - ₹${sanitizedOrder.grandTotal}`,
-      html: wrapEmail(
-        "New Order Received",
-        `
-          <p><strong>Name:</strong> ${sanitizedOrder.shipping.name}</p>
-          <p><strong>Email:</strong> ${sanitizedOrder.shipping.email}</p>
-          <p><strong>Phone:</strong> ${sanitizedOrder.shipping.phone}</p>
-          <p><strong>Address:</strong> ${sanitizedOrder.shipping.address}</p>
-                <p><strong>Pincode:</strong> ${adminPincode}</p> <!-- Added -->
-
-          <p><strong>Payment ID:</strong> ${sanitizedOrder.paymentId}</p>
-          <h4 style="margin-top:20px;">Order Details:</h4>
-          ${itemsTable}
-        `
-      ),
+      html: wrapEmail("New Order Received", `
+        <p><strong>Name:</strong> ${sanitizedOrder.shipping.name}</p>
+        <p><strong>Email:</strong> ${sanitizedOrder.shipping.email}</p>
+        <p><strong>Phone:</strong> ${sanitizedOrder.shipping.phone}</p>
+        <p><strong>Address:</strong> ${sanitizedOrder.shipping.address}</p>
+        <p><strong>Pincode:</strong> ${sanitizedOrder.shipping.pincode}</p>
+        <p><strong>Payment ID:</strong> ${sanitizedOrder.paymentId}</p>
+        <h4>Order Details:</h4>
+        ${itemsTable}
+      `),
     };
-    await transporter.sendMail(adminMail);
 
-    // Customer email
     const customerMail = {
       from: `"The Local Basket" <${process.env.EMAIL_USER}>`,
       to: sanitizedOrder.shipping.email,
       subject: `✅ Order Confirmation - ₹${sanitizedOrder.grandTotal}`,
-      html: wrapEmail(
-        "Thank You for Your Order!",
-        `
-          <p>Hi <strong>${sanitizedOrder.shipping.name}</strong>,</p>
-          <p>We have received your order and payment. Below are your order details:</p>
-          <p><strong>Payment ID:</strong> ${sanitizedOrder.paymentId}</p>
-          ${itemsTable}
-          <p style="margin-top:20px;">We’ll notify you once your order is out for delivery. Thank you for shopping with <strong>The Local Basket</strong>!</p>
-        `
-      ),
+      html: wrapEmail("Thank You for Your Order!", `
+        <p>Hi <strong>${sanitizedOrder.shipping.name}</strong>,</p>
+        <p>We’ve received your order and payment. Details below:</p>
+        <p><strong>Payment ID:</strong> ${sanitizedOrder.paymentId}</p>
+        ${itemsTable}
+      `),
     };
-    await transporter.sendMail(customerMail);
 
-    res.json({ success: true, message: "Order emails sent successfully" });
+    console.log("📧 Sending emails...");
+    try { await transporter.sendMail(adminMail); console.log("✅ Admin email sent"); } 
+    catch(e){ console.error("❌ Admin email error:", e); }
+    try { await transporter.sendMail(customerMail); console.log("✅ Customer email sent"); } 
+    catch(e){ console.error("❌ Customer email error:", e); }
+
   } catch (err) {
-    console.error("Error sending order emails:", err);
-    res.status(500).json({ success: false, error: err.message });
+    console.error("❌ Email sending error:", err);
   }
+}
+
+// ========================
+// Routes
+// ========================
+
+// Health
+app.get("/health", (req, res) => {
+  res.json({ status: "OK", timestamp: new Date().toISOString(), service: "Email + Razorpay" });
 });
 
-
-let productCache = null;
-let lastFetchTime = 0; // timestamp in ms
-const CACHE_DURATION = 5 * 60 * 1000; // 5 minutes
-
-app.get("/api/products", (req, res) => {
+// Create Razorpay order
+app.post("/create-razorpay-order", async (req, res) => {
   try {
-    const now = Date.now();
+    const { amount, currency, notes } = req.body;
+    if (!amount || amount <= 0) return res.status(400).json({ success: false, error: "Invalid amount" });
+    const options = { amount: amount * 100, currency: currency || "INR", receipt: "order_rcptid_" + Date.now(), notes: notes || {} };
+    const order = await razorpay.orders.create(options);
+    res.json({ success: true, order: { id: order.id, amount: order.amount, currency: order.currency, key_id: process.env.RAZORPAY_KEY_ID } });
+  } catch (err) { console.error("❌ Razorpay order error:", err); res.status(500).json({ success: false, error: err.message }); }
+});
 
-    // ✅ Use cache if fresh
-    if (productCache && (now - lastFetchTime < CACHE_DURATION)) {
-      return res.json({ success: true, products: productCache, cached: true });
+app.post("/razorpay-webhook", express.json({ type: "*/*" }), async (req, res) => {
+  try {
+    const webhookSecret = process.env.RAZORPAY_WEBHOOK_SECRET;
+    const isDevMode = req.headers["x-razorpay-signature"] === "dev-mode-simulated";
+
+    if (!isDevMode) {
+      const shasum = crypto.createHmac("sha256", webhookSecret);
+      shasum.update(JSON.stringify(req.body));
+      const digest = shasum.digest("hex");
+
+      if (digest !== req.headers["x-razorpay-signature"]) {
+        console.log("❌ Webhook signature mismatch");
+        return res.status(400).json({ status: "invalid signature" });
+      }
     }
 
-    // ❌ If cache expired → query SQLite
-    const products = db.prepare("SELECT * FROM products").all();
+    console.log(isDevMode ? "💻 Dev mode webhook" : "✅ Webhook verified!");
 
-    // ✅ Save to cache
-    productCache = products;
-    lastFetchTime = now;
+    const payment = req.body.payload.payment.entity;
 
-    res.json({ success: true, products, cached: false });
+    const orderData = {
+      paymentId: payment.id,
+      grandTotal: payment.amount / 100,
+      shipping: payment.notes?.shipping ? JSON.parse(payment.notes.shipping) : {},
+      items: payment.notes?.items ? JSON.parse(payment.notes.items) : [],
+    };
 
+    await sendOrderEmails(orderData);
+    res.json({ status: "ok" });
   } catch (err) {
-    console.error("Error fetching products:", err);
-    res.status(500).json({ success: false, error: "Failed to fetch products" });
+    console.error("❌ Webhook error:", err);
+    res.status(500).json({ status: "error", error: err.message });
   }
 });
 
 
-
-
-// 404 handler
-app.use((req, res) => {
-  res.status(404).json({ success:false, error:"Resource not found" });
+// Fetch products
+app.get("/api/products", (req, res) => {
+  try { const products = db.prepare("SELECT * FROM products").all(); res.json({ success: true, products }); } 
+  catch (err) { console.error("❌ Product fetch error:", err); res.status(500).json({ success: false, error: "Failed to fetch products" }); }
 });
 
-// Global error handler
-app.use((err, req, res, next) => {
-  console.error("Server error:", err.stack);
-  res.status(500).json({ success:false, error:"Internal server error" });
-});
+// 404 & global error
+app.use((req, res) => res.status(404).json({ success: false, error: "Not found" }));
+app.use((err, req, res, next) => { console.error("❌ Server error:", err.stack); res.status(500).json({ success: false, error: "Internal server error" }); });
 
-
-
-// ========================
-// Start Server
-// ========================
-app.listen(PORT, () => {
-  console.log(`🚀 Server running at http://localhost:${PORT}`);
-});
+// Start server
+app.listen(PORT, () => console.log(`🚀 Server running at http://localhost:${PORT}`));

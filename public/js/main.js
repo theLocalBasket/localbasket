@@ -172,33 +172,61 @@ document.addEventListener("DOMContentLoaded", async () => {
 
   // ---------- Cart Modal Open ----------
   document.querySelectorAll(".openCartBtn").forEach(btn => btn.addEventListener("click", () => cartModal.show()));
+checkoutBtn.addEventListener("click", async () => {
+  // Disable the button immediately to prevent double clicks
+  checkoutBtn.disabled = true;
 
-  // ---------- Checkout ----------
-  checkoutBtn.addEventListener("click", async () => {
-    if (!cart.length) return alert("Cart is empty");
+  if (!cart.length) return alert("Cart is empty");
 
-    const name = document.querySelector('.shipping-name').value.trim();
-    const email = document.querySelector('.shipping-email').value.trim();
-    const address = document.querySelector('.shipping-address').value.trim();
-    const pincode = document.querySelector('.shipping-pincode').value.trim();
-    const phone = document.querySelector('.contact-number').value.trim();
-    if (!name || !email || !address || !phone || !pincode) return alert("Fill all shipping details");
+  const name = document.querySelector('.shipping-name').value.trim();
+  const email = document.querySelector('.shipping-email').value.trim();
+  const address = document.querySelector('.shipping-address').value.trim();
+  const pincode = document.querySelector('.shipping-pincode').value.trim();
+  const phone = document.querySelector('.contact-number').value.trim();
 
-    const { subtotal, shipping, grandTotal } = calculateTotals();
-    const orderDetails = { items: cart, shipping: { name, email, address, phone, pincode }, grandTotal };
+  if (!name || !email || !address || !phone || !pincode)
+    return alert("Fill all shipping details");
 
+  const { subtotal, shipping, grandTotal } = calculateTotals();
+
+  const notes = {
+    shipping: JSON.stringify({ name, email, address, phone, pincode }),
+    items: JSON.stringify(cart)
+  };
+
+  console.log("💻 Dev mode:", dev_mode);
+  console.log("🛒 Cart total:", grandTotal);
+  console.log("📦 Shipping info:", notes.shipping);
+
+  try {
     if (dev_mode) {
-      orderDetails.paymentId = "DEV12345";
-      fetch('/send-order', { method: 'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify(orderDetails) })
-        .catch(err => console.error(err));
-      cart = []; updateCartCount();
-      return window.location.href = `/thankyou.html?pid=${orderDetails.paymentId}`;
-    }
+      const simulatedPaymentId = "DEV-" + Date.now();
+      console.log("💻 Dev mode: simulating payment:", simulatedPaymentId);
 
-    try {
-      const orderRes = await fetch('/create-razorpay-order', { method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({amount:grandTotal,currency:"INR"})});
+      const webhookRes = await fetch("/razorpay-webhook", {
+        method: "POST",
+        headers: { "Content-Type": "application/json", "x-razorpay-signature": "dev-mode-simulated" },
+        body: JSON.stringify({
+          payload: { payment: { entity: { id: simulatedPaymentId, amount: grandTotal * 100, notes } } }
+        })
+      });
+
+      const webhookData = await webhookRes.json();
+      console.log("📧 Dev webhook result:", webhookData);
+
+      cart = [];
+      updateCartCount();
+      alert("✅ Dev order simulated! Check console for email logs.");
+      return window.location.href = `/thankyou.html?pid=${simulatedPaymentId}`;
+    } else {
+      const orderRes = await fetch('/create-razorpay-order', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ amount: grandTotal, currency: "INR", notes })
+      });
+
       const orderData = await orderRes.json();
-      if (!orderData.success) return alert("Failed to create payment order");
+      if (!orderData.success) return alert("❌ Failed to create payment order");
 
       const rzp = new Razorpay({
         key: orderData.order.key_id,
@@ -209,17 +237,24 @@ document.addEventListener("DOMContentLoaded", async () => {
         order_id: orderData.order.id,
         prefill: { name, email, contact: phone },
         theme: { color: "#198754" },
-        handler: response => {
-          orderDetails.paymentId = response.razorpay_payment_id;
-          fetch('/send-order', { method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify(orderDetails) })
-            .catch(err => console.error(err));
-          cart = []; updateCartCount();
-          window.location.href = `/thankyou.html?pid=${orderDetails.paymentId}`;
-        }
+        handler: async (response) => {
+          console.log("✅ Payment successful:", response.razorpay_payment_id);
+
+          cart = [];
+          updateCartCount();
+          window.location.href = `/thankyou.html?pid=${response.razorpay_payment_id}`;
+        },
+        modal: { ondismiss: () => console.log("❌ Payment popup closed") }
       });
+
       rzp.open();
-    } catch(err) { console.error(err); alert("Error initiating payment. Please try again."); }
-  });
+    }
+  } catch (err) {
+    console.error("❌ Checkout error:", err);
+    alert("Error initiating payment. Check console for details.");
+  }
+});
+
 
   // ---------- Hero Overlay + Shapes + Fade-up ----------
   const heroOverlay = document.querySelector('.hero-overlay');
