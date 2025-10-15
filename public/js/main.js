@@ -25,7 +25,7 @@ document.addEventListener("DOMContentLoaded", async () => {
   };
   const calculateTotals = () => {
     const subtotal = cart.reduce((sum, i) => sum + i.price * i.qty, 0);
-    const shipping = subtotal > 400 ? 0 : 80;
+    const shipping = 0; //subtotal > 400 ? 0 : 80;
     return { subtotal, shipping, grandTotal: subtotal + shipping };
   };
 
@@ -175,6 +175,7 @@ document.addEventListener("DOMContentLoaded", async () => {
 checkoutBtn.addEventListener("click", async () => {
   // Disable the button immediately to prevent double clicks
   checkoutBtn.disabled = true;
+const dev_mode = false;
 
   if (!cart.length) return alert("Cart is empty");
 
