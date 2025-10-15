@@ -171,11 +171,14 @@ document.addEventListener("DOMContentLoaded", async () => {
   }
 
   // ---------- Cart Modal Open ----------
+  
   document.querySelectorAll(".openCartBtn").forEach(btn => btn.addEventListener("click", () => cartModal.show()));
+
 checkoutBtn.addEventListener("click", async () => {
-  // Disable the button immediately to prevent double clicks
   checkoutBtn.disabled = true;
-const dev_mode = false;
+
+  // Auto-detect dev mode
+  const dev_mode = window.location.hostname === "localhost" || window.location.hostname === "127.0.0.1";
 
   if (!cart.length) return alert("Cart is empty");
 
@@ -201,10 +204,11 @@ const dev_mode = false;
 
   try {
     if (dev_mode) {
+      // Dev: simulate payment
       const simulatedPaymentId = "DEV-" + Date.now();
       console.log("💻 Dev mode: simulating payment:", simulatedPaymentId);
 
-      const webhookRes = await fetch("/razorpay-webhook", {
+      const webhookRes = await fetch(`http://localhost:10000/razorpay-webhook`, {
         method: "POST",
         headers: { "Content-Type": "application/json", "x-razorpay-signature": "dev-mode-simulated" },
         body: JSON.stringify({
@@ -220,7 +224,10 @@ const dev_mode = false;
       alert("✅ Dev order simulated! Check console for email logs.");
       return window.location.href = `/thankyou.html?pid=${simulatedPaymentId}`;
     } else {
-      const orderRes = await fetch('/create-razorpay-order', {
+      // Production: use live site URL
+      const API_URL = "https://www.thelocalbasket.in";
+
+      const orderRes = await fetch(`${API_URL}/create-razorpay-order`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ amount: grandTotal, currency: "INR", notes })
@@ -240,6 +247,20 @@ const dev_mode = false;
         theme: { color: "#198754" },
         handler: async (response) => {
           console.log("✅ Payment successful:", response.razorpay_payment_id);
+
+          // Trigger webhook to send emails
+          try {
+            await fetch(`${API_URL}/razorpay-webhook`, {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify({
+                payload: { payment: { entity: { id: response.razorpay_payment_id, amount: grandTotal * 100, notes } } }
+              })
+            });
+            console.log("📧 Webhook triggered for emails");
+          } catch (e) {
+            console.error("❌ Webhook call failed:", e);
+          }
 
           cart = [];
           updateCartCount();
