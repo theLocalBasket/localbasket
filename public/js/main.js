@@ -172,7 +172,8 @@ document.addEventListener("DOMContentLoaded", async () => {
 
   // ---------- Cart Modal Open ----------
   
-  document.querySelectorAll(".openCartBtn").forEach(btn => btn.addEventListener("click", () => cartModal.show()));
+  //document.querySelectorAll(".openCartBtn").forEach(btn => btn.addEventListener("click", () => cartModal.show()));
+document.querySelectorAll(".openCartBtn").forEach(btn => btn.addEventListener("click", () => cartModal.show()));
 
 checkoutBtn.addEventListener("click", async () => {
   checkoutBtn.disabled = true;
@@ -204,7 +205,7 @@ checkoutBtn.addEventListener("click", async () => {
 
   try {
     if (dev_mode) {
-      // Dev: simulate payment
+      // Dev: simulate payment and webhook
       const simulatedPaymentId = "DEV-" + Date.now();
       console.log("💻 Dev mode: simulating payment:", simulatedPaymentId);
 
@@ -224,7 +225,7 @@ checkoutBtn.addEventListener("click", async () => {
       alert("✅ Dev order simulated! Check console for email logs.");
       return window.location.href = `/thankyou.html?pid=${simulatedPaymentId}`;
     } else {
-      // Production: use live site URL
+      // Live site: create Razorpay order
       const API_URL = "https://www.thelocalbasket.in";
 
       const orderRes = await fetch(`${API_URL}/create-razorpay-order`, {
@@ -245,23 +246,10 @@ checkoutBtn.addEventListener("click", async () => {
         order_id: orderData.order.id,
         prefill: { name, email, contact: phone },
         theme: { color: "#198754" },
-        handler: async (response) => {
+        handler: (response) => {
           console.log("✅ Payment successful:", response.razorpay_payment_id);
 
-          // Trigger webhook to send emails
-          try {
-            await fetch(`${API_URL}/razorpay-webhook`, {
-              method: "POST",
-              headers: { "Content-Type": "application/json" },
-              body: JSON.stringify({
-                payload: { payment: { entity: { id: response.razorpay_payment_id, amount: grandTotal * 100, notes } } }
-              })
-            });
-            console.log("📧 Webhook triggered for emails");
-          } catch (e) {
-            console.error("❌ Webhook call failed:", e);
-          }
-
+          // No manual webhook call here! Razorpay triggers it automatically
           cart = [];
           updateCartCount();
           window.location.href = `/thankyou.html?pid=${response.razorpay_payment_id}`;
@@ -276,6 +264,7 @@ checkoutBtn.addEventListener("click", async () => {
     alert("Error initiating payment. Check console for details.");
   }
 });
+
 
 
   // ---------- Hero Overlay + Shapes + Fade-up ----------

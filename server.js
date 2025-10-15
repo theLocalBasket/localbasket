@@ -201,19 +201,25 @@ app.post("/create-razorpay-order", async (req, res) => {
 // ========================
 // Razorpay Webhook (fixed)
 // ========================
+// 1️⃣ Middleware to capture raw body
+app.use(
+  express.json({
+    verify: (req, res, buf) => {
+      req.rawBody = buf; // store raw buffer
+    },
+    limit: "100kb"
+  })
+);
 
-app.post("/razorpay-webhook", express.json({ type: "*/*" }), async (req, res) => {
+// 2️⃣ Webhook route
+app.post("/razorpay-webhook", async (req, res) => {
   try {
     const webhookSecret = process.env.RAZORPAY_WEBHOOK_SECRET;
     const isDevMode = req.headers["x-razorpay-signature"] === "dev-mode-simulated";
 
-    // Only verify signature in live mode
     if (!isDevMode) {
       const shasum = crypto.createHmac("sha256", webhookSecret);
-
-      // Ensure we pass a string to HMAC
-      const rawBody = typeof req.body === "string" ? req.body : JSON.stringify(req.body);
-      shasum.update(rawBody);
+      shasum.update(req.rawBody); // use raw buffer
       const digest = shasum.digest("hex");
 
       if (digest !== req.headers["x-razorpay-signature"]) {
@@ -224,12 +230,8 @@ app.post("/razorpay-webhook", express.json({ type: "*/*" }), async (req, res) =>
 
     console.log(isDevMode ? "💻 Dev mode webhook" : "✅ Webhook verified!");
 
-    // Safely extract payment info
     const payment = req.body.payload?.payment?.entity || req.body.payment?.entity;
-    if (!payment) {
-      console.log("❌ Payment entity missing in webhook payload");
-      return res.status(400).json({ status: "missing payment entity" });
-    }
+    if (!payment) return res.status(400).json({ status: "missing payment entity" });
 
     const orderData = {
       paymentId: payment.id,
@@ -238,7 +240,6 @@ app.post("/razorpay-webhook", express.json({ type: "*/*" }), async (req, res) =>
       items: payment.notes?.items ? JSON.parse(payment.notes.items) : [],
     };
 
-    // Send emails
     await sendOrderEmails(orderData);
 
     res.json({ status: "ok" });
