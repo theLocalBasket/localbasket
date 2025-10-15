@@ -187,16 +187,60 @@ app.get("/health", (req, res) => {
   res.json({ status: "OK", timestamp: new Date().toISOString(), service: "Email + Razorpay" });
 });
 
-// Create Razorpay order
-app.post("/create-razorpay-order", async (req, res) => {
-  try {
-    const { amount, currency, notes } = req.body;
-    if (!amount || amount <= 0) return res.status(400).json({ success: false, error: "Invalid amount" });
-    const options = { amount: amount * 100, currency: currency || "INR", receipt: "order_rcptid_" + Date.now(), notes: notes || {} };
-    const order = await razorpay.orders.create(options);
-    res.json({ success: true, order: { id: order.id, amount: order.amount, currency: order.currency, key_id: process.env.RAZORPAY_KEY_ID } });
-  } catch (err) { console.error("❌ Razorpay order error:", err); res.status(500).json({ success: false, error: err.message }); }
-});
+
+// ========================
+// Razorpay Webhook
+// ========================
+app.post(
+  "/razorpay-webhook",
+  express.raw({ type: "application/json" }), // Use raw body for signature verification
+  async (req, res) => {
+    try {
+      const webhookSecret = process.env.RAZORPAY_WEBHOOK_SECRET;
+      const signature = req.headers["x-razorpay-signature"];
+      const isDevMode = signature === "dev-mode-simulated";
+
+      if (!isDevMode) {
+        // Verify signature using raw body
+        const expectedSignature = crypto
+          .createHmac("sha256", webhookSecret)
+          .update(req.body) // raw body
+          .digest("hex");
+
+        if (signature !== expectedSignature) {
+          console.log("❌ Webhook signature mismatch");
+          return res.status(400).json({ status: "invalid signature" });
+        }
+      }
+
+      console.log(isDevMode ? "💻 Dev mode webhook" : "✅ Webhook verified!");
+
+      // Parse JSON after verification
+      const payload = isDevMode
+        ? JSON.parse(req.body) // for dev simulation
+        : JSON.parse(req.body.toString());
+
+      const payment = payload.payload.payment.entity;
+
+      const orderData = {
+        paymentId: payment.id,
+        grandTotal: payment.amount / 100,
+        shipping: payment.notes?.shipping ? JSON.parse(payment.notes.shipping) : {},
+        items: payment.notes?.items ? JSON.parse(payment.notes.items) : [],
+      };
+
+      // Send emails
+      await sendOrderEmails(orderData);
+      console.log("📧 Emails processed successfully!");
+
+      res.status(200).json({ status: "ok" });
+    } catch (err) {
+      console.error("❌ Webhook error:", err);
+      res.status(500).json({ status: "error", error: err.message });
+    }
+  }
+);
+
 
 app.post("/razorpay-webhook", express.json({ type: "*/*" }), async (req, res) => {
   try {
