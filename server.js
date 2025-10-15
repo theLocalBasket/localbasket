@@ -23,7 +23,20 @@ const db = new Database("./products.db");
 // Middleware & Security
 // ========================
 app.use(cors());
-app.use(express.json({ limit: "10kb" })); // for normal routes
+
+// 🔧 FIX: Single express.json() with raw body capture for webhooks
+app.use(
+  express.json({
+    verify: (req, res, buf) => {
+      // Only store raw body for webhook route
+      if (req.originalUrl === "/razorpay-webhook") {
+        req.rawBody = buf;
+      }
+    },
+    limit: "100kb"
+  })
+);
+
 app.use(express.static("public"));
 app.disable("x-powered-by");
 
@@ -161,7 +174,7 @@ async function sendOrderEmails(orderData) {
       subject: `✅ Order Confirmation - ₹${sanitizedOrder.grandTotal}`,
       html: wrapEmail("Thank You for Your Order!", `
         <p>Hi <strong>${sanitizedOrder.shipping.name}</strong>,</p>
-        <p>We’ve received your order and payment. Details below:</p>
+        <p>We've received your order and payment. Details below:</p>
         <p><strong>Payment ID:</strong> ${sanitizedOrder.paymentId}</p>
         ${itemsTable}
       `),
@@ -199,27 +212,21 @@ app.post("/create-razorpay-order", async (req, res) => {
 });
 
 // ========================
-// Razorpay Webhook (fixed)
+// Razorpay Webhook
 // ========================
-// 1️⃣ Middleware to capture raw body
-app.use(
-  express.json({
-    verify: (req, res, buf) => {
-      req.rawBody = buf; // store raw buffer
-    },
-    limit: "100kb"
-  })
-);
-
-// 2️⃣ Webhook route
 app.post("/razorpay-webhook", async (req, res) => {
   try {
     const webhookSecret = process.env.RAZORPAY_WEBHOOK_SECRET;
     const isDevMode = req.headers["x-razorpay-signature"] === "dev-mode-simulated";
 
     if (!isDevMode) {
+      if (!req.rawBody) {
+        console.log("❌ Raw body not available");
+        return res.status(400).json({ status: "raw body missing" });
+      }
+
       const shasum = crypto.createHmac("sha256", webhookSecret);
-      shasum.update(req.rawBody); // use raw buffer
+      shasum.update(req.rawBody);
       const digest = shasum.digest("hex");
 
       if (digest !== req.headers["x-razorpay-signature"]) {
@@ -248,7 +255,6 @@ app.post("/razorpay-webhook", async (req, res) => {
     res.status(500).json({ status: "error", error: err.message });
   }
 });
-
 
 // Fetch products
 app.get("/api/products", (req, res) => {

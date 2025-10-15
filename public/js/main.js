@@ -174,98 +174,136 @@ document.addEventListener("DOMContentLoaded", async () => {
   
   //document.querySelectorAll(".openCartBtn").forEach(btn => btn.addEventListener("click", () => cartModal.show()));
 document.querySelectorAll(".openCartBtn").forEach(btn => btn.addEventListener("click", () => cartModal.show()));
-
 checkoutBtn.addEventListener("click", async () => {
   checkoutBtn.disabled = true;
-
+  
   // Auto-detect dev mode
   const dev_mode = window.location.hostname === "localhost" || window.location.hostname === "127.0.0.1";
-
-  if (!cart.length) return alert("Cart is empty");
-
+  
+  if (!cart.length) {
+    checkoutBtn.disabled = false;
+    return alert("Cart is empty");
+  }
+  
   const name = document.querySelector('.shipping-name').value.trim();
   const email = document.querySelector('.shipping-email').value.trim();
   const address = document.querySelector('.shipping-address').value.trim();
   const pincode = document.querySelector('.shipping-pincode').value.trim();
   const phone = document.querySelector('.contact-number').value.trim();
-
-  if (!name || !email || !address || !phone || !pincode)
+  
+  if (!name || !email || !address || !phone || !pincode) {
+    checkoutBtn.disabled = false;
     return alert("Fill all shipping details");
-
+  }
+  
   const { subtotal, shipping, grandTotal } = calculateTotals();
-
+  
   const notes = {
     shipping: JSON.stringify({ name, email, address, phone, pincode }),
     items: JSON.stringify(cart)
   };
-
+  
   console.log("💻 Dev mode:", dev_mode);
   console.log("🛒 Cart total:", grandTotal);
   console.log("📦 Shipping info:", notes.shipping);
-
+  
   try {
     if (dev_mode) {
       // Dev: simulate payment and webhook
       const simulatedPaymentId = "DEV-" + Date.now();
       console.log("💻 Dev mode: simulating payment:", simulatedPaymentId);
-
-      const webhookRes = await fetch(`http://localhost:10000/razorpay-webhook`, {
+      
+      const webhookRes = await fetch(`http://localhost:3000/razorpay-webhook`, {
         method: "POST",
-        headers: { "Content-Type": "application/json", "x-razorpay-signature": "dev-mode-simulated" },
+        headers: {
+          "Content-Type": "application/json",
+          "x-razorpay-signature": "dev-mode-simulated"
+        },
         body: JSON.stringify({
-          payload: { payment: { entity: { id: simulatedPaymentId, amount: grandTotal * 100, notes } } }
+          payload: {
+            payment: {
+              entity: {
+                id: simulatedPaymentId,
+                amount: grandTotal * 100,
+                notes
+              }
+            }
+          }
         })
       });
-
+      
       const webhookData = await webhookRes.json();
       console.log("📧 Dev webhook result:", webhookData);
-
+      
       cart = [];
       updateCartCount();
       alert("✅ Dev order simulated! Check console for email logs.");
       return window.location.href = `/thankyou.html?pid=${simulatedPaymentId}`;
+      
     } else {
       // Live site: create Razorpay order
       const API_URL = "https://www.thelocalbasket.in";
-
+      
       const orderRes = await fetch(`${API_URL}/create-razorpay-order`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ amount: grandTotal, currency: "INR", notes })
       });
-
+      
       const orderData = await orderRes.json();
-      if (!orderData.success) return alert("❌ Failed to create payment order");
-
-      const rzp = new Razorpay({
+      
+      if (!orderData.success) {
+        checkoutBtn.disabled = false;
+        return alert("❌ Failed to create payment order");
+      }
+      
+      const options = {
         key: orderData.order.key_id,
         amount: orderData.order.amount,
         currency: orderData.order.currency,
         name: "The Local Basket",
         description: "Order Payment",
         order_id: orderData.order.id,
-        prefill: { name, email, contact: phone },
-        theme: { color: "#198754" },
-        handler: (response) => {
+        prefill: {
+          name: name,
+          email: email,
+          contact: phone
+        },
+        theme: {
+          color: "#198754"
+        },
+        handler: function(response) {
           console.log("✅ Payment successful:", response.razorpay_payment_id);
-
-          // No manual webhook call here! Razorpay triggers it automatically
+          // Razorpay automatically triggers webhook - no manual call needed
           cart = [];
           updateCartCount();
           window.location.href = `/thankyou.html?pid=${response.razorpay_payment_id}`;
         },
-        modal: { ondismiss: () => console.log("❌ Payment popup closed") }
+        modal: {
+          ondismiss: function() {
+            console.log("❌ Payment popup closed");
+            checkoutBtn.disabled = false;
+          }
+        }
+      };
+      
+      const rzp = new Razorpay(options);
+      
+      rzp.on('payment.failed', function(response) {
+        console.error("❌ Payment failed:", response.error);
+        alert("Payment failed: " + response.error.description);
+        checkoutBtn.disabled = false;
       });
-
+      
       rzp.open();
     }
+    
   } catch (err) {
     console.error("❌ Checkout error:", err);
     alert("Error initiating payment. Check console for details.");
+    checkoutBtn.disabled = false;
   }
 });
-
-
 
   // ---------- Hero Overlay + Shapes + Fade-up ----------
   const heroOverlay = document.querySelector('.hero-overlay');
