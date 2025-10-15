@@ -174,14 +174,148 @@ document.addEventListener("DOMContentLoaded", async () => {
   
   //document.querySelectorAll(".openCartBtn").forEach(btn => btn.addEventListener("click", () => cartModal.show()));
 document.querySelectorAll(".openCartBtn").forEach(btn => btn.addEventListener("click", () => cartModal.show()));
+// Add this CSS to your stylesheet or in a <style> tag
+const checkoutStyles = `
+<style>
+.checkout-loading {
+  position: relative;
+  pointer-events: none;
+}
+
+.checkout-loading::after {
+  content: '';
+  position: absolute;
+  width: 20px;
+  height: 20px;
+  top: 50%;
+  left: 50%;
+  margin-left: -10px;
+  margin-top: -10px;
+  border: 3px solid #f3f3f3;
+  border-top: 3px solid #198754;
+  border-radius: 50%;
+  animation: checkout-spin 0.8s linear infinite;
+}
+
+@keyframes checkout-spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+.checkout-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 9999;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.checkout-overlay.active {
+  opacity: 1;
+}
+
+.checkout-spinner {
+  background: white;
+  padding: 30px;
+  border-radius: 12px;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.15);
+  text-align: center;
+  min-width: 250px;
+}
+
+.checkout-spinner .spinner {
+  width: 50px;
+  height: 50px;
+  margin: 0 auto 20px;
+  border: 4px solid #f3f3f3;
+  border-top: 4px solid #198754;
+  border-radius: 50%;
+  animation: checkout-spin 0.8s linear infinite;
+}
+
+.checkout-spinner p {
+  margin: 0;
+  color: #333;
+  font-size: 16px;
+  font-weight: 500;
+}
+
+.checkout-spinner small {
+  display: block;
+  margin-top: 8px;
+  color: #666;
+  font-size: 13px;
+}
+</style>
+`;
+
+// Insert styles into document if not already present
+if (!document.querySelector('#checkout-styles')) {
+  const styleEl = document.createElement('div');
+  styleEl.id = 'checkout-styles';
+  styleEl.innerHTML = checkoutStyles;
+  document.head.appendChild(styleEl);
+}
+
+// Helper functions for loading overlay
+function showLoadingOverlay(message = "Processing...") {
+  let overlay = document.querySelector('.checkout-overlay');
+  
+  if (!overlay) {
+    overlay = document.createElement('div');
+    overlay.className = 'checkout-overlay';
+    overlay.innerHTML = `
+      <div class="checkout-spinner">
+        <div class="spinner"></div>
+        <p class="loading-message">${message}</p>
+        <small>Please wait...</small>
+      </div>
+    `;
+    document.body.appendChild(overlay);
+  }
+  
+  overlay.querySelector('.loading-message').textContent = message;
+  setTimeout(() => overlay.classList.add('active'), 10);
+  return overlay;
+}
+
+function hideLoadingOverlay() {
+  const overlay = document.querySelector('.checkout-overlay');
+  if (overlay) {
+    overlay.classList.remove('active');
+    setTimeout(() => overlay.remove(), 300);
+  }
+}
+
+function updateLoadingMessage(message) {
+  const overlay = document.querySelector('.checkout-overlay');
+  if (overlay) {
+    overlay.querySelector('.loading-message').textContent = message;
+  }
+}
+
+// Main checkout handler
 checkoutBtn.addEventListener("click", async () => {
+  // Prevent double clicks
+  if (checkoutBtn.disabled) return;
+  
   checkoutBtn.disabled = true;
+  checkoutBtn.classList.add('checkout-loading');
   
   // Auto-detect dev mode
   const dev_mode = window.location.hostname === "localhost" || window.location.hostname === "127.0.0.1";
   
+  // Validation
   if (!cart.length) {
     checkoutBtn.disabled = false;
+    checkoutBtn.classList.remove('checkout-loading');
     return alert("Cart is empty");
   }
   
@@ -193,7 +327,32 @@ checkoutBtn.addEventListener("click", async () => {
   
   if (!name || !email || !address || !phone || !pincode) {
     checkoutBtn.disabled = false;
-    return alert("Fill all shipping details");
+    checkoutBtn.classList.remove('checkout-loading');
+    return alert("Please fill all shipping details");
+  }
+  
+  // Email validation
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  if (!emailRegex.test(email)) {
+    checkoutBtn.disabled = false;
+    checkoutBtn.classList.remove('checkout-loading');
+    return alert("Please enter a valid email address");
+  }
+  
+  // Phone validation (10 digits)
+  const phoneRegex = /^[6-9]\d{9}$/;
+  if (!phoneRegex.test(phone)) {
+    checkoutBtn.disabled = false;
+    checkoutBtn.classList.remove('checkout-loading');
+    return alert("Please enter a valid 10-digit phone number");
+  }
+  
+  // Pincode validation (6 digits)
+  const pincodeRegex = /^\d{6}$/;
+  if (!pincodeRegex.test(pincode)) {
+    checkoutBtn.disabled = false;
+    checkoutBtn.classList.remove('checkout-loading');
+    return alert("Please enter a valid 6-digit pincode");
   }
   
   const { subtotal, shipping, grandTotal } = calculateTotals();
@@ -209,9 +368,13 @@ checkoutBtn.addEventListener("click", async () => {
   
   try {
     if (dev_mode) {
-      // Dev: simulate payment and webhook
+      // Dev mode: simulate payment and webhook
+      showLoadingOverlay("Simulating payment...");
+      
       const simulatedPaymentId = "DEV-" + Date.now();
       console.log("💻 Dev mode: simulating payment:", simulatedPaymentId);
+      
+      updateLoadingMessage("Sending order emails...");
       
       const webhookRes = await fetch(`http://localhost:3000/razorpay-webhook`, {
         method: "POST",
@@ -235,13 +398,20 @@ checkoutBtn.addEventListener("click", async () => {
       const webhookData = await webhookRes.json();
       console.log("📧 Dev webhook result:", webhookData);
       
-      cart = [];
-      updateCartCount();
-      alert("✅ Dev order simulated! Check console for email logs.");
-      return window.location.href = `/thankyou.html?pid=${simulatedPaymentId}`;
+      updateLoadingMessage("Order confirmed!");
+      
+      setTimeout(() => {
+        hideLoadingOverlay();
+        cart = [];
+        updateCartCount();
+        alert("✅ Dev order simulated! Check console for email logs.");
+        window.location.href = `/thankyou.html?pid=${simulatedPaymentId}`;
+      }, 1000);
       
     } else {
       // Live site: create Razorpay order
+      showLoadingOverlay("Preparing payment...");
+      
       const API_URL = "https://www.thelocalbasket.in";
       
       const orderRes = await fetch(`${API_URL}/create-razorpay-order`, {
@@ -250,12 +420,17 @@ checkoutBtn.addEventListener("click", async () => {
         body: JSON.stringify({ amount: grandTotal, currency: "INR", notes })
       });
       
+      if (!orderRes.ok) {
+        throw new Error(`Server error: ${orderRes.status}`);
+      }
+      
       const orderData = await orderRes.json();
       
       if (!orderData.success) {
-        checkoutBtn.disabled = false;
-        return alert("❌ Failed to create payment order");
+        throw new Error(orderData.error || "Failed to create payment order");
       }
+      
+      hideLoadingOverlay();
       
       const options = {
         key: orderData.order.key_id,
@@ -274,15 +449,24 @@ checkoutBtn.addEventListener("click", async () => {
         },
         handler: function(response) {
           console.log("✅ Payment successful:", response.razorpay_payment_id);
-          // Razorpay automatically triggers webhook - no manual call needed
-          cart = [];
-          updateCartCount();
-          window.location.href = `/thankyou.html?pid=${response.razorpay_payment_id}`;
+          
+          // Show success overlay
+          showLoadingOverlay("Payment successful!");
+          updateLoadingMessage("Processing your order...");
+          
+          // Razorpay automatically triggers webhook
+          setTimeout(() => {
+            cart = [];
+            updateCartCount();
+            window.location.href = `/thankyou.html?pid=${response.razorpay_payment_id}`;
+          }, 1500);
         },
         modal: {
           ondismiss: function() {
             console.log("❌ Payment popup closed");
             checkoutBtn.disabled = false;
+            checkoutBtn.classList.remove('checkout-loading');
+            hideLoadingOverlay();
           }
         }
       };
@@ -291,8 +475,10 @@ checkoutBtn.addEventListener("click", async () => {
       
       rzp.on('payment.failed', function(response) {
         console.error("❌ Payment failed:", response.error);
+        hideLoadingOverlay();
         alert("Payment failed: " + response.error.description);
         checkoutBtn.disabled = false;
+        checkoutBtn.classList.remove('checkout-loading');
       });
       
       rzp.open();
@@ -300,10 +486,15 @@ checkoutBtn.addEventListener("click", async () => {
     
   } catch (err) {
     console.error("❌ Checkout error:", err);
-    alert("Error initiating payment. Check console for details.");
+    hideLoadingOverlay();
+    alert("Error initiating payment: " + err.message);
     checkoutBtn.disabled = false;
+    checkoutBtn.classList.remove('checkout-loading');
   }
 });
+
+
+
 
   // ---------- Hero Overlay + Shapes + Fade-up ----------
   const heroOverlay = document.querySelector('.hero-overlay');
