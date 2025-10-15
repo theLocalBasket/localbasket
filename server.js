@@ -24,11 +24,10 @@ const db = new Database("./products.db");
 // ========================
 app.use(cors());
 
-// 🔧 FIX: Single express.json() with raw body capture for webhooks
+// Single express.json() with raw body capture for webhooks
 app.use(
   express.json({
     verify: (req, res, buf) => {
-      // Only store raw body for webhook route
       if (req.originalUrl === "/razorpay-webhook") {
         req.rawBody = buf;
       }
@@ -72,16 +71,39 @@ const razorpay = new Razorpay({
 });
 
 // ========================
-// Nodemailer Setup
+// Nodemailer Setup (FIXED)
 // ========================
 const transporter = nodemailer.createTransport({
   service: "gmail",
-  auth: { user: process.env.EMAIL_USER, pass: process.env.EMAIL_PASS },
+  auth: {
+    user: process.env.EMAIL_USER,
+    pass: process.env.EMAIL_PASS,
+  },
   pool: true,
   maxConnections: 5,
   maxMessages: 100,
   rateDelta: 60000,
   rateLimit: 10,
+  connectionTimeout: 10000,
+  greetingTimeout: 10000,
+  socketTimeout: 20000,
+  logger: false, // Set to true for SMTP logs
+  debug: false,  // Set to true for detailed SMTP debug
+});
+
+// Verify email config on startup
+console.log("🔍 Email Configuration:");
+console.log("   EMAIL_USER:", process.env.EMAIL_USER ? "✓ Set" : "✗ MISSING");
+console.log("   EMAIL_PASS:", process.env.EMAIL_PASS ? "✓ Set" : "✗ MISSING");
+console.log("   RECEIVER_EMAIL:", process.env.RECEIVER_EMAIL ? "✓ Set" : "✗ MISSING");
+
+transporter.verify((error, success) => {
+  if (error) {
+    console.error("❌ Email configuration error:", error.message);
+    console.error("   Please check your Gmail App Password settings");
+  } else {
+    console.log("✅ Email server is ready");
+  }
 });
 
 // ========================
@@ -90,21 +112,38 @@ const transporter = nodemailer.createTransport({
 const sanitize = (str = "") => str.replace(/</g, "&lt;").replace(/>/g, "&gt;");
 
 // ========================
-// Send Emails
+// Send Emails (WITH TIMEOUT & BETTER ERROR HANDLING)
 // ========================
 async function sendOrderEmails(orderData) {
+  const startTime = Date.now();
+  console.log("📧 [EMAIL] Starting email process...");
+  
   try {
+    // Validate email config first
+    if (!process.env.EMAIL_USER || !process.env.EMAIL_PASS) {
+      throw new Error("EMAIL_USER or EMAIL_PASS not configured");
+    }
+    
+    if (!process.env.RECEIVER_EMAIL) {
+      throw new Error("RECEIVER_EMAIL not configured");
+    }
+
     const sanitizedOrder = {
       ...orderData,
       shipping: {
-        name: sanitize(orderData.shipping.name),
-        email: sanitize(orderData.shipping.email),
-        address: sanitize(orderData.shipping.address),
-        phone: sanitize(orderData.shipping.phone),
-        pincode: sanitize(orderData.shipping.pincode),
+        name: sanitize(orderData.shipping?.name || ""),
+        email: sanitize(orderData.shipping?.email || ""),
+        address: sanitize(orderData.shipping?.address || ""),
+        phone: sanitize(orderData.shipping?.phone || ""),
+        pincode: sanitize(orderData.shipping?.pincode || ""),
       },
-      items: (orderData.items || []).map((item) => ({ ...item, name: sanitize(item.name) })),
+      items: (orderData.items || []).map((item) => ({ 
+        ...item, 
+        name: sanitize(item.name || "") 
+      })),
     };
+
+    console.log("📧 [EMAIL] Order sanitized, building HTML...");
 
     const itemsTable = `
       <table style="width:100%; border-collapse: collapse; margin-top:15px; font-family: Arial, sans-serif;">
@@ -153,7 +192,7 @@ async function sendOrderEmails(orderData) {
     `;
 
     const adminMail = {
-      from: `"New Order Notification" <${process.env.EMAIL_USER}>`,
+      from: `"New Order" <${process.env.EMAIL_USER}>`,
       to: process.env.RECEIVER_EMAIL,
       subject: `🛒 New Order - ₹${sanitizedOrder.grandTotal}`,
       html: wrapEmail("New Order Received", `
@@ -180,14 +219,45 @@ async function sendOrderEmails(orderData) {
       `),
     };
 
-    console.log("📧 Sending emails...");
-    try { await transporter.sendMail(adminMail); console.log("✅ Admin email sent"); } 
-    catch(e){ console.error("❌ Admin email error:", e); }
-    try { await transporter.sendMail(customerMail); console.log("✅ Customer email sent"); } 
-    catch(e){ console.error("❌ Customer email error:", e); }
+    // Send with timeout protection
+    console.log("📧 [EMAIL] Sending admin email to:", process.env.RECEIVER_EMAIL);
+    
+    const sendWithTimeout = (mailOptions, timeout = 15000) => {
+      return Promise.race([
+        transporter.sendMail(mailOptions),
+        new Promise((_, reject) => 
+          setTimeout(() => reject(new Error('Email timeout after ' + timeout + 'ms')), timeout)
+        )
+      ]);
+    };
+
+    try {
+      const adminResult = await sendWithTimeout(adminMail);
+      console.log("✅ [EMAIL] Admin email sent in", Date.now() - startTime, "ms");
+      console.log("   Message ID:", adminResult.messageId);
+    } catch (e) {
+      console.error("❌ [EMAIL] Admin email failed:", e.message);
+      console.error("   Error code:", e.code);
+      console.error("   Command:", e.command);
+    }
+
+    console.log("📧 [EMAIL] Sending customer email to:", sanitizedOrder.shipping.email);
+    
+    try {
+      const customerResult = await sendWithTimeout(customerMail);
+      console.log("✅ [EMAIL] Customer email sent in", Date.now() - startTime, "ms");
+      console.log("   Message ID:", customerResult.messageId);
+    } catch (e) {
+      console.error("❌ [EMAIL] Customer email failed:", e.message);
+      console.error("   Error code:", e.code);
+      console.error("   Command:", e.command);
+    }
+
+    console.log("📧 [EMAIL] Process completed in", Date.now() - startTime, "ms");
 
   } catch (err) {
-    console.error("❌ Email sending error:", err);
+    console.error("❌ [EMAIL] Fatal error:", err.message);
+    console.error("   Stack:", err.stack);
   }
 }
 
@@ -197,7 +267,41 @@ async function sendOrderEmails(orderData) {
 
 // Health check
 app.get("/health", (req, res) => {
-  res.json({ status: "OK", timestamp: new Date().toISOString(), service: "Email + Razorpay" });
+  res.json({ 
+    status: "OK", 
+    timestamp: new Date().toISOString(), 
+    service: "Email + Razorpay",
+    emailConfigured: !!(process.env.EMAIL_USER && process.env.EMAIL_PASS)
+  });
+});
+
+// Test email endpoint
+app.get("/test-email", async (req, res) => {
+  try {
+    console.log("🧪 Test email requested");
+    const testMail = {
+      from: `"Test" <${process.env.EMAIL_USER}>`,
+      to: process.env.RECEIVER_EMAIL,
+      subject: "Test Email from Render - " + new Date().toLocaleString(),
+      text: "If you receive this, email is working!",
+      html: "<p>If you receive this, email is <strong>working</strong>! ✅</p>"
+    };
+    
+    const result = await transporter.sendMail(testMail);
+    console.log("✅ Test email sent:", result.messageId);
+    res.json({ 
+      success: true, 
+      messageId: result.messageId,
+      to: process.env.RECEIVER_EMAIL
+    });
+  } catch (err) {
+    console.error("❌ Test email failed:", err);
+    res.status(500).json({ 
+      success: false, 
+      error: err.message,
+      code: err.code 
+    });
+  }
 });
 
 // Create Razorpay order
@@ -205,15 +309,29 @@ app.post("/create-razorpay-order", async (req, res) => {
   try {
     const { amount, currency, notes } = req.body;
     if (!amount || amount <= 0) return res.status(400).json({ success: false, error: "Invalid amount" });
-    const options = { amount: amount * 100, currency: currency || "INR", receipt: "order_rcptid_" + Date.now(), notes: notes || {} };
+    const options = { 
+      amount: amount * 100, 
+      currency: currency || "INR", 
+      receipt: "order_rcptid_" + Date.now(), 
+      notes: notes || {} 
+    };
     const order = await razorpay.orders.create(options);
-    res.json({ success: true, order: { id: order.id, amount: order.amount, currency: order.currency, key_id: process.env.RAZORPAY_KEY_ID } });
-  } catch (err) { console.error("❌ Razorpay order error:", err); res.status(500).json({ success: false, error: err.message }); }
+    res.json({ 
+      success: true, 
+      order: { 
+        id: order.id, 
+        amount: order.amount, 
+        currency: order.currency, 
+        key_id: process.env.RAZORPAY_KEY_ID 
+      } 
+    });
+  } catch (err) { 
+    console.error("❌ Razorpay order error:", err); 
+    res.status(500).json({ success: false, error: err.message }); 
+  }
 });
 
-// ========================
 // Razorpay Webhook
-// ========================
 app.post("/razorpay-webhook", async (req, res) => {
   try {
     const webhookSecret = process.env.RAZORPAY_WEBHOOK_SECRET;
@@ -238,7 +356,10 @@ app.post("/razorpay-webhook", async (req, res) => {
     console.log(isDevMode ? "💻 Dev mode webhook" : "✅ Webhook verified!");
 
     const payment = req.body.payload?.payment?.entity || req.body.payment?.entity;
-    if (!payment) return res.status(400).json({ status: "missing payment entity" });
+    if (!payment) {
+      console.log("❌ Missing payment entity");
+      return res.status(400).json({ status: "missing payment entity" });
+    }
 
     const orderData = {
       paymentId: payment.id,
@@ -247,7 +368,16 @@ app.post("/razorpay-webhook", async (req, res) => {
       items: payment.notes?.items ? JSON.parse(payment.notes.items) : [],
     };
 
-    await sendOrderEmails(orderData);
+    console.log("📦 Order data prepared:", {
+      paymentId: orderData.paymentId,
+      total: orderData.grandTotal,
+      email: orderData.shipping.email
+    });
+
+    // Send emails (don't await - respond immediately)
+    sendOrderEmails(orderData).catch(err => {
+      console.error("❌ Background email error:", err);
+    });
 
     res.json({ status: "ok" });
   } catch (err) {
@@ -258,13 +388,24 @@ app.post("/razorpay-webhook", async (req, res) => {
 
 // Fetch products
 app.get("/api/products", (req, res) => {
-  try { const products = db.prepare("SELECT * FROM products").all(); res.json({ success: true, products }); } 
-  catch (err) { console.error("❌ Product fetch error:", err); res.status(500).json({ success: false, error: "Failed to fetch products" }); }
+  try { 
+    const products = db.prepare("SELECT * FROM products").all(); 
+    res.json({ success: true, products }); 
+  } catch (err) { 
+    console.error("❌ Product fetch error:", err); 
+    res.status(500).json({ success: false, error: "Failed to fetch products" }); 
+  }
 });
 
 // 404 & global error
 app.use((req, res) => res.status(404).json({ success: false, error: "Not found" }));
-app.use((err, req, res, next) => { console.error("❌ Server error:", err.stack); res.status(500).json({ success: false, error: "Internal server error" }); });
+app.use((err, req, res, next) => { 
+  console.error("❌ Server error:", err.stack); 
+  res.status(500).json({ success: false, error: "Internal server error" }); 
+});
 
 // Start server
-app.listen(PORT, () => console.log(`🚀 Server running at http://localhost:${PORT}`));
+app.listen(PORT, () => {
+  console.log(`🚀 Server running at http://localhost:${PORT}`);
+  console.log("📧 Email test endpoint: /test-email");
+});
