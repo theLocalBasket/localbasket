@@ -201,49 +201,53 @@ app.post("/create-razorpay-order", async (req, res) => {
 // ========================
 // Razorpay Webhook (fixed)
 // ========================
-app.post(
-  "/razorpay-webhook",
-  express.raw({ type: "application/json" }), // Use raw body for signature verification
-  async (req, res) => {
-    try {
-      const webhookSecret = process.env.RAZORPAY_WEBHOOK_SECRET;
-      const signature = req.headers["x-razorpay-signature"];
-      const isDevMode = signature === "dev-mode-simulated";
 
-      if (!isDevMode) {
-        const expectedSignature = crypto
-          .createHmac("sha256", webhookSecret)
-          .update(req.body)
-          .digest("hex");
+app.post("/razorpay-webhook", express.json({ type: "*/*" }), async (req, res) => {
+  try {
+    const webhookSecret = process.env.RAZORPAY_WEBHOOK_SECRET;
+    const isDevMode = req.headers["x-razorpay-signature"] === "dev-mode-simulated";
 
-        if (signature !== expectedSignature) {
-          console.log("❌ Webhook signature mismatch");
-          return res.status(400).json({ status: "invalid signature" });
-        }
+    // Only verify signature in live mode
+    if (!isDevMode) {
+      const shasum = crypto.createHmac("sha256", webhookSecret);
+
+      // Ensure we pass a string to HMAC
+      const rawBody = typeof req.body === "string" ? req.body : JSON.stringify(req.body);
+      shasum.update(rawBody);
+      const digest = shasum.digest("hex");
+
+      if (digest !== req.headers["x-razorpay-signature"]) {
+        console.log("❌ Webhook signature mismatch");
+        return res.status(400).json({ status: "invalid signature" });
       }
-
-      console.log(isDevMode ? "💻 Dev mode webhook" : "✅ Webhook verified!");
-
-      const payload = JSON.parse(req.body.toString());
-      const payment = payload.payload.payment.entity;
-
-      const orderData = {
-        paymentId: payment.id,
-        grandTotal: payment.amount / 100,
-        shipping: payment.notes?.shipping ? JSON.parse(payment.notes.shipping) : {},
-        items: payment.notes?.items ? JSON.parse(payment.notes.items) : [],
-      };
-
-      await sendOrderEmails(orderData);
-      console.log("📧 Emails processed successfully!");
-
-      res.status(200).json({ status: "ok" });
-    } catch (err) {
-      console.error("❌ Webhook error:", err);
-      res.status(500).json({ status: "error", error: err.message });
     }
+
+    console.log(isDevMode ? "💻 Dev mode webhook" : "✅ Webhook verified!");
+
+    // Safely extract payment info
+    const payment = req.body.payload?.payment?.entity || req.body.payment?.entity;
+    if (!payment) {
+      console.log("❌ Payment entity missing in webhook payload");
+      return res.status(400).json({ status: "missing payment entity" });
+    }
+
+    const orderData = {
+      paymentId: payment.id,
+      grandTotal: payment.amount / 100,
+      shipping: payment.notes?.shipping ? JSON.parse(payment.notes.shipping) : {},
+      items: payment.notes?.items ? JSON.parse(payment.notes.items) : [],
+    };
+
+    // Send emails
+    await sendOrderEmails(orderData);
+
+    res.json({ status: "ok" });
+  } catch (err) {
+    console.error("❌ Webhook error:", err);
+    res.status(500).json({ status: "error", error: err.message });
   }
-);
+});
+
 
 // Fetch products
 app.get("/api/products", (req, res) => {
