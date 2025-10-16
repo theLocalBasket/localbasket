@@ -15,7 +15,12 @@ document.addEventListener("DOMContentLoaded", async () => {
     cartCountSpans.forEach(span => span.textContent = count);
   };
 
-  const removeFromCart = id => { cart = cart.filter(i => i.id !== id); updateCartCount(); renderCart(); };
+  const removeFromCart = id => { 
+    cart = cart.filter(i => i.id !== id); 
+    updateCartCount(); 
+    renderCart(); 
+  };
+
   const changeQty = (id, delta) => {
     const item = cart.find(i => i.id === id);
     if (!item) return;
@@ -23,9 +28,10 @@ document.addEventListener("DOMContentLoaded", async () => {
     if (item.qty < 1) removeFromCart(id);
     else { renderCart(); updateCartCount(); }
   };
+
   const calculateTotals = () => {
     const subtotal = cart.reduce((sum, i) => sum + i.price * i.qty, 0);
-    const shipping = 0; //subtotal > 400 ? 0 : 80;
+    const shipping = subtotal > 400 ? 0 : 80;
     return { subtotal, shipping, grandTotal: subtotal + shipping };
   };
 
@@ -44,9 +50,8 @@ document.addEventListener("DOMContentLoaded", async () => {
 
     cart.forEach(item => {
       const div = document.createElement('div');
-      div.className = "cart-item border-bottom py-2";
       div.innerHTML = `
-        <div class="cart-item border rounded-3 p-3 mb-3 bg-white shadow-sm hover-shadow transition-all">
+        <div class="cart-item border rounded-3 p-3 mb-3 bg-white shadow-sm">
           <div class="row align-items-center g-3">
             <div class="col-2 text-center"><img src="${item.img}" alt="${item.name}" class="img-fluid rounded-3 border"></div>
             <div class="col-4"><h6 class="mb-1 fw-semibold text-dark">${item.name}</h6><p class="text-muted small mb-0">₹${item.price}</p></div>
@@ -55,7 +60,7 @@ document.addEventListener("DOMContentLoaded", async () => {
               <span class="mx-2 fw-semibold">${item.qty}</span>
               <button class="btn btn-sm btn-outline-secondary quantity-btn increase rounded-circle" data-id="${item.id}"><i class="bi bi-plus"></i></button>
             </div>
-            <div class="col-2 text-center"><span class="fw-bold text-success">₹${item.price * item.qty}</span></div>
+            <div class="col-2 text-center"><span class="fw-bold text-success">₹${(item.price * item.qty).toFixed(2)}</span></div>
             <div class="col-1 text-end"><button class="btn btn-sm btn-outline-danger remove-item rounded-circle" data-id="${item.id}" title="Remove item"><i class="bi bi-trash"></i></button></div>
           </div>
         </div>`;
@@ -64,11 +69,10 @@ document.addEventListener("DOMContentLoaded", async () => {
 
     cartBody.innerHTML += `
       <div class="summary-box text-end mt-4 p-4 border rounded-3 bg-light shadow-sm">
-        <h6 class="text-muted mb-1">Subtotal: <span class="fw-semibold text-dark">₹${subtotal}</span></h6>
-        <h6 class="text-muted mb-1">Shipping: <span class="fw-semibold text-dark">₹${shipping}</span></h6>
+        <h6 class="text-muted mb-1">Subtotal: <span class="fw-semibold text-dark">₹${subtotal.toFixed(2)}</span></h6>
+        <h6 class="text-muted mb-1">Shipping: <span class="fw-semibold text-dark">₹${shipping.toFixed(2)}</span></h6>
         <hr class="my-2">
-        <h4 class="fw-bold text-primary mb-0">Total: ₹${grandTotal}</h4>
-        <p class="text-muted small mt-2 fst-italic">*A ₹80 shipping charge applies if subtotal is ₹400 or less.</p>
+        <h4 class="fw-bold text-primary mb-0">Total: ₹${grandTotal.toFixed(2)}</h4>
       </div>
 
       <div class="shipping-info mt-4 p-4 border rounded-3 bg-white shadow-sm">
@@ -107,34 +111,9 @@ document.addEventListener("DOMContentLoaded", async () => {
         ? `<span class="badge bg-danger position-absolute top-0 end-0 m-2">Out of Stock</span>`
         : "";
 
-      div.innerHTML = `<div class="position-relative">${badgeHTML}<img src="images/placeholder.jpg" data-src="${product.image}" class="product-img w-100 rounded" alt="${product.name}" loading="lazy"></div>
+      div.innerHTML = `<div class="position-relative">${badgeHTML}<img src="/${product.image}" class="product-img w-100 rounded" alt="${product.name}" loading="lazy"></div>
         <div class="product-body p-2"><h5 class="product-title">${product.name}</h5><p class="product-description small">${product.description}</p><div class="product-price fw-bold">₹${product.price}</div>${buttonHTML}</div>`;
       productsGrid.appendChild(div);
-    });
-
-    // Lazy load images
-    const lazyImages = document.querySelectorAll("img[data-src]");
-    const imgObserver = new IntersectionObserver(entries => {
-      entries.forEach(entry => {
-        if (entry.isIntersecting) {
-          const img = entry.target;
-          img.src = img.dataset.src;
-          img.removeAttribute("data-src");
-          imgObserver.unobserve(img);
-        }
-      });
-    });
-    lazyImages.forEach(img => imgObserver.observe(img));
-
-    // Image modal
-    productsGrid.querySelectorAll(".product-img").forEach(img => {
-      img.addEventListener("click", () => {
-        const imageModal = new bootstrap.Modal(document.getElementById("imageModal"));
-        const modalImage = document.getElementById("modalImage");
-        modalImage.src = img.src;
-        modalImage.alt = img.alt;
-        imageModal.show();
-      });
     });
 
     // Add to cart
@@ -146,22 +125,10 @@ document.addEventListener("DOMContentLoaded", async () => {
         const price = Number(parent.querySelector(".product-price").textContent.replace("₹", ""));
         const img = parent.querySelector("img").src;
         const existing = cart.find(i => i.id === id);
-        if (existing) existing.qty++; else cart.push({ id, name, price, img, qty: 1 });
+        if (existing) existing.qty++;
+        else cart.push({ id, name, price, img, qty: 1 });
         updateCartCount();
         renderCart();
-        document.getElementById("cart-message").style.display = "block";
-        setTimeout(() => document.getElementById("cart-message").style.display = "none", 2000);
-      });
-    });
-
-    // Search/filter
-    const searchInput = document.getElementById('searchInput');
-    searchInput.addEventListener('input', () => {
-      const query = searchInput.value.toLowerCase();
-      document.querySelectorAll('.product-card').forEach(card => {
-        const title = card.querySelector('.product-title').textContent.toLowerCase();
-        const desc = card.querySelector('.product-description')?.textContent.toLowerCase() || '';
-        card.style.display = title.includes(query) || desc.includes(query) ? 'flex' : 'none';
       });
     });
 
@@ -171,360 +138,385 @@ document.addEventListener("DOMContentLoaded", async () => {
   }
 
   // ---------- Cart Modal Open ----------
-  
-  //document.querySelectorAll(".openCartBtn").forEach(btn => btn.addEventListener("click", () => cartModal.show()));
-document.querySelectorAll(".openCartBtn").forEach(btn => btn.addEventListener("click", () => cartModal.show()));
-// Add this CSS to your stylesheet or in a <style> tag
-const checkoutStyles = `
-<style>
-.checkout-loading {
-  position: relative;
-  pointer-events: none;
-}
-
-.checkout-loading::after {
-  content: '';
-  position: absolute;
-  width: 20px;
-  height: 20px;
-  top: 50%;
-  left: 50%;
-  margin-left: -10px;
-  margin-top: -10px;
-  border: 3px solid #f3f3f3;
-  border-top: 3px solid #198754;
-  border-radius: 50%;
-  animation: checkout-spin 0.8s linear infinite;
-}
-
-@keyframes checkout-spin {
-  0% { transform: rotate(0deg); }
-  100% { transform: rotate(360deg); }
-}
-
-.checkout-overlay {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background: rgba(0, 0, 0, 0.5);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  z-index: 9999;
-  opacity: 0;
-  transition: opacity 0.3s ease;
-}
-
-.checkout-overlay.active {
-  opacity: 1;
-}
-
-.checkout-spinner {
-  background: white;
-  padding: 30px;
-  border-radius: 12px;
-  box-shadow: 0 4px 20px rgba(0,0,0,0.15);
-  text-align: center;
-  min-width: 250px;
-}
-
-.checkout-spinner .spinner {
-  width: 50px;
-  height: 50px;
-  margin: 0 auto 20px;
-  border: 4px solid #f3f3f3;
-  border-top: 4px solid #198754;
-  border-radius: 50%;
-  animation: checkout-spin 0.8s linear infinite;
-}
-
-.checkout-spinner p {
-  margin: 0;
-  color: #333;
-  font-size: 16px;
-  font-weight: 500;
-}
-
-.checkout-spinner small {
-  display: block;
-  margin-top: 8px;
-  color: #666;
-  font-size: 13px;
-}
-</style>
-`;
-
-// Insert styles into document if not already present
-if (!document.querySelector('#checkout-styles')) {
-  const styleEl = document.createElement('div');
-  styleEl.id = 'checkout-styles';
-  styleEl.innerHTML = checkoutStyles;
-  document.head.appendChild(styleEl);
-}
-
-// Helper functions for loading overlay
-function showLoadingOverlay(message = "Processing...") {
-  let overlay = document.querySelector('.checkout-overlay');
-  
-  if (!overlay) {
-    overlay = document.createElement('div');
-    overlay.className = 'checkout-overlay';
-    overlay.innerHTML = `
-      <div class="checkout-spinner">
-        <div class="spinner"></div>
-        <p class="loading-message">${message}</p>
-        <small>Please wait...</small>
-      </div>
-    `;
-    document.body.appendChild(overlay);
-  }
-  
-  overlay.querySelector('.loading-message').textContent = message;
-  setTimeout(() => overlay.classList.add('active'), 10);
-  return overlay;
-}
-
-function hideLoadingOverlay() {
-  const overlay = document.querySelector('.checkout-overlay');
-  if (overlay) {
-    overlay.classList.remove('active');
-    setTimeout(() => overlay.remove(), 300);
-  }
-}
-
-function updateLoadingMessage(message) {
-  const overlay = document.querySelector('.checkout-overlay');
-  if (overlay) {
-    overlay.querySelector('.loading-message').textContent = message;
-  }
-}
-
-// Main checkout handler
-checkoutBtn.addEventListener("click", async () => {
-  // Prevent double clicks
-  if (checkoutBtn.disabled) return;
-  
-  checkoutBtn.disabled = true;
-  checkoutBtn.classList.add('checkout-loading');
-  
-  // Auto-detect dev mode
-  const dev_mode = window.location.hostname === "localhost" || window.location.hostname === "127.0.0.1";
-  
-  // Validation
-  if (!cart.length) {
-    checkoutBtn.disabled = false;
-    checkoutBtn.classList.remove('checkout-loading');
-    return alert("Cart is empty");
-  }
-  
-  const name = document.querySelector('.shipping-name').value.trim();
-  const email = document.querySelector('.shipping-email').value.trim();
-  const address = document.querySelector('.shipping-address').value.trim();
-  const pincode = document.querySelector('.shipping-pincode').value.trim();
-  const phone = document.querySelector('.contact-number').value.trim();
-  
-  if (!name || !email || !address || !phone || !pincode) {
-    checkoutBtn.disabled = false;
-    checkoutBtn.classList.remove('checkout-loading');
-    return alert("Please fill all shipping details");
-  }
-  
-  // Email validation
-  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-  if (!emailRegex.test(email)) {
-    checkoutBtn.disabled = false;
-    checkoutBtn.classList.remove('checkout-loading');
-    return alert("Please enter a valid email address");
-  }
-  
-  // Phone validation (10 digits)
-  const phoneRegex = /^[6-9]\d{9}$/;
-  if (!phoneRegex.test(phone)) {
-    checkoutBtn.disabled = false;
-    checkoutBtn.classList.remove('checkout-loading');
-    return alert("Please enter a valid 10-digit phone number");
-  }
-  
-  // Pincode validation (6 digits)
-  const pincodeRegex = /^\d{6}$/;
-  if (!pincodeRegex.test(pincode)) {
-    checkoutBtn.disabled = false;
-    checkoutBtn.classList.remove('checkout-loading');
-    return alert("Please enter a valid 6-digit pincode");
-  }
-  
-  const { subtotal, shipping, grandTotal } = calculateTotals();
-  
-  const notes = {
-    shipping: JSON.stringify({ name, email, address, phone, pincode }),
-    items: JSON.stringify(cart)
-  };
-  
-  console.log("💻 Dev mode:", dev_mode);
-  console.log("🛒 Cart total:", grandTotal);
-  console.log("📦 Shipping info:", notes.shipping);
-  
-  try {
-    if (dev_mode) {
-      // Dev mode: simulate payment and webhook
-      showLoadingOverlay("Simulating payment...");
-      
-      const simulatedPaymentId = "DEV-" + Date.now();
-      console.log("💻 Dev mode: simulating payment:", simulatedPaymentId);
-      
-      updateLoadingMessage("Sending order emails...");
-      
-      const webhookRes = await fetch(`http://localhost:3000/razorpay-webhook`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          "x-razorpay-signature": "dev-mode-simulated"
-        },
-        body: JSON.stringify({
-          payload: {
-            payment: {
-              entity: {
-                id: simulatedPaymentId,
-                amount: grandTotal * 100,
-                notes
-              }
-            }
-          }
-        })
-      });
-      
-      const webhookData = await webhookRes.json();
-      console.log("📧 Dev webhook result:", webhookData);
-      
-      updateLoadingMessage("Order confirmed!");
-      
-      setTimeout(() => {
-        hideLoadingOverlay();
-        cart = [];
-        updateCartCount();
-        alert("✅ Dev order simulated! Check console for email logs.");
-        window.location.href = `/thankyou.html?pid=${simulatedPaymentId}`;
-      }, 1000);
-      
-    } else {
-      // Live site: create Razorpay order
-      showLoadingOverlay("Preparing payment...");
-      
-      const API_URL = "https://www.thelocalbasket.in";
-      
-      const orderRes = await fetch(`${API_URL}/create-razorpay-order`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ amount: grandTotal, currency: "INR", notes })
-      });
-      
-      if (!orderRes.ok) {
-        throw new Error(`Server error: ${orderRes.status}`);
-      }
-      
-      const orderData = await orderRes.json();
-      
-      if (!orderData.success) {
-        throw new Error(orderData.error || "Failed to create payment order");
-      }
-      
-      hideLoadingOverlay();
-      
-      const options = {
-        key: orderData.order.key_id,
-        amount: orderData.order.amount,
-        currency: orderData.order.currency,
-        name: "The Local Basket",
-        description: "Order Payment",
-        order_id: orderData.order.id,
-        prefill: {
-          name: name,
-          email: email,
-          contact: phone
-        },
-        theme: {
-          color: "#198754"
-        },
-        handler: function(response) {
-          console.log("✅ Payment successful:", response.razorpay_payment_id);
-          
-          // Show success overlay
-          showLoadingOverlay("Payment successful!");
-          updateLoadingMessage("Processing your order...");
-          
-          // Razorpay automatically triggers webhook
-          setTimeout(() => {
-            cart = [];
-            updateCartCount();
-            window.location.href = `/thankyou.html?pid=${response.razorpay_payment_id}`;
-          }, 1500);
-        },
-        modal: {
-          ondismiss: function() {
-            console.log("❌ Payment popup closed");
-            checkoutBtn.disabled = false;
-            checkoutBtn.classList.remove('checkout-loading');
-            hideLoadingOverlay();
-          }
-        }
-      };
-      
-      const rzp = new Razorpay(options);
-      
-      rzp.on('payment.failed', function(response) {
-        console.error("❌ Payment failed:", response.error);
-        hideLoadingOverlay();
-        alert("Payment failed: " + response.error.description);
-        checkoutBtn.disabled = false;
-        checkoutBtn.classList.remove('checkout-loading');
-      });
-      
-      rzp.open();
-    }
-    
-  } catch (err) {
-    console.error("❌ Checkout error:", err);
-    hideLoadingOverlay();
-    alert("Error initiating payment: " + err.message);
-    checkoutBtn.disabled = false;
-    checkoutBtn.classList.remove('checkout-loading');
-  }
-});
-
-
-
-
-  // ---------- Hero Overlay + Shapes + Fade-up ----------
-  const heroOverlay = document.querySelector('.hero-overlay');
-  if (heroOverlay) heroOverlay.classList.add('visible');
-
-  const hero = document.querySelector('.hero-section');
-  [
-    { w:150,h:150,b:'#e76f51',t:'10%',l:'5%',d:0 },
-    { w:200,h:200,b:'#f4a261',btt:'15%',r:'10%',d:2 },
-    { w:100,h:100,b:'#e9c46a',t:'30%',r:'25%',d:4 }
-  ].forEach(s=>{
-    const span = document.createElement('span');
-    span.className='shape';
-    span.style.width=s.w+'px';
-    span.style.height=s.h+'px';
-    span.style.background=s.b;
-    if(s.t) span.style.top=s.t;
-    if(s.l) span.style.left=s.l;
-    if(s.btt) span.style.bottom=s.btt;
-    if(s.r) span.style.right=s.r;
-    span.style.animationDelay=s.d+'s';
-    hero.appendChild(span);
+  document.querySelectorAll(".openCartBtn").forEach(btn => {
+    btn.addEventListener("click", () => cartModal.show());
   });
 
-  const observer = new IntersectionObserver(entries=>{
-    entries.forEach(e=>{
-      if(e.isIntersecting){ e.target.classList.add('visible'); observer.unobserve(e.target); }
-    });
-  }, { threshold:0.2 });
+  // ---------- Modern Loading Overlay ----------
+  function createLoadingOverlay() {
+    const overlay = document.createElement('div');
+    overlay.className = 'loading-overlay';
+    overlay.innerHTML = `
+      <div class="loading-container">
+        <div class="spinner-wrapper">
+          <div class="animated-spinner">
+            <div class="spinner-ring"></div>
+            <div class="spinner-ring"></div>
+            <div class="spinner-ring"></div>
+          </div>
+        </div>
+        <div class="loading-content">
+          <h4 class="loading-title">Processing Your Order</h4>
+          <p class="loading-message">Please wait while we prepare your payment...</p>
+          <div class="progress-bar-container">
+            <div class="progress-bar-fill"></div>
+          </div>
+          <p class="loading-hint">Do not close this window</p>
+        </div>
+      </div>
+    `;
+    
+    const style = document.createElement('style');
+    style.textContent = `
+      .loading-overlay {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.6);
+        backdrop-filter: blur(4px);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        z-index: 9999;
+        animation: fadeIn 0.3s ease-in-out;
+      }
 
-  document.querySelectorAll('.products-grid .product-card').forEach(c=>{ c.classList.add('fade-up'); observer.observe(c); });
+      @keyframes fadeIn {
+        from {
+          opacity: 0;
+        }
+        to {
+          opacity: 1;
+        }
+      }
+
+      .loading-container {
+        background: white;
+        border-radius: 20px;
+        padding: 40px;
+        text-align: center;
+        box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+        max-width: 400px;
+        animation: slideUp 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+      }
+
+      @keyframes slideUp {
+        from {
+          transform: translateY(30px);
+          opacity: 0;
+        }
+        to {
+          transform: translateY(0);
+          opacity: 1;
+        }
+      }
+
+      .spinner-wrapper {
+        margin-bottom: 25px;
+      }
+
+      .animated-spinner {
+        position: relative;
+        width: 80px;
+        height: 80px;
+        margin: 0 auto;
+      }
+
+      .spinner-ring {
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        border: 4px solid transparent;
+        border-top-color: #198754;
+        border-radius: 50%;
+        animation: spin 1.5s linear infinite;
+      }
+
+      .spinner-ring:nth-child(2) {
+        width: 85%;
+        height: 85%;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        border-top-color: #20c997;
+        animation: spin 1.2s linear infinite reverse;
+      }
+
+      .spinner-ring:nth-child(3) {
+        width: 70%;
+        height: 70%;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        border-top-color: #0dcaf0;
+        animation: spin 0.9s linear infinite;
+      }
+
+      @keyframes spin {
+        0% {
+          transform: rotate(0deg);
+        }
+        100% {
+          transform: rotate(360deg);
+        }
+      }
+
+      .loading-content {
+        animation: fadeIn 0.5s ease-in-out 0.2s both;
+      }
+
+      .loading-title {
+        font-size: 18px;
+        font-weight: 600;
+        color: #1a1a1a;
+        margin: 0 0 10px 0;
+      }
+
+      .loading-message {
+        font-size: 14px;
+        color: #666;
+        margin: 0 0 20px 0;
+        line-height: 1.5;
+      }
+
+      .progress-bar-container {
+        width: 100%;
+        height: 4px;
+        background: #e9ecef;
+        border-radius: 10px;
+        overflow: hidden;
+        margin-bottom: 15px;
+      }
+
+      .progress-bar-fill {
+        height: 100%;
+        background: linear-gradient(90deg, #198754, #20c997, #0dcaf0);
+        border-radius: 10px;
+        animation: progressFill 2s ease-in-out infinite;
+      }
+
+      @keyframes progressFill {
+        0% {
+          width: 0%;
+        }
+        50% {
+          width: 100%;
+        }
+        100% {
+          width: 0%;
+        }
+      }
+
+      .loading-hint {
+        font-size: 12px;
+        color: #999;
+        margin: 0;
+        font-style: italic;
+      }
+
+      @media (max-width: 480px) {
+        .loading-container {
+          margin: 20px;
+          padding: 30px 20px;
+        }
+
+        .animated-spinner {
+          width: 60px;
+          height: 60px;
+        }
+
+        .loading-title {
+          font-size: 16px;
+        }
+      }
+    `;
+    
+    document.head.appendChild(style);
+    document.body.appendChild(overlay);
+    return overlay;
+  }
+
+  function showLoadingOverlay(title = "Processing Your Order", message = "Please wait while we prepare your payment...") {
+    let overlay = document.querySelector('.loading-overlay');
+    if (!overlay) {
+      overlay = createLoadingOverlay();
+    }
+    
+    overlay.querySelector('.loading-title').textContent = title;
+    overlay.querySelector('.loading-message').textContent = message;
+    overlay.style.display = 'flex';
+    return overlay;
+  }
+
+  function hideLoadingOverlay() {
+    const overlay = document.querySelector('.loading-overlay');
+    if (overlay) {
+      overlay.style.animation = 'fadeOut 0.3s ease-in-out';
+      setTimeout(() => {
+        overlay.style.display = 'none';
+        overlay.style.animation = 'fadeIn 0.3s ease-in-out';
+      }, 300);
+    }
+  }
+
+  function updateLoadingMessage(message) {
+    const overlay = document.querySelector('.loading-overlay');
+    if (overlay) {
+      overlay.querySelector('.loading-message').textContent = message;
+    }
+  }
+
+  // ---------- Checkout Handler ----------
+  checkoutBtn.addEventListener("click", async () => {
+    if (checkoutBtn.disabled) return;
+    checkoutBtn.disabled = true;
+
+    if (!cart.length) {
+      checkoutBtn.disabled = false;
+      return alert("Cart is empty");
+    }
+
+    // Get values from form
+    const name = document.querySelector('.shipping-name')?.value.trim() || "";
+    const email = document.querySelector('.shipping-email')?.value.trim() || "";
+    const address = document.querySelector('.shipping-address')?.value.trim() || "";
+    const pincode = document.querySelector('.shipping-pincode')?.value.trim() || "";
+    const phone = document.querySelector('.contact-number')?.value.trim() || "";
+
+    // Validation
+    if (!name || !email || !address || !phone || !pincode) {
+      checkoutBtn.disabled = false;
+      return alert("Please fill all shipping details");
+    }
+
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(email)) {
+      checkoutBtn.disabled = false;
+      return alert("Please enter a valid email address");
+    }
+
+    const phoneRegex = /^[6-9]\d{9}$/;
+    if (!phoneRegex.test(phone)) {
+      checkoutBtn.disabled = false;
+      return alert("Please enter a valid 10-digit phone number");
+    }
+
+    const pincodeRegex = /^\d{6}$/;
+    if (!pincodeRegex.test(pincode)) {
+      checkoutBtn.disabled = false;
+      return alert("Please enter a valid 6-digit pincode");
+    }
+
+    const { subtotal, shipping, grandTotal } = calculateTotals();
+
+    // Build notes with shipping info and items
+    const notes = {
+      shipping: JSON.stringify({ name, email, address, phone, pincode }),
+      items: JSON.stringify(cart)
+    };
+
+    console.log("Customer Email:", email);
+    console.log("Cart Total:", grandTotal);
+
+    try {
+      if (dev_mode) {
+        showLoadingOverlay("Simulating Payment", "Testing payment process...");
+
+        const simulatedPaymentId = "DEV-" + Date.now();
+        console.log("Dev mode: simulating payment", simulatedPaymentId);
+
+        updateLoadingMessage("Sending order emails...");
+
+        const webhookRes = await fetch(`http://localhost:3000/razorpay-webhook`, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            "x-razorpay-signature": "dev-mode-simulated"
+          },
+          body: JSON.stringify({
+            payload: {
+              payment: {
+                entity: {
+                  id: simulatedPaymentId,
+                  amount: grandTotal * 100,
+                  notes
+                }
+              }
+            }
+          })
+        });
+
+        const webhookData = await webhookRes.json();
+        console.log("Webhook response:", webhookData);
+
+        window.location.href = `/thankyou.html?pid=${simulatedPaymentId}`;
+
+      } else {
+        // Production: Create Razorpay order
+        showLoadingOverlay("Processing Payment", "Preparing your transaction...");
+
+        const API_URL = window.location.hostname === "localhost" ? "http://localhost:3000" : "https://www.thelocalbasket.in";
+
+        const orderRes = await fetch(`${API_URL}/create-razorpay-order`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ amount: grandTotal, currency: "INR", notes })
+        });
+
+        if (!orderRes.ok) {
+          throw new Error(`Server error: ${orderRes.status}`);
+        }
+
+        const orderData = await orderRes.json();
+
+        if (!orderData.success) {
+          throw new Error(orderData.error || "Failed to create payment order");
+        }
+
+        hideLoadingOverlay();
+
+        const options = {
+          key: orderData.order.key_id,
+          amount: orderData.order.amount,
+          currency: orderData.order.currency,
+          name: "The Local Basket",
+          description: "Order Payment",
+          order_id: orderData.order.id,
+          prefill: { name, email, contact: phone },
+          theme: { color: "#198754" },
+          handler: function(response) {
+            console.log("Payment successful:", response.razorpay_payment_id);
+            window.location.href = `/thankyou.html?pid=${response.razorpay_payment_id}`;
+          },
+          modal: {
+            ondismiss: function() {
+              console.log("Payment popup closed");
+              checkoutBtn.disabled = false;
+              hideLoadingOverlay();
+            }
+          }
+        };
+
+        const rzp = new Razorpay(options);
+
+        rzp.on('payment.failed', function(response) {
+          console.error("Payment failed:", response.error);
+          hideLoadingOverlay();
+          alert("Payment failed: " + response.error.description);
+          checkoutBtn.disabled = false;
+        });
+
+        rzp.open();
+      }
+
+    } catch (err) {
+      console.error("Checkout error:", err);
+      hideLoadingOverlay();
+      alert("Error: " + err.message);
+      checkoutBtn.disabled = false;
+    }
+  });
 
 });
