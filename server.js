@@ -1,9 +1,8 @@
 // ========================
-// server.js - FIXED
+// server.js - Gmail API version
 // ========================
 const express = require("express");
 const cors = require("cors");
-const nodemailer = require("nodemailer");
 const helmet = require("helmet");
 const rateLimit = require("express-rate-limit");
 const { google } = require("googleapis");
@@ -45,13 +44,13 @@ const razorpay = new Razorpay({
 });
 
 // ========================
-// Gmail OAuth2 Setup
+// Gmail API Setup
 // ========================
 const CLIENT_SECRET = process.env.GMAIL_CLIENT_SECRET;
 const REFRESH_TOKEN = process.env.GMAIL_REFRESH_TOKEN;
 const EMAIL_USER = process.env.EMAIL_USER;
-const CLIENT_ID = process.env.GMAIL_CLIENT_ID; // ✅ Add this to .env
-const REDIRECT_URI = process.env.GMAIL_REDIRECT_URI || "http://localhost:3000/";
+const CLIENT_ID = process.env.GMAIL_CLIENT_ID;
+const REDIRECT_URI = process.env.GMAIL_REDIRECT_URI || "https://developers.google.com/oauthplayground";
 
 console.log("📧 Email config check:");
 console.log("   CLIENT_ID:", CLIENT_ID ? "✅ Set" : "❌ Missing");
@@ -59,28 +58,34 @@ console.log("   CLIENT_SECRET:", CLIENT_SECRET ? "✅ Set" : "❌ Missing");
 console.log("   REFRESH_TOKEN:", REFRESH_TOKEN ? "✅ Set" : "❌ Missing");
 console.log("   EMAIL_USER:", EMAIL_USER ? "✅ Set" : "❌ Missing");
 
-// Create Nodemailer transporter
-function createTransporter() {
-  if (!CLIENT_ID || !CLIENT_SECRET || !REFRESH_TOKEN) {
-    throw new Error("Gmail OAuth credentials missing in .env");
+// Gmail API helper
+const oAuth2Client = new google.auth.OAuth2(CLIENT_ID, CLIENT_SECRET, REDIRECT_URI);
+oAuth2Client.setCredentials({ refresh_token: REFRESH_TOKEN });
+
+async function sendGmail(to, subject, html) {
+  try {
+    const gmail = google.gmail({ version: "v1", auth: oAuth2Client });
+
+    const rawMessage = Buffer.from(
+      `From: "The Local Basket" <${EMAIL_USER}>\r\n` +
+      `To: ${to}\r\n` +
+      `Subject: ${subject}\r\n` +
+      `Content-Type: text/html; charset=utf-8\r\n\r\n` +
+      html
+    ).toString("base64")
+      .replace(/\+/g, "-")
+      .replace(/\//g, "_")
+      .replace(/=+$/, "");
+
+    await gmail.users.messages.send({
+      userId: "me",
+      requestBody: { raw: rawMessage },
+    });
+    return true;
+  } catch (err) {
+    console.error("❌ Gmail API send error:", err.message);
+    throw err;
   }
-
-  const oAuth2Client = new google.auth.OAuth2(CLIENT_ID, CLIENT_SECRET, REDIRECT_URI);
-  oAuth2Client.setCredentials({ refresh_token: REFRESH_TOKEN });
-
-  return nodemailer.createTransport({
-    service: "gmail",
-    auth: {
-      type: "OAuth2",
-      user: EMAIL_USER,
-      clientId: CLIENT_ID,
-      clientSecret: CLIENT_SECRET,
-      refreshToken: REFRESH_TOKEN,
-    },
-    pool: true,
-    maxConnections: 5,
-    maxMessages: 100,
-  });
 }
 
 // ========================
@@ -110,8 +115,6 @@ function wrapEmail(title, body) {
 // ========================
 async function sendOrderEmails(orderData) {
   try {
-    const transporter = createTransporter();
-
     const sanitizedOrder = {
       ...orderData,
       shipping: {
@@ -154,12 +157,11 @@ async function sendOrderEmails(orderData) {
       </table>
     `;
 
-    // Admin email
-    const adminMail = {
-      from: `"New Order" <${EMAIL_USER}>`,
-      to: process.env.RECEIVER_EMAIL,
-      subject: `🛒 New Order - ₹${sanitizedOrder.grandTotal}`,
-      html: wrapEmail("New Order Received", `
+    // Send admin email
+    await sendGmail(
+      process.env.RECEIVER_EMAIL,
+      `🛒 New Order - ₹${sanitizedOrder.grandTotal}`,
+      wrapEmail("New Order Received", `
         <p><strong>Name:</strong> ${sanitizedOrder.shipping.name}</p>
         <p><strong>Email:</strong> ${sanitizedOrder.shipping.email}</p>
         <p><strong>Phone:</strong> ${sanitizedOrder.shipping.phone}</p>
@@ -168,31 +170,25 @@ async function sendOrderEmails(orderData) {
         <p><strong>Payment ID:</strong> ${sanitizedOrder.paymentId}</p>
         <h4>Order Details:</h4>
         ${itemsTable}
-      `),
-    };
+      `)
+    );
+    console.log("✅ Admin email sent to:", process.env.RECEIVER_EMAIL);
 
-    // Customer email
-    const customerMail = {
-      from: `"The Local Basket" <${EMAIL_USER}>`,
-      to: sanitizedOrder.shipping.email,
-      subject: `✅ Order Confirmation - ₹${sanitizedOrder.grandTotal}`,
-      html: wrapEmail("Thank You for Your Order!", `
+    // Send customer email
+    await sendGmail(
+      sanitizedOrder.shipping.email,
+      `✅ Order Confirmation - ₹${sanitizedOrder.grandTotal}`,
+      wrapEmail("Thank You for Your Order!", `
         <p>Hi <strong>${sanitizedOrder.shipping.name}</strong>,</p>
         <p>We've received your order and payment has been processed successfully!</p>
         <p><strong>Payment ID:</strong> ${sanitizedOrder.paymentId}</p>
         <h4>Order Summary:</h4>
         ${itemsTable}
         <p style="margin-top: 20px; color: #666;">We'll ship your order soon. Thank you for shopping with us!</p>
-      `),
-    };
-
-    // Send emails
-    await transporter.sendMail(adminMail);
-    console.log("✅ Admin email sent to:", process.env.RECEIVER_EMAIL);
-    
-    await transporter.sendMail(customerMail);
+      `)
+    );
     console.log("✅ Customer email sent to:", sanitizedOrder.shipping.email);
-    
+
   } catch (err) {
     console.error("❌ Send email error:", err.message);
   }
@@ -210,15 +206,12 @@ app.get("/health", (req, res) => {
 // Test email endpoint
 app.post("/test-email", async (req, res) => {
   try {
-    const transporter = createTransporter();
-    const result = await transporter.sendMail({
-      from: `"Test" <${EMAIL_USER}>`,
-      to: process.env.RECEIVER_EMAIL,
-      subject: "Test Email - Local Basket",
-      html: wrapEmail("Test Email", "<p>If you receive this, Gmail OAuth2 is working correctly!</p>"),
-    });
-
-    res.json({ success: true, messageId: result.messageId, message: "Test email sent!" });
+    await sendGmail(
+      process.env.RECEIVER_EMAIL,
+      "Test Email - Local Basket",
+      wrapEmail("Test Email", "<p>If you receive this, Gmail API is working correctly!</p>")
+    );
+    res.json({ success: true, message: "Test email sent!" });
   } catch (err) {
     console.error("❌ Test email error:", err);
     res.status(500).json({ success: false, error: err.message });
@@ -261,7 +254,6 @@ app.post("/razorpay-webhook", async (req, res) => {
     }
 
     const payment = req.body.payload?.payment?.entity || req.body.payment?.entity;
-    
     if (!payment) {
       console.error("❌ No payment entity found in webhook");
       return res.status(400).json({ status: "invalid payload" });
@@ -274,7 +266,7 @@ app.post("/razorpay-webhook", async (req, res) => {
       items: payment.notes?.items ? JSON.parse(payment.notes.items) : [],
     };
 
-    // Send emails in background (don't wait)
+    // Send emails in background
     sendOrderEmails(orderData).catch(err => console.error("❌ Background email error:", err));
 
     res.json({ status: "ok" });
