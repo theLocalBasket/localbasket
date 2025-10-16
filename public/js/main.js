@@ -15,6 +15,23 @@ document.addEventListener("DOMContentLoaded", async () => {
     cartCountSpans.forEach(span => span.textContent = count);
   };
 
+    // ============= SNIPPET 1: Add this helper function at the top with other helper functions =============
+// Place this AFTER the "const updateCartCount = () => {" function
+
+const showCartMessage = (message = "Item added to cart!", duration = 1000) => {
+  const cartMsg = document.getElementById("cart-message");
+  if (!cartMsg) return;
+  
+  cartMsg.textContent = message;
+  cartMsg.classList.add("show");
+  cartMsg.style.display = "block";
+  
+  setTimeout(() => {
+    cartMsg.classList.remove("show");
+    cartMsg.style.display = "none";
+  }, duration);
+};
+
   const removeFromCart = id => { 
     cart = cart.filter(i => i.id !== id); 
     updateCartCount(); 
@@ -145,13 +162,17 @@ document.addEventListener("DOMContentLoaded", async () => {
     addBtn.disabled = product.qty === 0;
     addBtn.onclick = () => {
       const existing = cart.find(i => i.id === product.id);
-      if (existing) existing.qty++;
-      else cart.push({ id: product.id, name: product.name, price: product.price, img: `/${product.image}`, qty: 1 });
+      if (existing) {
+        existing.qty++;
+        showCartMessage(`${product.name} quantity updated!`);
+      } else {
+        cart.push({ id: product.id, name: product.name, price: product.price, img: `/${product.image}`, qty: 1 });
+        showCartMessage(`${product.name} added to cart!`);
+      }
       updateCartCount();
       renderCart();
       quickViewModal.hide();
     };
-    
     quickViewModal.show();
   };
 
@@ -186,7 +207,7 @@ document.addEventListener("DOMContentLoaded", async () => {
       div.querySelector('.product-img').addEventListener('click', () => showQuickView(product));
     });
 
-    // Add to cart
+   // Add to cart
     productsGrid.querySelectorAll(".btn-add-cart").forEach(btn => {
       btn.addEventListener("click", () => {
         const parent = btn.closest(".product-card");
@@ -195,12 +216,22 @@ document.addEventListener("DOMContentLoaded", async () => {
         const price = Number(parent.querySelector(".product-price").textContent.replace("₹", ""));
         const img = parent.querySelector("img").src;
         const existing = cart.find(i => i.id === id);
-        if (existing) existing.qty++;
-        else cart.push({ id, name, price, img, qty: 1 });
+        
+        // Check if item already exists
+        if (existing) {
+          existing.qty++;
+          showCartMessage(`${name} quantity updated!`);
+        } else {
+          cart.push({ id, name, price, img, qty: 1 });
+          showCartMessage(`${name} added to cart!`);
+        }
+        
         updateCartCount();
         renderCart();
       });
     });
+
+
 
   } catch (err) {
     console.error(err);
