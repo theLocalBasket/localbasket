@@ -66,12 +66,17 @@ async function sendGmail(to, subject, html) {
   try {
     const gmail = google.gmail({ version: "v1", auth: oAuth2Client });
 
+    // Encode subject with UTF-8
+    const encodedSubject = `=?utf-8?B?${Buffer.from(subject).toString("base64")}?=`;
+
     const rawMessage = Buffer.from(
       `From: "The Local Basket" <${EMAIL_USER}>\r\n` +
       `To: ${to}\r\n` +
-      `Subject: ${subject}\r\n` +
-      `Content-Type: text/html; charset=utf-8\r\n\r\n` +
-      html
+      `Subject: ${encodedSubject}\r\n` +
+      `MIME-Version: 1.0\r\n` +
+      `Content-Type: text/html; charset=utf-8\r\n` +
+      `Content-Transfer-Encoding: base64\r\n\r\n` +
+      Buffer.from(html).toString("base64")
     ).toString("base64")
       .replace(/\+/g, "-")
       .replace(/\//g, "_")

@@ -91,6 +91,70 @@ document.addEventListener("DOMContentLoaded", async () => {
     cartBody.querySelectorAll(".remove-item").forEach(btn => btn.addEventListener("click", () => removeFromCart(btn.dataset.id)));
   };
 
+  // ---------- Quick View Modal ----------
+  function createQuickViewModal() {
+    const modal = document.createElement('div');
+    modal.className = 'modal fade';
+    modal.id = 'quickViewModal';
+    modal.tabIndex = '-1';
+    modal.innerHTML = `
+      <div class="modal-dialog modal-lg">
+        <div class="modal-content rounded-4">
+          <div class="modal-header border-0 pb-0">
+            <h5 class="modal-title">Quick View</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <div class="modal-body">
+            <div class="row">
+              <div class="col-md-6">
+                <img id="quickViewImage" src="" alt="Product" class="img-fluid rounded-3">
+              </div>
+              <div class="col-md-6">
+                <h4 id="quickViewTitle" class="fw-bold mb-2"></h4>
+                <p id="quickViewDescription" class="text-muted mb-3"></p>
+                <h5 id="quickViewPrice" class="text-success fw-bold mb-3"></h5>
+                <p id="quickViewStock" class="mb-3"></p>
+                <div class="d-flex gap-2">
+                  <button id="quickViewAddBtn" class="btn btn-success flex-grow-1"><i class="bi bi-cart-plus me-2"></i>Add to Cart</button>
+                  <button class="btn btn-outline-secondary" data-bs-dismiss="modal">Close</button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    `;
+    document.body.appendChild(modal);
+    return new bootstrap.Modal(modal);
+  }
+
+  const quickViewModal = createQuickViewModal();
+
+  const showQuickView = (product) => {
+    document.getElementById('quickViewImage').src = `/${product.image}`;
+    document.getElementById('quickViewTitle').textContent = product.name;
+    document.getElementById('quickViewDescription').textContent = product.description;
+    document.getElementById('quickViewPrice').textContent = `₹${product.price}`;
+    
+    const stockText = product.qty === 0 
+      ? '<span class="text-danger"><i class="bi bi-x-circle me-1"></i>Out of Stock</span>'
+      : `<span class="text-success"><i class="bi bi-check-circle me-1"></i>In Stock (${product.qty} available)</span>`;
+    document.getElementById('quickViewStock').innerHTML = stockText;
+    
+    const addBtn = document.getElementById('quickViewAddBtn');
+    addBtn.disabled = product.qty === 0;
+    addBtn.onclick = () => {
+      const existing = cart.find(i => i.id === product.id);
+      if (existing) existing.qty++;
+      else cart.push({ id: product.id, name: product.name, price: product.price, img: `/${product.image}`, qty: 1 });
+      updateCartCount();
+      renderCart();
+      quickViewModal.hide();
+    };
+    
+    quickViewModal.show();
+  };
+
   // ---------- Fetch Products ----------
   try {
     const res = await fetch("/api/products");
@@ -111,9 +175,15 @@ document.addEventListener("DOMContentLoaded", async () => {
         ? `<span class="badge bg-danger position-absolute top-0 end-0 m-2">Out of Stock</span>`
         : "";
 
-      div.innerHTML = `<div class="position-relative">${badgeHTML}<img src="/${product.image}" class="product-img w-100 rounded" alt="${product.name}" loading="lazy"></div>
+      div.innerHTML = `<div class="position-relative" style="cursor: pointer;" data-product-id="${product.id}">
+        ${badgeHTML}
+        <img src="/${product.image}" class="product-img w-100 rounded" alt="${product.name}" loading="lazy" style="cursor: pointer;">
+      </div>
         <div class="product-body p-2"><h5 class="product-title">${product.name}</h5><p class="product-description small">${product.description}</p><div class="product-price fw-bold">₹${product.price}</div>${buttonHTML}</div>`;
       productsGrid.appendChild(div);
+
+      // Quick view on image click
+      div.querySelector('.product-img').addEventListener('click', () => showQuickView(product));
     });
 
     // Add to cart
@@ -368,7 +438,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     }
   }
 
-  // ---------- Checkout Handler ----------
+// ---------- Checkout Handler ----------
   checkoutBtn.addEventListener("click", async () => {
     if (checkoutBtn.disabled) return;
     checkoutBtn.disabled = true;
@@ -475,7 +545,7 @@ document.addEventListener("DOMContentLoaded", async () => {
           throw new Error(orderData.error || "Failed to create payment order");
         }
 
-        hideLoadingOverlay();
+        // Keep loading overlay visible - don't hide it
 
         const options = {
           key: orderData.order.key_id,
@@ -488,6 +558,7 @@ document.addEventListener("DOMContentLoaded", async () => {
           theme: { color: "#198754" },
           handler: function(response) {
             console.log("Payment successful:", response.razorpay_payment_id);
+            // Keep overlay visible during redirect
             window.location.href = `/thankyou.html?pid=${response.razorpay_payment_id}`;
           },
           modal: {
@@ -518,5 +589,4 @@ document.addEventListener("DOMContentLoaded", async () => {
       checkoutBtn.disabled = false;
     }
   });
-
 });
