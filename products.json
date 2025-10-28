@@ -222,5 +222,13 @@
     "price": 60,
     "qty": 10,
     "image": "images/flower phone charm.jpg"
+  },
+  {
+    "name": "Crochet Earrings ✨",
+    "description": "Light weight, stylish crochet earrings.",
+    "price": 130,
+    "qty": 10,
+    "image": "images/earringsNew.jpg"
   }
+
 ]
