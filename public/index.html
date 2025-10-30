@@ -67,17 +67,37 @@
   <div class="modal-dialog modal-lg">
     <div class="modal-content rounded-4 shadow">
       <div class="modal-header border-0">
-        <h5 class="modal-title"><i class="bi bi-cart3 me-2"></i>Your Cart</h5>
+        <h5 class="modal-title">
+          <i class="bi bi-cart3 me-2"></i>Your Cart
+        </h5>
         <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
       </div>
-      <div class="modal-body" id="cartBody"></div>
+
+      <div class="modal-body" id="cartBody">
+        <!-- Cart items will be dynamically injected here -->
+      </div>
+      <!-- Cart Summary -->
+<div id="cartSummary" class="px-4 pb-3"></div>
+
+
+     
+
       <div class="modal-footer border-0">
-        <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Continue Shopping</button>
-        <button type="button" class="btn btn-primary" id="checkoutBtn">Place Order & Pay</button>
+        <button
+          type="button"
+          class="btn btn-outline-secondary"
+          data-bs-dismiss="modal"
+        >
+          Continue Shopping
+        </button>
+        <button type="button" class="btn btn-primary" id="checkoutBtn">
+          Place Order & Pay
+        </button>
       </div>
     </div>
   </div>
 </div>
+
 <footer class="footer py-5" style="background-color: var(--primary); color: var(--secondary);">
   <div class="container">
     <div class="row gy-4 align-items-start">
@@ -136,7 +156,9 @@
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.4/dist/js/bootstrap.bundle.min.js"></script>
 <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+<!-- <script src="/js-min/main.min.js" defer></script>-->
 <script src="/js-min/main.min.js" defer></script>
+
 <script>
   document.getElementById("scrollToTop").addEventListener("click", function (e) {
     e.preventDefault();

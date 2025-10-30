@@ -1,0 +1,35 @@
+[
+  {
+    "code": "XMAS25",
+    "name": "Christmas Offer",
+    "type": "percent",
+    "value": 25,
+    "minPurchase": 300,
+    "maxDiscount": 500,
+    "expires": "2025-12-26",
+    "usageLimit": 100,
+    "message": "🎄 Christmas Special! 25% off on all orders above ₹300 (max ₹500)."
+  },
+  {
+    "code": "HALLOWEEN30",
+    "name": "Halloween Deal",
+    "type": "flat",
+    "value": 100,
+    "minPurchase": 400,
+    "maxDiscount": 100,
+    "expires": "2025-11-02",
+    "usageLimit": 50,
+    "message": "🎃 Trick or Treat! Get ₹100 off on orders above ₹400."
+  },
+  {
+    "code": "NY2026",
+    "name": "New Year Offer",
+    "type": "percent",
+    "value": 20,
+    "minPurchase": 250,
+    "maxDiscount": 300,
+    "expires": "2026-01-10",
+    "usageLimit": 200,
+    "message": "✨ Welcome 2026! Enjoy 20% off on orders above ₹250."
+  }
+]
