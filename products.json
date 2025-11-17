@@ -150,28 +150,28 @@
     "name": "Penguin Phone Charm 🐧",
     "description": "Fun handcrafted penguin charm for your device.",
     "price": 60,
-    "qty": 10,
+    "qty": 0,
     "image": "images/Phone charm02.jpg"
   },
   {
     "name": "Panda Phone Charm 🐼",
     "description": "Cute handmade panda charm for animal lovers.",
     "price": 60,
-    "qty": 10,
+    "qty": 0,
     "image": "images/Phone charm03.jpg"
   },
   {
     "name": "Butterfly Phone Charm 🦋",
     "description": "Delicate handcrafted butterfly charm.",
     "price": 60,
-    "qty": 10,
+    "qty": 0,
     "image": "images/Phone charm04.jpg"
   },
   {
     "name": "Maple Leaf Phone Charm 🍁",
     "description": "Autumn-inspired handmade maple leaf charm.",
     "price": 60,
-    "qty": 10,
+    "qty": 0,
     "image": "images/Phone charm05.jpg"
   },
   {
@@ -229,6 +229,20 @@
     "price": 130,
     "qty": 10,
     "image": "images/earringsNew.jpg"
+  },
+  {
+    "name": "Sunflower Bag Charm / keychain 🌻",
+    "description": "Light weight, stylish crochet earrings.",
+    "price": 130,
+    "qty": 10,
+    "image": "images/sunflower1.jpg"
+  },
+  {
+    "name": "Crochet Sunflower Bag Charm 🌻",
+    "description": "Light weight, stylish crochet earrings.",
+    "price": 130,
+    "qty": 10,
+    "image": "images/Sunflower bag charm.jpg"
   }
 
 ]
