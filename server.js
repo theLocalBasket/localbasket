@@ -34,6 +34,11 @@ app.use(
     limit: "100kb",
   })
 );
+// Health check
+app.get("/health", (req, res) => {
+  res.json({ status: "OK", service: "Email + Razorpay" });
+});
+
 app.use(express.static("public"));
 app.use('/images', express.static('public/images'));
 app.disable("x-powered-by");
@@ -290,10 +295,6 @@ async function sendOrderEmails(orderData) {
 // Routes
 // ========================
 
-// Health check
-app.get("/health", (req, res) => {
-  res.json({ status: "OK", service: "Email + Razorpay" });
-});
 
 // Test email endpoint
 app.post("/test-email", async (req, res) => {
@@ -437,10 +438,6 @@ app.get("/api/coupons", (req, res) => {
   }
 });
 
-
-app.get("/health", (req, res) => {
-  res.send("OK");
-});
 
 
 
