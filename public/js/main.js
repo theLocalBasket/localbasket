@@ -267,6 +267,29 @@ function calculateTotals() {
     btn.addEventListener("click", () => cartModal.show());
   });
 
+  // ---------- Cart Modal Close RESET ----------
+  cartModalEl.addEventListener("hidden.bs.modal", () => {
+    // Clear entire cart
+    cart = [];
+
+    // Reset applied coupon
+    appliedCoupon = null;
+
+    // Reset Counts & Items UI
+    updateCartCount();
+    renderCart();
+
+    // Reset Summary UI
+    updateCartSummary({
+        subtotal: 0,
+        discount: 0,
+        shipping: 0,
+        grandTotal: 0
+    });
+});
+
+
+
   // ---------- Modern Loading Overlay ----------
   function createLoadingOverlay() {
     const overlay = document.createElement('div');

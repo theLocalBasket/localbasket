@@ -3,7 +3,7 @@
     "code": "XMAS25",
     "name": "Christmas Offer",
     "type": "percent",
-    "value": 25,
+    "value": 20,
     "minPurchase": 300,
     "maxDiscount": 500,
     "expires": "2025-12-26",
