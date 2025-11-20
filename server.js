@@ -1,15 +1,15 @@
 // ========================
-// server.js - Gmail API version (updated for coupon handling + improved logging)
+// server.js - Nodemailer (App Password) version
 // ========================
 const express = require("express");
 const cors = require("cors");
 const helmet = require("helmet");
 const rateLimit = require("express-rate-limit");
-const { google } = require("googleapis");
 const Razorpay = require("razorpay");
 const crypto = require("crypto");
 const fs = require("fs");
 const path = require("path");
+const nodemailer = require("nodemailer");
 
 require("dotenv").config();
 
@@ -34,14 +34,14 @@ app.use(
     limit: "100kb",
   })
 );
+app.use(express.static("public"));
+app.use("/images", express.static("public/images"));
+app.disable("x-powered-by");
+
 // Health check
 app.get("/health", (req, res) => {
   res.json({ status: "OK", service: "Email + Razorpay" });
 });
-
-app.use(express.static("public"));
-app.use('/images', express.static('public/images'));
-app.disable("x-powered-by");
 
 // ========================
 // Razorpay Setup
@@ -52,51 +52,32 @@ const razorpay = new Razorpay({
 });
 
 // ========================
-// Gmail API Setup
+// Nodemailer Setup (Gmail App Password)
 // ========================
-const CLIENT_SECRET = process.env.GMAIL_CLIENT_SECRET;
-const REFRESH_TOKEN = process.env.GMAIL_REFRESH_TOKEN;
 const EMAIL_USER = process.env.EMAIL_USER;
-const CLIENT_ID = process.env.GMAIL_CLIENT_ID;
-const REDIRECT_URI = process.env.GMAIL_REDIRECT_URI || "https://developers.google.com/oauthplayground";
+const GMAIL_APP_PASS = process.env.GMAIL_APP_PASS;
 
-console.log("📧 Email config check:");
-console.log("   CLIENT_ID:", CLIENT_ID ? "✅ Set" : "❌ Missing");
-console.log("   CLIENT_SECRET:", CLIENT_SECRET ? "✅ Set" : "❌ Missing");
-console.log("   REFRESH_TOKEN:", REFRESH_TOKEN ? "✅ Set" : "❌ Missing");
-console.log("   EMAIL_USER:", EMAIL_USER ? "✅ Set" : "❌ Missing");
-
-// Gmail API helper
-const oAuth2Client = new google.auth.OAuth2(CLIENT_ID, CLIENT_SECRET, REDIRECT_URI);
-oAuth2Client.setCredentials({ refresh_token: REFRESH_TOKEN });
+const transporter = nodemailer.createTransport({
+  service: "gmail",
+  auth: {
+    user: EMAIL_USER,
+    pass: GMAIL_APP_PASS,
+  },
+});
 
 async function sendGmail(to, subject, html) {
   try {
-    const gmail = google.gmail({ version: "v1", auth: oAuth2Client });
-
-    // Encode subject with UTF-8
-    const encodedSubject = `=?utf-8?B?${Buffer.from(subject).toString("base64")}?=`;
-
-    const rawMessage = Buffer.from(
-      `From: "The Local Basket" <${EMAIL_USER}>\r\n` +
-      `To: ${to}\r\n` +
-      `Subject: ${encodedSubject}\r\n` +
-      `MIME-Version: 1.0\r\n` +
-      `Content-Type: text/html; charset=utf-8\r\n` +
-      `Content-Transfer-Encoding: base64\r\n\r\n` +
-      Buffer.from(html).toString("base64")
-    ).toString("base64")
-      .replace(/\+/g, "-")
-      .replace(/\//g, "_")
-      .replace(/=+$/, "");
-
-    await gmail.users.messages.send({
-      userId: "me",
-      requestBody: { raw: rawMessage },
-    });
+    const mailOptions = {
+      from: `"The Local Basket" <${EMAIL_USER}>`,
+      to,
+      subject,
+      html,
+    };
+    const info = await transporter.sendMail(mailOptions);
+    console.log("✅ Email sent:", info.messageId);
     return true;
   } catch (err) {
-    console.error("❌ Gmail API send error:", err.message);
+    console.error("❌ Gmail send error:", err.message);
     throw err;
   }
 }
@@ -123,22 +104,19 @@ function wrapEmail(title, body) {
   </div>`;
 }
 
-
 // ========================
-// Send Emails (Enhanced)
-// (keeps same implementation as before)
+// Send Order Emails
 // ========================
 async function sendOrderEmails(orderData) {
   try {
     console.log("🧾 [EMAIL] Incoming orderData:", JSON.stringify(orderData, null, 2));
 
-    // ========================
-    // Extract & Sanitize
-    // ========================
-    // accept coupon either in orderData.notes.* or top-level coupon fields
-    const appliedCouponCode = sanitize(orderData.notes?.couponCode || orderData.couponCode || orderData.coupon?.code || "NONE");
-    const appliedCouponName = sanitize(orderData.notes?.couponName || orderData.couponName || orderData.coupon?.name || "");
-    const appliedDiscount = parseFloat(orderData.notes?.discountAmount || orderData.discountAmount || orderData.discount || orderData.coupon?.discount || 0) || 0;
+    const appliedCouponCode =
+      sanitize(orderData.notes?.couponCode || orderData.couponCode || orderData.coupon?.code || "NONE");
+    const appliedCouponName =
+      sanitize(orderData.notes?.couponName || orderData.couponName || orderData.coupon?.name || "");
+    const appliedDiscount =
+      parseFloat(orderData.notes?.discountAmount || orderData.discountAmount || orderData.discount || orderData.coupon?.discount || 0) || 0;
 
     const sanitizedOrder = {
       ...orderData,
@@ -164,9 +142,6 @@ async function sendOrderEmails(orderData) {
       discount: sanitizedOrder.discount,
     });
 
-    // ========================
-    // Build Order Table
-    // ========================
     const itemsTable = `
       <table style="width:100%; border-collapse:collapse; margin-top:15px; font-family:'Segoe UI',Arial,sans-serif; font-size:14px;">
         <thead>
@@ -206,9 +181,6 @@ async function sendOrderEmails(orderData) {
       </table>
     `;
 
-    // ========================
-    // Email Template Wrapper
-    // ========================
     const makeEmailBody = (title, message, footerNote = "") => `
       <div style="font-family:'Segoe UI',Arial,sans-serif; background:#f9fafb; padding:30px;">
         <div style="max-width:700px; margin:0 auto; background:white; border-radius:8px; box-shadow:0 2px 8px rgba(0,0,0,0.05); overflow:hidden;">
@@ -225,9 +197,7 @@ async function sendOrderEmails(orderData) {
       </div>
     `;
 
-    // ========================
-    // ADMIN EMAIL
-    // ========================
+    // Admin Email
     const adminBody = makeEmailBody(
       "🛒 New Order Received",
       `
@@ -256,9 +226,7 @@ async function sendOrderEmails(orderData) {
     await sendGmail(process.env.RECEIVER_EMAIL, `🛒 New Order - ₹${(sanitizedOrder.grandTotal || 0).toFixed(2)}`, adminBody);
     console.log("✅ [EMAIL] Admin email sent successfully.");
 
-    // ========================
-    // CUSTOMER EMAIL
-    // ========================
+    // Customer Email
     const customerBody = makeEmailBody(
       "✅ Order Confirmation",
       `
@@ -290,19 +258,17 @@ async function sendOrderEmails(orderData) {
   }
 }
 
-
 // ========================
 // Routes
 // ========================
 
-
-// Test email endpoint
+// Test email
 app.post("/test-email", async (req, res) => {
   try {
     await sendGmail(
       process.env.RECEIVER_EMAIL,
       "Test Email - Local Basket",
-      wrapEmail("Test Email", "<p>If you receive this, Gmail API is working correctly!</p>")
+      wrapEmail("Test Email", "<p>If you receive this, Gmail App Password is working!</p>")
     );
     res.json({ success: true, message: "Test email sent!" });
   } catch (err) {
@@ -337,26 +303,18 @@ app.post("/razorpay-webhook", async (req, res) => {
     const webhookSecret = process.env.RAZORPAY_WEBHOOK_SECRET;
     const isDevMode = req.headers["x-razorpay-signature"] === "dev-mode-simulated";
 
-    if (!isDevMode) {
-      if (!webhookSecret) {
-        console.warn("⚠️ Razorpay webhook secret not set; skipping signature verification.");
-      } else {
-        const shasum = crypto.createHmac("sha256", webhookSecret);
-        shasum.update(req.rawBody);
-        const digest = shasum.digest("hex");
-        if (digest !== req.headers["x-razorpay-signature"]) {
-          console.warn("❌ Webhook signature mismatch", { digest, header: req.headers["x-razorpay-signature"] });
-          return res.status(400).json({ status: "invalid signature" });
-        }
+    if (!isDevMode && webhookSecret) {
+      const shasum = crypto.createHmac("sha256", webhookSecret);
+      shasum.update(req.rawBody);
+      const digest = shasum.digest("hex");
+      if (digest !== req.headers["x-razorpay-signature"]) {
+        console.warn("❌ Webhook signature mismatch", { digest, header: req.headers["x-razorpay-signature"] });
+        return res.status(400).json({ status: "invalid signature" });
       }
     }
 
-    // support both webhook payload shapes
     const payment = req.body.payload?.payment?.entity || req.body.payment?.entity || req.body;
-    if (!payment) {
-      console.error("❌ No payment entity found in webhook");
-      return res.status(400).json({ status: "invalid payload" });
-    }
+    if (!payment) return res.status(400).json({ status: "invalid payload" });
 
     console.log("🔔 [WEBHOOK] Payment received:", {
       id: payment.id,
@@ -364,19 +322,11 @@ app.post("/razorpay-webhook", async (req, res) => {
       notes: payment.notes || {}
     });
 
-    // Parse notes and coupon robustly
     const notes = payment.notes || {};
-    console.log("📦 [WEBHOOK] Raw notes:", notes);
-
-    // coupon may be stringified JSON in notes.coupon or separate fields
     let parsedCoupon = null;
     if (notes.coupon) {
-      try {
-        parsedCoupon = typeof notes.coupon === "string" ? JSON.parse(notes.coupon) : notes.coupon;
-      } catch (e) {
-        // if parsing fails, fallback to the raw string as code
-        parsedCoupon = { code: String(notes.coupon) };
-      }
+      try { parsedCoupon = typeof notes.coupon === "string" ? JSON.parse(notes.coupon) : notes.coupon; }
+      catch (e) { parsedCoupon = { code: String(notes.coupon) }; }
     } else if (notes.couponCode || notes.couponName) {
       parsedCoupon = {
         code: notes.couponCode || "NONE",
@@ -401,7 +351,6 @@ app.post("/razorpay-webhook", async (req, res) => {
 
     console.log("🧾 [WEBHOOK] Final orderData prepared:", JSON.stringify(orderData, null, 2));
 
-    // Send emails (fire-and-forget but log errors)
     sendOrderEmails(orderData).then(() => {
       console.log("📧 [WEBHOOK] sendOrderEmails finished.");
     }).catch(err => {
@@ -437,9 +386,6 @@ app.get("/api/coupons", (req, res) => {
     res.status(500).json({ error: "Failed to load coupons" });
   }
 });
-
-
-
 
 // 404 & error handlers
 app.use((req, res) => res.status(404).json({ success: false, error: "Not found" }));
