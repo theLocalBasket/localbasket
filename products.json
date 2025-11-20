@@ -254,14 +254,5 @@
     "qty": 10,
     "image": "images/themed bouquet.jpg"
   }
-  ,
-  {
-
-    "name": "Demo  🌸",
-    "description": "Sesonal themed handcrafted bouquet, ideal for gifting or decor.",
-    "price": 2,
-    "qty": 10,
-    "image": "images/themed bouquet.jpg"
-  }
 
 ]
