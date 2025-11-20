@@ -243,6 +243,22 @@
     "price": 130,
     "qty": 10,
     "image": "images/Sunflower bag charm.jpg"
+  },
+  {
+
+    "name": "Handmade Crochet Bouquet - Large 🌸",
+    "description": "Large Size handcrafted bouquet for gifting or decor.",
+    "price": 1000,
+    "qty": 10,
+    "image": "images/large bouquet.jpg"
+  },
+  {
+
+    "name": "Themed - Handmade Crochet Bouquet  🌸",
+    "description": "Sesonal themed handcrafted bouquet, ideal for gifting or decor.",
+    "price": 820,
+    "qty": 10,
+    "image": "images/themed bouquet.jpg"
   }
 
 ]
