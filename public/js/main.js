@@ -15,27 +15,27 @@ document.addEventListener("DOMContentLoaded", async () => {
     cartCountSpans.forEach(span => span.textContent = count);
   };
 
-    // ============= SNIPPET 1: Add this helper function at the top with other helper functions =============
-// Place this AFTER the "const updateCartCount = () => {" function
+  // ============= SNIPPET 1: Add this helper function at the top with other helper functions =============
+  // Place this AFTER the "const updateCartCount = () => {" function
 
-const showCartMessage = (message = "Item added to cart!", duration = 1000) => {
-  const cartMsg = document.getElementById("cart-message");
-  if (!cartMsg) return;
-  
-  cartMsg.textContent = message;
-  cartMsg.classList.add("show");
-  cartMsg.style.display = "block";
-  
-  setTimeout(() => {
-    cartMsg.classList.remove("show");
-    cartMsg.style.display = "none";
-  }, duration);
-};
+  const showCartMessage = (message = "Item added to cart!", duration = 1000) => {
+    const cartMsg = document.getElementById("cart-message");
+    if (!cartMsg) return;
 
-  const removeFromCart = id => { 
-    cart = cart.filter(i => i.id !== id); 
-    updateCartCount(); 
-    renderCart(); 
+    cartMsg.textContent = message;
+    cartMsg.classList.add("show");
+    cartMsg.style.display = "block";
+
+    setTimeout(() => {
+      cartMsg.classList.remove("show");
+      cartMsg.style.display = "none";
+    }, duration);
+  };
+
+  const removeFromCart = id => {
+    cart = cart.filter(i => i.id !== id);
+    updateCartCount();
+    renderCart();
   };
 
   const changeQty = (id, delta) => {
@@ -46,13 +46,13 @@ const showCartMessage = (message = "Item added to cart!", duration = 1000) => {
     else { renderCart(); updateCartCount(); }
   };
 
-function calculateTotals() {
-  const subtotal = cart.reduce((sum, i) => sum + i.price * i.qty, 0);
-  const shipping = 0; // subtotal > 400 ? 0 : 80;
-  const discount = discountAmount || 0;
-  const grandTotal = subtotal + shipping - discount;
-  return { subtotal, shipping, discount, grandTotal };
-}
+  function calculateTotals() {
+    const subtotal = cart.reduce((sum, i) => sum + i.price * i.qty, 0);
+    const shipping = subtotal > 400 ? 0 : 80;
+    const discount = discountAmount || 0;
+    const grandTotal = subtotal + shipping - discount;
+    return { subtotal, shipping, discount, grandTotal };
+  }
 
 
   const renderCart = () => {
@@ -176,12 +176,12 @@ function calculateTotals() {
     document.getElementById('quickViewTitle').textContent = product.name;
     document.getElementById('quickViewDescription').textContent = product.description;
     document.getElementById('quickViewPrice').textContent = `₹${product.price}`;
-    
-    const stockText = product.qty === 0 
+
+    const stockText = product.qty === 0
       ? '<span class="text-danger"><i class="bi bi-x-circle me-1"></i>Out of Stock</span>'
       : `<span class="text-success"><i class="bi bi-check-circle me-1"></i>In Stock (${product.qty} available)</span>`;
     document.getElementById('quickViewStock').innerHTML = stockText;
-    
+
     const addBtn = document.getElementById('quickViewAddBtn');
     addBtn.disabled = product.qty === 0;
     addBtn.onclick = () => {
@@ -231,7 +231,7 @@ function calculateTotals() {
       div.querySelector('.product-img').addEventListener('click', () => showQuickView(product));
     });
 
-   // Add to cart
+    // Add to cart
     productsGrid.querySelectorAll(".btn-add-cart").forEach(btn => {
       btn.addEventListener("click", () => {
         const parent = btn.closest(".product-card");
@@ -240,7 +240,7 @@ function calculateTotals() {
         const price = Number(parent.querySelector(".product-price").textContent.replace("₹", ""));
         const img = parent.querySelector("img").src;
         const existing = cart.find(i => i.id === id);
-        
+
         // Check if item already exists
         if (existing) {
           existing.qty++;
@@ -249,7 +249,7 @@ function calculateTotals() {
           cart.push({ id, name, price, img, qty: 1 });
           showCartMessage(`${name} added to cart!`);
         }
-        
+
         updateCartCount();
         renderCart();
       });
@@ -281,12 +281,12 @@ function calculateTotals() {
 
     // Reset Summary UI
     updateCartSummary({
-        subtotal: 0,
-        discount: 0,
-        shipping: 0,
-        grandTotal: 0
+      subtotal: 0,
+      discount: 0,
+      shipping: 0,
+      grandTotal: 0
     });
-});
+  });
 
 
 
@@ -313,7 +313,7 @@ function calculateTotals() {
         </div>
       </div>
     `;
-    
+
     const style = document.createElement('style');
     style.textContent = `
       .loading-overlay {
@@ -480,7 +480,7 @@ function calculateTotals() {
         }
       }
     `;
-    
+
     document.head.appendChild(style);
     document.body.appendChild(overlay);
     return overlay;
@@ -491,7 +491,7 @@ function calculateTotals() {
     if (!overlay) {
       overlay = createLoadingOverlay();
     }
-    
+
     overlay.querySelector('.loading-title').textContent = title;
     overlay.querySelector('.loading-message').textContent = message;
     overlay.style.display = 'flex';
@@ -521,113 +521,113 @@ function calculateTotals() {
   //==========================//
 
   let appliedCoupon = null;
-let discountAmount = 0;
+  let discountAmount = 0;
 
-// 🧠 Initialize Coupon Logic — works even when dynamically injected
-function initCouponHandler() {
-  // short delay to ensure DOM elements exist
-  setTimeout(() => {
-    const couponCodeInput = document.getElementById("couponCode");
-    const applyCouponBtn = document.getElementById("applyCouponBtn");
-    const couponMessage = document.getElementById("couponMessage");
+  // 🧠 Initialize Coupon Logic — works even when dynamically injected
+  function initCouponHandler() {
+    // short delay to ensure DOM elements exist
+    setTimeout(() => {
+      const couponCodeInput = document.getElementById("couponCode");
+      const applyCouponBtn = document.getElementById("applyCouponBtn");
+      const couponMessage = document.getElementById("couponMessage");
 
-    // If coupon elements don't exist yet, skip
-    if (!couponCodeInput || !applyCouponBtn || !couponMessage) return;
+      // If coupon elements don't exist yet, skip
+      if (!couponCodeInput || !applyCouponBtn || !couponMessage) return;
 
-    // Remove previous listeners to prevent duplication
-    const newApplyBtn = applyCouponBtn.cloneNode(true);
-    applyCouponBtn.parentNode.replaceChild(newApplyBtn, applyCouponBtn);
+      // Remove previous listeners to prevent duplication
+      const newApplyBtn = applyCouponBtn.cloneNode(true);
+      applyCouponBtn.parentNode.replaceChild(newApplyBtn, applyCouponBtn);
 
-    // ✅ Add click event
-    newApplyBtn.addEventListener("click", async () => {
-      const code = couponCodeInput.value.trim().toUpperCase();
-      if (!code) {
-        couponMessage.classList.replace("text-success", "text-danger");
-        couponMessage.textContent = "⚠️ Please enter a coupon code.";
-        return;
-      }
-
-      try {
-        const res = await fetch("/api/coupons");
-        if (!res.ok) throw new Error("Failed to load coupons");
-        const coupons = await res.json();
-        const coupon = coupons.find(c => c.code === code);
-
-        // ❌ Invalid Coupon
-        if (!coupon) {
+      // ✅ Add click event
+      newApplyBtn.addEventListener("click", async () => {
+        const code = couponCodeInput.value.trim().toUpperCase();
+        if (!code) {
           couponMessage.classList.replace("text-success", "text-danger");
-          couponMessage.textContent = "❌ Invalid coupon code.";
-          appliedCoupon = null;
-          discountAmount = 0;
-          updateCartSummary();
+          couponMessage.textContent = "⚠️ Please enter a coupon code.";
           return;
         }
 
-        // ⏳ Check expiry
-        if (new Date(coupon.expires) < new Date()) {
-          couponMessage.classList.replace("text-success", "text-danger");
-          couponMessage.textContent = "⚠️ This coupon has expired.";
-          appliedCoupon = null;
-          discountAmount = 0;
+        try {
+          const res = await fetch("/api/coupons");
+          if (!res.ok) throw new Error("Failed to load coupons");
+          const coupons = await res.json();
+          const coupon = coupons.find(c => c.code === code);
+
+          // ❌ Invalid Coupon
+          if (!coupon) {
+            couponMessage.classList.replace("text-success", "text-danger");
+            couponMessage.textContent = "❌ Invalid coupon code.";
+            appliedCoupon = null;
+            discountAmount = 0;
+            updateCartSummary();
+            return;
+          }
+
+          // ⏳ Check expiry
+          if (new Date(coupon.expires) < new Date()) {
+            couponMessage.classList.replace("text-success", "text-danger");
+            couponMessage.textContent = "⚠️ This coupon has expired.";
+            appliedCoupon = null;
+            discountAmount = 0;
+            updateCartSummary();
+
+            return;
+          }
+
+          // 💰 Validate minimum purchase
+          const subtotal = cart.reduce((sum, i) => sum + i.price * i.qty, 0);
+          if (subtotal < coupon.minPurchase) {
+            couponMessage.classList.replace("text-success", "text-danger");
+            couponMessage.textContent = `⚠️ Minimum purchase ₹${coupon.minPurchase} required.`;
+            appliedCoupon = null;
+            discountAmount = 0;
+            updateCartSummary();
+            return;
+          }
+
+          // 🧮 Calculate discount
+          let discount = 0;
+          if (coupon.type === "percent") {
+            discount = (subtotal * coupon.value) / 100;
+            if (discount > coupon.maxDiscount) discount = coupon.maxDiscount;
+          } else if (coupon.type === "flat") {
+            discount = Math.min(coupon.value, coupon.maxDiscount || coupon.value);
+          }
+
+          appliedCoupon = coupon;
+          discountAmount = discount;
+
+          // ✅ Success message
+          couponMessage.classList.replace("text-danger", "text-success");
+          couponMessage.textContent = `${coupon.message} You saved ₹${discountAmount.toFixed(2)}!`;
+
           updateCartSummary();
-          
-          return;
-        }
+          console.log("Applied coupon: ", appliedCoupon);
 
-        // 💰 Validate minimum purchase
-        const subtotal = cart.reduce((sum, i) => sum + i.price * i.qty, 0);
-        if (subtotal < coupon.minPurchase) {
+        } catch (err) {
+          console.error("Coupon error:", err);
           couponMessage.classList.replace("text-success", "text-danger");
-          couponMessage.textContent = `⚠️ Minimum purchase ₹${coupon.minPurchase} required.`;
-          appliedCoupon = null;
-          discountAmount = 0;
-          updateCartSummary();
-          return;
+          couponMessage.textContent = "⚠️ Could not validate coupon.";
         }
+      });
+    }, 100); // short delay to ensure element is rendered
+  }
 
-        // 🧮 Calculate discount
-        let discount = 0;
-        if (coupon.type === "percent") {
-          discount = (subtotal * coupon.value) / 100;
-          if (discount > coupon.maxDiscount) discount = coupon.maxDiscount;
-        } else if (coupon.type === "flat") {
-          discount = Math.min(coupon.value, coupon.maxDiscount || coupon.value);
-        }
+  // -------------------------
+  // 💵 Totals + Cart Summary
+  // -------------------------
+  function calculateTotals() {
+    const subtotal = cart.reduce((sum, i) => sum + i.price * i.qty, 0);
+    const shipping = subtotal > 400 ? 0 : 80;
+    const discount = discountAmount || 0;
+    const grandTotal = subtotal + shipping - discount;
+    return { subtotal, shipping, discount, grandTotal };
+  }
 
-        appliedCoupon = coupon;
-        discountAmount = discount;
+  function updateCartSummary() {
+    const { subtotal, shipping, discount, grandTotal } = calculateTotals();
 
-        // ✅ Success message
-        couponMessage.classList.replace("text-danger", "text-success");
-        couponMessage.textContent = `${coupon.message} You saved ₹${discountAmount.toFixed(2)}!`;
-
-        updateCartSummary();
-        console.log("Applied coupon: ", appliedCoupon);
-
-      } catch (err) {
-        console.error("Coupon error:", err);
-        couponMessage.classList.replace("text-success", "text-danger");
-        couponMessage.textContent = "⚠️ Could not validate coupon.";
-      }
-    });
-  }, 100); // short delay to ensure element is rendered
-}
-
-// -------------------------
-// 💵 Totals + Cart Summary
-// -------------------------
-function calculateTotals() {
-  const subtotal = cart.reduce((sum, i) => sum + i.price * i.qty, 0);
-  const shipping = 0; // subtotal > 400 ? 0 : 80;
-  const discount = discountAmount || 0;
-  const grandTotal = subtotal + shipping - discount;
-  return { subtotal, shipping, discount, grandTotal };
-}
-
-function updateCartSummary() {
-  const { subtotal, shipping, discount, grandTotal } = calculateTotals();
-
-  const summaryHTML = `
+    const summaryHTML = `
     <div class="border-top mt-3 pt-3">
       <p class="d-flex justify-content-between mb-1">
         <span>Subtotal:</span> <strong>₹${subtotal.toFixed(2)}</strong>
@@ -645,199 +645,199 @@ function updateCartSummary() {
     </div>
   `;
 
-  const cartSummary = document.getElementById("cartSummary");
-  if (cartSummary) cartSummary.innerHTML = summaryHTML;
-}
-
-
-
-
-
-
-
-// ---------- Checkout Handler ----------
-checkoutBtn.addEventListener("click", async () => {
-  if (checkoutBtn.disabled) return;
-  checkoutBtn.disabled = true;
-
-  if (!cart.length) {
-    checkoutBtn.disabled = false;
-    return alert("Cart is empty");
+    const cartSummary = document.getElementById("cartSummary");
+    if (cartSummary) cartSummary.innerHTML = summaryHTML;
   }
 
-  // Get form values
-  const name = document.querySelector(".shipping-name")?.value.trim() || "";
-  const email = document.querySelector(".shipping-email")?.value.trim() || "";
-  const address = document.querySelector(".shipping-address")?.value.trim() || "";
-  const pincode = document.querySelector(".shipping-pincode")?.value.trim() || "";
-  const phone = document.querySelector(".contact-number")?.value.trim() || "";
 
-  // Validate inputs
-  if (!name || !email || !address || !phone || !pincode) {
-    checkoutBtn.disabled = false;
-    return alert("Please fill all shipping details");
-  }
 
-  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-  if (!emailRegex.test(email)) {
-    checkoutBtn.disabled = false;
-    return alert("Please enter a valid email address");
-  }
 
-  const phoneRegex = /^[6-9]\d{9}$/;
-  if (!phoneRegex.test(phone)) {
-    checkoutBtn.disabled = false;
-    return alert("Please enter a valid 10-digit phone number");
-  }
 
-  const pincodeRegex = /^\d{6}$/;
-  if (!pincodeRegex.test(pincode)) {
-    checkoutBtn.disabled = false;
-    return alert("Please enter a valid 6-digit pincode");
-  }
 
-  // 🧮 Calculate totals & discount
-  const { subtotal, shipping, grandTotal } = calculateTotals();
 
-  let discountAmount = 0;
-  if (appliedCoupon) {
-    if (appliedCoupon.type === "percent") {
-      discountAmount = (subtotal * appliedCoupon.value) / 100;
-    } else if (appliedCoupon.type === "flat") {
-      discountAmount = appliedCoupon.value;
+  // ---------- Checkout Handler ----------
+  checkoutBtn.addEventListener("click", async () => {
+    if (checkoutBtn.disabled) return;
+    checkoutBtn.disabled = true;
+
+    if (!cart.length) {
+      checkoutBtn.disabled = false;
+      return alert("Cart is empty");
     }
-  }
 
-  // ✅ Ensure discount never exceeds subtotal
-  discountAmount = Math.min(discountAmount, subtotal);
-// ✅ Prepare notes for Razorpay or simulated webhook
-const notes = {
-  shipping: JSON.stringify({ name, email, address, phone, pincode }),
-  items: JSON.stringify(cart),
-  coupon: JSON.stringify({
-    code: appliedCoupon?.code || "NONE",
-    name: appliedCoupon?.name || "",
-    type: appliedCoupon?.type || "",
-    value: appliedCoupon?.value || 0,
-    discount: discountAmount || 0
-  }),
-  discountAmount: discountAmount.toString()
-};
+    // Get form values
+    const name = document.querySelector(".shipping-name")?.value.trim() || "";
+    const email = document.querySelector(".shipping-email")?.value.trim() || "";
+    const address = document.querySelector(".shipping-address")?.value.trim() || "";
+    const pincode = document.querySelector(".shipping-pincode")?.value.trim() || "";
+    const phone = document.querySelector(".contact-number")?.value.trim() || "";
 
-console.log("🟢 Checkout notes ready:", notes);
-  console.log("🟢 Checkout initiated with:", {
-    subtotal,
-    shipping,
-    grandTotal,
-    appliedCoupon,
-    discountAmount,
-    notes,
-  });
+    // Validate inputs
+    if (!name || !email || !address || !phone || !pincode) {
+      checkoutBtn.disabled = false;
+      return alert("Please fill all shipping details");
+    }
 
-  try {
-    if (dev_mode) {
-      // ---------- DEVELOPMENT MODE ----------
-      showLoadingOverlay("Simulating Payment", "Testing payment process...");
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(email)) {
+      checkoutBtn.disabled = false;
+      return alert("Please enter a valid email address");
+    }
 
-      const simulatedPaymentId = "DEV-" + Date.now();
-      console.log("🧪 Dev mode: simulating payment", simulatedPaymentId);
+    const phoneRegex = /^[6-9]\d{9}$/;
+    if (!phoneRegex.test(phone)) {
+      checkoutBtn.disabled = false;
+      return alert("Please enter a valid 10-digit phone number");
+    }
 
-      updateLoadingMessage("Sending order emails...");
+    const pincodeRegex = /^\d{6}$/;
+    if (!pincodeRegex.test(pincode)) {
+      checkoutBtn.disabled = false;
+      return alert("Please enter a valid 6-digit pincode");
+    }
 
-      const webhookRes = await fetch(`http://localhost:3000/razorpay-webhook`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          "x-razorpay-signature": "dev-mode-simulated",
-        },
-        body: JSON.stringify({
-          payload: {
-            payment: {
-              entity: {
-                id: simulatedPaymentId,
-                amount: grandTotal * 100,
-                notes,
+    // 🧮 Calculate totals & discount
+    const { subtotal, shipping, grandTotal } = calculateTotals();
+
+    let discountAmount = 0;
+    if (appliedCoupon) {
+      if (appliedCoupon.type === "percent") {
+        discountAmount = (subtotal * appliedCoupon.value) / 100;
+      } else if (appliedCoupon.type === "flat") {
+        discountAmount = appliedCoupon.value;
+      }
+    }
+
+    // ✅ Ensure discount never exceeds subtotal
+    discountAmount = Math.min(discountAmount, subtotal);
+    // ✅ Prepare notes for Razorpay or simulated webhook
+    const notes = {
+      shipping: JSON.stringify({ name, email, address, phone, pincode }),
+      items: JSON.stringify(cart),
+      coupon: JSON.stringify({
+        code: appliedCoupon?.code || "NONE",
+        name: appliedCoupon?.name || "",
+        type: appliedCoupon?.type || "",
+        value: appliedCoupon?.value || 0,
+        discount: discountAmount || 0
+      }),
+      discountAmount: discountAmount.toString()
+    };
+
+    console.log("🟢 Checkout notes ready:", notes);
+    console.log("🟢 Checkout initiated with:", {
+      subtotal,
+      shipping,
+      grandTotal,
+      appliedCoupon,
+      discountAmount,
+      notes,
+    });
+
+    try {
+      if (dev_mode) {
+        // ---------- DEVELOPMENT MODE ----------
+        showLoadingOverlay("Simulating Payment", "Testing payment process...");
+
+        const simulatedPaymentId = "DEV-" + Date.now();
+        console.log("🧪 Dev mode: simulating payment", simulatedPaymentId);
+
+        updateLoadingMessage("Sending order emails...");
+
+        const webhookRes = await fetch(`http://localhost:3000/razorpay-webhook`, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            "x-razorpay-signature": "dev-mode-simulated",
+          },
+          body: JSON.stringify({
+            payload: {
+              payment: {
+                entity: {
+                  id: simulatedPaymentId,
+                  amount: grandTotal * 100,
+                  notes,
+                },
               },
             },
-          },
-        }),
-      });
+          }),
+        });
 
-      const webhookData = await webhookRes.json();
-      console.log("Webhook response:", webhookData);
+        const webhookData = await webhookRes.json();
+        console.log("Webhook response:", webhookData);
 
-     window.location.href = `/thankyou.html?pid=${simulatedPaymentId}`;
-    } else {
-      // ---------- PRODUCTION MODE ----------
-      showLoadingOverlay("Processing Payment", "Preparing your transaction...");
+        window.location.href = `/thankyou.html?pid=${simulatedPaymentId}`;
+      } else {
+        // ---------- PRODUCTION MODE ----------
+        showLoadingOverlay("Processing Payment", "Preparing your transaction...");
 
-      const API_URL =
-        window.location.hostname === "localhost"
-          ? "http://localhost:3000"
-          : "https://www.thelocalbasket.in";
+        const API_URL =
+          window.location.hostname === "localhost"
+            ? "http://localhost:3000"
+            : "https://www.thelocalbasket.in";
 
-      // ✅ Create Razorpay order
-      const orderRes = await fetch(`${API_URL}/create-razorpay-order`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          amount: grandTotal,
-          currency: "INR",
+        // ✅ Create Razorpay order
+        const orderRes = await fetch(`${API_URL}/create-razorpay-order`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            amount: grandTotal,
+            currency: "INR",
+            notes,
+          }),
+        });
+
+        if (!orderRes.ok) {
+          throw new Error(`Server error: ${orderRes.status}`);
+        }
+
+        const orderData = await orderRes.json();
+
+        if (!orderData.success || !orderData.order?.id) {
+          throw new Error(orderData.error || "Failed to create payment order");
+        }
+
+        // 🧾 Razorpay Options
+        const options = {
+          key: orderData.order.key_id,
+          amount: orderData.order.amount,
+          currency: orderData.order.currency,
+          name: "The Local Basket",
+          description: "Order Payment",
+          order_id: orderData.order.id,
+          prefill: { name, email, contact: phone },
           notes,
-        }),
-      });
-
-      if (!orderRes.ok) {
-        throw new Error(`Server error: ${orderRes.status}`);
-      }
-
-      const orderData = await orderRes.json();
-
-      if (!orderData.success || !orderData.order?.id) {
-        throw new Error(orderData.error || "Failed to create payment order");
-      }
-
-      // 🧾 Razorpay Options
-      const options = {
-        key: orderData.order.key_id,
-        amount: orderData.order.amount,
-        currency: orderData.order.currency,
-        name: "The Local Basket",
-        description: "Order Payment",
-        order_id: orderData.order.id,
-        prefill: { name, email, contact: phone },
-        notes,
-        theme: { color: "#198754" },
-        handler: function (response) {
-          //console.log("💰 Payment successful:", response.razorpay_payment_id);
-         window.location.href = `/thankyou.html?pid=${response.razorpay_payment_id}`;
-        },
-        modal: {
-          ondismiss: function () {
-            console.log("Payment popup closed");
-            checkoutBtn.disabled = false;
-            hideLoadingOverlay();
+          theme: { color: "#198754" },
+          handler: function (response) {
+            //console.log("💰 Payment successful:", response.razorpay_payment_id);
+            window.location.href = `/thankyou.html?pid=${response.razorpay_payment_id}`;
           },
-        },
-      };
+          modal: {
+            ondismiss: function () {
+              console.log("Payment popup closed");
+              checkoutBtn.disabled = false;
+              hideLoadingOverlay();
+            },
+          },
+        };
 
-      const rzp = new Razorpay(options);
+        const rzp = new Razorpay(options);
 
-      rzp.on("payment.failed", function (response) {
-        console.error("❌ Payment failed:", response.error);
-        hideLoadingOverlay();
-        alert("Payment failed: " + response.error.description);
-        checkoutBtn.disabled = false;
-      });
+        rzp.on("payment.failed", function (response) {
+          console.error("❌ Payment failed:", response.error);
+          hideLoadingOverlay();
+          alert("Payment failed: " + response.error.description);
+          checkoutBtn.disabled = false;
+        });
 
-      rzp.open();
+        rzp.open();
+      }
+    } catch (err) {
+      console.error("Checkout error:", err);
+      hideLoadingOverlay();
+      alert("Error: " + err.message);
+      checkoutBtn.disabled = false;
     }
-  } catch (err) {
-    console.error("Checkout error:", err);
-    hideLoadingOverlay();
-    alert("Error: " + err.message);
-    checkoutBtn.disabled = false;
-  }
-});
+  });
 
 });
