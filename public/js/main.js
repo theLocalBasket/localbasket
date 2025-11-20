@@ -7,7 +7,7 @@ document.addEventListener("DOMContentLoaded", async () => {
   const checkoutBtn = document.getElementById("checkoutBtn");
   let cart = [];
 
-  const dev_mode = window.location.hostname === "localhost" || window.location.hostname === "127.0.0.1";
+  const dev_mode = window.location.hostname === "abcd" ; // || window.location.hostname === "127.0.0.1";
 
   // ---------- Helper Functions ----------
   const updateCartCount = () => {
