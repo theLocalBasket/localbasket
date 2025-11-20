@@ -1,5 +1,5 @@
 // ========================
-// server.js - Gmail API version (updated for coupon handling + improved logging)
+// server.js - Gmail API + Razorpay + Coupons + Products
 // ========================
 const express = require("express");
 const cors = require("cors");
@@ -34,13 +34,8 @@ app.use(
     limit: "100kb",
   })
 );
-// Health check
-app.get("/health", (req, res) => {
-  res.json({ status: "OK", service: "Email + Razorpay" });
-});
-
 app.use(express.static("public"));
-app.use('/images', express.static('public/images'));
+app.use("/images", express.static("public/images"));
 app.disable("x-powered-by");
 
 // ========================
@@ -54,10 +49,10 @@ const razorpay = new Razorpay({
 // ========================
 // Gmail API Setup
 // ========================
+const CLIENT_ID = process.env.GMAIL_CLIENT_ID;
 const CLIENT_SECRET = process.env.GMAIL_CLIENT_SECRET;
 const REFRESH_TOKEN = process.env.GMAIL_REFRESH_TOKEN;
 const EMAIL_USER = process.env.EMAIL_USER;
-const CLIENT_ID = process.env.GMAIL_CLIENT_ID;
 const REDIRECT_URI = process.env.GMAIL_REDIRECT_URI || "https://developers.google.com/oauthplayground";
 
 console.log("📧 Email config check:");
@@ -66,37 +61,36 @@ console.log("   CLIENT_SECRET:", CLIENT_SECRET ? "✅ Set" : "❌ Missing");
 console.log("   REFRESH_TOKEN:", REFRESH_TOKEN ? "✅ Set" : "❌ Missing");
 console.log("   EMAIL_USER:", EMAIL_USER ? "✅ Set" : "❌ Missing");
 
-// Gmail API helper
 const oAuth2Client = new google.auth.OAuth2(CLIENT_ID, CLIENT_SECRET, REDIRECT_URI);
 oAuth2Client.setCredentials({ refresh_token: REFRESH_TOKEN });
 
 async function sendGmail(to, subject, html) {
   try {
     const gmail = google.gmail({ version: "v1", auth: oAuth2Client });
-
-    // Encode subject with UTF-8
     const encodedSubject = `=?utf-8?B?${Buffer.from(subject).toString("base64")}?=`;
-
     const rawMessage = Buffer.from(
       `From: "The Local Basket" <${EMAIL_USER}>\r\n` +
-      `To: ${to}\r\n` +
-      `Subject: ${encodedSubject}\r\n` +
-      `MIME-Version: 1.0\r\n` +
-      `Content-Type: text/html; charset=utf-8\r\n` +
-      `Content-Transfer-Encoding: base64\r\n\r\n` +
-      Buffer.from(html).toString("base64")
-    ).toString("base64")
+        `To: ${to}\r\n` +
+        `Subject: ${encodedSubject}\r\n` +
+        `MIME-Version: 1.0\r\n` +
+        `Content-Type: text/html; charset=utf-8\r\n` +
+        `Content-Transfer-Encoding: base64\r\n\r\n` +
+        Buffer.from(html).toString("base64")
+    )
+      .toString("base64")
       .replace(/\+/g, "-")
       .replace(/\//g, "_")
       .replace(/=+$/, "");
 
-    await gmail.users.messages.send({
+    const res = await gmail.users.messages.send({
       userId: "me",
       requestBody: { raw: rawMessage },
     });
-    return true;
+
+    console.log(`✅ Gmail sent to ${to}, messageId: ${res.data.id}`);
+    return res.data.id;
   } catch (err) {
-    console.error("❌ Gmail API send error:", err.message);
+    console.error("❌ Gmail send error:", err?.response?.data || err.message || err);
     throw err;
   }
 }
@@ -123,22 +117,23 @@ function wrapEmail(title, body) {
   </div>`;
 }
 
-
 // ========================
-// Send Emails (Enhanced)
-// (keeps same implementation as before)
+// Send Order Emails
 // ========================
 async function sendOrderEmails(orderData) {
   try {
     console.log("🧾 [EMAIL] Incoming orderData:", JSON.stringify(orderData, null, 2));
 
-    // ========================
-    // Extract & Sanitize
-    // ========================
-    // accept coupon either in orderData.notes.* or top-level coupon fields
-    const appliedCouponCode = sanitize(orderData.notes?.couponCode || orderData.couponCode || orderData.coupon?.code || "NONE");
-    const appliedCouponName = sanitize(orderData.notes?.couponName || orderData.couponName || orderData.coupon?.name || "");
-    const appliedDiscount = parseFloat(orderData.notes?.discountAmount || orderData.discountAmount || orderData.discount || orderData.coupon?.discount || 0) || 0;
+    const appliedCouponCode = sanitize(
+      orderData.notes?.couponCode || orderData.couponCode || orderData.coupon?.code || "NONE"
+    );
+    const appliedCouponName = sanitize(
+      orderData.notes?.couponName || orderData.couponName || orderData.coupon?.name || ""
+    );
+    const appliedDiscount =
+      parseFloat(
+        orderData.notes?.discountAmount || orderData.discountAmount || orderData.discount || orderData.coupon?.discount || 0
+      ) || 0;
 
     const sanitizedOrder = {
       ...orderData,
@@ -149,7 +144,7 @@ async function sendOrderEmails(orderData) {
         phone: sanitize(orderData.shipping?.phone || ""),
         pincode: sanitize(orderData.shipping?.pincode || ""),
       },
-      items: (orderData.items || []).map(item => ({
+      items: (orderData.items || []).map((item) => ({
         ...item,
         name: sanitize(item.name || ""),
       })),
@@ -158,15 +153,6 @@ async function sendOrderEmails(orderData) {
       discount: appliedDiscount,
     };
 
-    console.log("🎟️ [EMAIL] Coupon extracted:", {
-      code: sanitizedOrder.couponCode,
-      name: sanitizedOrder.couponName,
-      discount: sanitizedOrder.discount,
-    });
-
-    // ========================
-    // Build Order Table
-    // ========================
     const itemsTable = `
       <table style="width:100%; border-collapse:collapse; margin-top:15px; font-family:'Segoe UI',Arial,sans-serif; font-size:14px;">
         <thead>
@@ -178,37 +164,39 @@ async function sendOrderEmails(orderData) {
           </tr>
         </thead>
         <tbody>
-          ${(sanitizedOrder.items || []).map(item => `
+          ${(sanitizedOrder.items || [])
+            .map(
+              (item) => `
             <tr style="border-bottom:1px solid #e0e0e0;">
               <td style="padding:8px;">${item.name}</td>
               <td style="padding:8px; text-align:right;">₹${(parseFloat(item.price) || 0).toFixed(2)}</td>
               <td style="padding:8px; text-align:right;">${item.qty}</td>
               <td style="padding:8px; text-align:right;">₹${((parseFloat(item.price) || 0) * (item.qty || 0)).toFixed(2)}</td>
-            </tr>
-          `).join("")}
+            </tr>`
+            )
+            .join("")}
 
-          ${sanitizedOrder.couponCode !== "NONE" ? `
-          <tr style="background:#fff8e1;">
+          ${sanitizedOrder.couponCode !== "NONE"
+            ? `<tr style="background:#fff8e1;">
             <td colspan="3" style="padding:10px; text-align:right; font-weight:600; color:#856404;">
               Coupon Applied: ${sanitizedOrder.couponName} (${sanitizedOrder.couponCode})
             </td>
             <td style="padding:10px; text-align:right; font-weight:600; color:#d9534f;">
               - ₹${sanitizedOrder.discount.toFixed(2)}
             </td>
-          </tr>
-          ` : ""}
+          </tr>`
+            : ""}
 
           <tr style="background:#f8f9fa;">
             <td colspan="3" style="padding:10px; text-align:right; font-weight:700;">Total (incl. shipping)</td>
-            <td style="padding:10px; text-align:right; font-weight:700; color:#198754;">₹${(sanitizedOrder.grandTotal || 0).toFixed(2)}</td>
+            <td style="padding:10px; text-align:right; font-weight:700; color:#198754;">₹${(
+              sanitizedOrder.grandTotal || 0
+            ).toFixed(2)}</td>
           </tr>
         </tbody>
       </table>
     `;
 
-    // ========================
-    // Email Template Wrapper
-    // ========================
     const makeEmailBody = (title, message, footerNote = "") => `
       <div style="font-family:'Segoe UI',Arial,sans-serif; background:#f9fafb; padding:30px;">
         <div style="max-width:700px; margin:0 auto; background:white; border-radius:8px; box-shadow:0 2px 8px rgba(0,0,0,0.05); overflow:hidden;">
@@ -225,76 +213,67 @@ async function sendOrderEmails(orderData) {
       </div>
     `;
 
-    // ========================
-    // ADMIN EMAIL
-    // ========================
+    // Admin Email
     const adminBody = makeEmailBody(
       "🛒 New Order Received",
-      `
-        <h3 style="color:#198754;">Customer Details</h3>
-        <p><strong>Name:</strong> ${sanitizedOrder.shipping.name}</p>
-        <p><strong>Email:</strong> ${sanitizedOrder.shipping.email}</p>
-        <p><strong>Phone:</strong> ${sanitizedOrder.shipping.phone}</p>
-        <p><strong>Address:</strong> ${sanitizedOrder.shipping.address}</p>
-        <p><strong>Pincode:</strong> ${sanitizedOrder.shipping.pincode}</p>
-        <p><strong>Payment ID:</strong> ${sanitize(sanitizedOrder.paymentId || "")}</p>
-
-        ${sanitizedOrder.couponCode !== "NONE" ? `
-          <h4 style="margin-top:20px; color:#856404;">Coupon Details</h4>
-          <p><strong>Coupon Name:</strong> ${sanitizedOrder.couponName}</p>
-          <p><strong>Coupon Code:</strong> ${sanitizedOrder.couponCode}</p>
-          <p style="color:#d9534f;"><strong>Discount:</strong> -₹${sanitizedOrder.discount.toFixed(2)}</p>
-        ` : `<p><strong>Coupon:</strong> None Applied</p>`}
-
-        <h3 style="margin-top:25px; color:#198754;">Order Details</h3>
-        ${itemsTable}
-      `,
+      `<h3 style="color:#198754;">Customer Details</h3>
+      <p><strong>Name:</strong> ${sanitizedOrder.shipping.name}</p>
+      <p><strong>Email:</strong> ${sanitizedOrder.shipping.email}</p>
+      <p><strong>Phone:</strong> ${sanitizedOrder.shipping.phone}</p>
+      <p><strong>Address:</strong> ${sanitizedOrder.shipping.address}</p>
+      <p><strong>Pincode:</strong> ${sanitizedOrder.shipping.pincode}</p>
+      <p><strong>Payment ID:</strong> ${sanitize(sanitizedOrder.paymentId || "")}</p>
+      ${sanitizedOrder.couponCode !== "NONE" ? `
+        <h4 style="margin-top:20px; color:#856404;">Coupon Details</h4>
+        <p><strong>Coupon Name:</strong> ${sanitizedOrder.couponName}</p>
+        <p><strong>Coupon Code:</strong> ${sanitizedOrder.couponCode}</p>
+        <p style="color:#d9534f;"><strong>Discount:</strong> -₹${sanitizedOrder.discount.toFixed(2)}</p>` : `<p><strong>Coupon:</strong> None Applied</p>`}
+      <h3 style="margin-top:25px; color:#198754;">Order Details</h3>${itemsTable}`,
       `This is an automated message from The Local Basket Admin System`
     );
 
     console.log("📧 [EMAIL] Sending admin email to:", process.env.RECEIVER_EMAIL);
-    await sendGmail(process.env.RECEIVER_EMAIL, `🛒 New Order - ₹${(sanitizedOrder.grandTotal || 0).toFixed(2)}`, adminBody);
+    await sendGmail(
+      process.env.RECEIVER_EMAIL,
+      `🛒 New Order - ₹${(sanitizedOrder.grandTotal || 0).toFixed(2)}`,
+      adminBody
+    );
+
     console.log("✅ [EMAIL] Admin email sent successfully.");
 
-    // ========================
-    // CUSTOMER EMAIL
-    // ========================
+    // Customer Email
     const customerBody = makeEmailBody(
       "✅ Order Confirmation",
-      `
-        <p>Hi <strong>${sanitizedOrder.shipping.name}</strong>,</p>
-        <p>We’re thrilled to confirm that your payment has been received successfully.</p>
-        <p><strong>Payment ID:</strong> ${sanitize(sanitizedOrder.paymentId || "")}</p>
-
-        ${sanitizedOrder.couponCode !== "NONE" ? `
-          <h4 style="margin-top:20px; color:#856404;">Coupon Applied</h4>
-          <p><strong>${sanitizedOrder.couponName}</strong> (${sanitizedOrder.couponCode})</p>
-          <p style="color:#d9534f;"><strong>Discount:</strong> -₹${sanitizedOrder.discount.toFixed(2)}</p>
-        ` : ""}
-
-        <h3 style="margin-top:25px; color:#198754;">Order Summary</h3>
-        ${itemsTable}
-
-        <p style="margin-top:20px; color:#555;">We’ll ship your order soon. Thank you for shopping with <strong>The Local Basket</strong>! 🌿</p>
-      `,
+      `<p>Hi <strong>${sanitizedOrder.shipping.name}</strong>,</p>
+      <p>We’re thrilled to confirm that your payment has been received successfully.</p>
+      <p><strong>Payment ID:</strong> ${sanitize(sanitizedOrder.paymentId || "")}</p>
+      ${sanitizedOrder.couponCode !== "NONE" ? `
+        <h4 style="margin-top:20px; color:#856404;">Coupon Applied</h4>
+        <p><strong>${sanitizedOrder.couponName}</strong> (${sanitizedOrder.couponCode})</p>
+        <p style="color:#d9534f;"><strong>Discount:</strong> -₹${sanitizedOrder.discount.toFixed(2)}</p>` : ""}
+      <h3 style="margin-top:25px; color:#198754;">Order Summary</h3>
+      ${itemsTable}
+      <p style="margin-top:20px; color:#555;">We’ll ship your order soon. Thank you for shopping with <strong>The Local Basket</strong>! 🌿</p>`,
       `Need help? Contact us at <a href="mailto:support@thelocalbasket.in">support@thelocalbasket.in</a>`
     );
 
     console.log("📧 [EMAIL] Sending customer email to:", sanitizedOrder.shipping.email);
-    await sendGmail(sanitizedOrder.shipping.email, `✅ Order Confirmation - ₹${(sanitizedOrder.grandTotal || 0).toFixed(2)}`, customerBody);
-    console.log("✅ [EMAIL] Customer email sent successfully.");
+    await sendGmail(
+      sanitizedOrder.shipping.email,
+      `✅ Order Confirmation - ₹${(sanitizedOrder.grandTotal || 0).toFixed(2)}`,
+      customerBody
+    );
 
+    console.log("✅ [EMAIL] Customer email sent successfully.");
   } catch (err) {
     console.error("❌ [EMAIL ERROR]:", err.message || err);
     console.error("🪲 [EMAIL DEBUG TRACE]:", err);
   }
 }
 
-
 // ========================
 // Routes
 // ========================
-
 
 // Test email endpoint
 app.post("/test-email", async (req, res) => {
@@ -351,30 +330,20 @@ app.post("/razorpay-webhook", async (req, res) => {
       }
     }
 
-    // support both webhook payload shapes
     const payment = req.body.payload?.payment?.entity || req.body.payment?.entity || req.body;
     if (!payment) {
       console.error("❌ No payment entity found in webhook");
       return res.status(400).json({ status: "invalid payload" });
     }
 
-    console.log("🔔 [WEBHOOK] Payment received:", {
-      id: payment.id,
-      amount: payment.amount,
-      notes: payment.notes || {}
-    });
+    console.log("🔔 [WEBHOOK] Payment received:", { id: payment.id, amount: payment.amount, notes: payment.notes || {} });
 
-    // Parse notes and coupon robustly
     const notes = payment.notes || {};
-    console.log("📦 [WEBHOOK] Raw notes:", notes);
-
-    // coupon may be stringified JSON in notes.coupon or separate fields
     let parsedCoupon = null;
     if (notes.coupon) {
       try {
         parsedCoupon = typeof notes.coupon === "string" ? JSON.parse(notes.coupon) : notes.coupon;
       } catch (e) {
-        // if parsing fails, fallback to the raw string as code
         parsedCoupon = { code: String(notes.coupon) };
       }
     } else if (notes.couponCode || notes.couponName) {
@@ -401,12 +370,8 @@ app.post("/razorpay-webhook", async (req, res) => {
 
     console.log("🧾 [WEBHOOK] Final orderData prepared:", JSON.stringify(orderData, null, 2));
 
-    // Send emails (fire-and-forget but log errors)
-    sendOrderEmails(orderData).then(() => {
-      console.log("📧 [WEBHOOK] sendOrderEmails finished.");
-    }).catch(err => {
-      console.error("❌ [WEBHOOK] sendOrderEmails error:", err);
-    });
+    sendOrderEmails(orderData).then(() => console.log("📧 [WEBHOOK] sendOrderEmails finished."))
+      .catch(err => console.error("❌ [WEBHOOK] sendOrderEmails error:", err));
 
     res.json({ status: "ok" });
   } catch (err) {
@@ -438,14 +403,32 @@ app.get("/api/coupons", (req, res) => {
   }
 });
 
-
-
-
 // 404 & error handlers
 app.use((req, res) => res.status(404).json({ success: false, error: "Not found" }));
 app.use((err, req, res, next) => {
   console.error(err.stack);
   res.status(500).json({ success: false, error: "Internal server error" });
+});
+
+// OAuth2 redirect endpoint
+app.get("/oauth2callback", async (req, res) => {
+  const code = req.query.code;
+  if (!code) return res.status(400).send("Missing code");
+
+  try {
+    const { tokens } = await oAuth2Client.getToken(code);
+    oAuth2Client.setCredentials(tokens);
+    console.log("✅ Gmail API tokens received:", tokens);
+    res.send("Gmail API authorized successfully!");
+  } catch (err) {
+    console.error("❌ OAuth2 callback error:", err);
+    res.status(500).send("Error exchanging code for token");
+  }
+});
+
+// Health check
+app.get("/health", (req, res) => {
+  res.json({ status: "OK", service: "Email + Razorpay" });
 });
 
 // Start server
