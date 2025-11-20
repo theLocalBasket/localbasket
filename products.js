@@ -2,7 +2,9 @@ const fs = require("fs");
 const path = require("path");
 const Database = require("better-sqlite3");
 
+// ================================
 // Open/create the database
+// ================================
 const db = new Database("./products.db");
 
 // ================================
@@ -11,7 +13,7 @@ const db = new Database("./products.db");
 db.prepare(`
   CREATE TABLE IF NOT EXISTS products (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
-    name TEXT NOT NULL,
+    name TEXT NOT NULL UNIQUE,
     description TEXT,
     price REAL NOT NULL,
     qty REAL NOT NULL,
@@ -61,6 +63,19 @@ for (const p of products) {
   } else {
     updateStmt.run(p.description, p.price, p.qty ?? 0, p.image, p.name);
     console.log(`🔄 Updated: ${p.name}`);
+  }
+}
+
+// ================================
+// Delete products not in JSON
+// ================================
+const dbProducts = db.prepare("SELECT name FROM products").all();
+const jsonProductNames = products.map(p => p.name);
+
+for (const dbP of dbProducts) {
+  if (!jsonProductNames.includes(dbP.name)) {
+    db.prepare("DELETE FROM products WHERE name = ?").run(dbP.name);
+    console.log(`❌ Deleted: ${dbP.name}`);
   }
 }
 

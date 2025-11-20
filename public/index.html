@@ -1,13 +1,14 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>The Local Basket - Premium Local Products</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The Local Basket - Premium Local Products</title>
 
-<link rel="icon" type="image/png" href="images/favicon.png">
+    <link rel="icon" type="image/png" href="images/favicon.png">
 
-<meta http-equiv="Content-Security-Policy" content="
+    <meta http-equiv="Content-Security-Policy" content="
   default-src 'self';
   script-src 'self' https://cdn.jsdelivr.net https://checkout.razorpay.com 'unsafe-inline';
   style-src 'self' https://cdn.jsdelivr.net https://fonts.googleapis.com 'unsafe-inline';
@@ -17,172 +18,182 @@
   frame-src https://checkout.razorpay.com https://api.razorpay.com;
 ">
 
-<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Playfair+Display:wght@400;500;600;700&display=swap" rel="stylesheet">
-<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.4/dist/css/bootstrap.min.css" rel="stylesheet">
-<link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
-<link rel="stylesheet" href="css/styles.css">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Playfair+Display:wght@400;500;600;700&display=swap"
+        rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.4/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="css/styles.css">
 
 </head>
+
 <body>
 
-<nav class="myNav">
-  <div class="container-fluid">
-    <a href="index.html"><img src="images/logo.PNG" alt="The Local Basket" style="height:50px;"></a>
-    <input type="text" id="searchInput" placeholder="Search products...">
-    <button type="button" class="btn-cart" data-bs-toggle="modal" data-bs-target="#cartModal">
-      <i class="bi bi-cart3 fs-4"></i>
-      <span class="cart-count badge bg-danger">0</span>
-    </button>
-  </div>
-</nav>
-<div class="festive-offer-banner text-center py-2">
-  🎉 Festive Offer: <strong>10% OFF</strong> on all products! Hurry, limited time only! 🎁
-</div>
-
-<section class="hero-section">
-  <img src="images/images.png" alt="Premium Products" class="hero-image">
-  <div class="hero-overlay">
-    <h1>Premium Local Products</h1>
-    <p>Curated selection from local artisans & businesses. Quality you can trust.</p>
-    <a href="#featured" class="btn-accent">Shop Now</a>
-  </div>
-</section>
-
-<section id="featured" class="container">
-  <div class="products-grid"></div>
-</section>
-
-<div class="modal fade" id="imageModal" tabindex="-1" aria-hidden="true">
-  <div class="modal-dialog modal-dialog-centered modal-lg">
-    <div class="modal-content bg-transparent border-0 shadow-none">
-      <button type="button" class="btn-close ms-auto me-2 mt-2" data-bs-dismiss="modal"></button>
-      <img id="modalImage" src="" class="img-fluid rounded shadow" alt="Product Preview">
-    </div>
-  </div>
-</div>
-
-<div id="cart-message" class="cartMsg">Item added to cart!</div>
-
-<div class="modal fade" id="cartModal" tabindex="-1">
-  <div class="modal-dialog modal-lg">
-    <div class="modal-content rounded-4 shadow">
-      <div class="modal-header border-0">
-        <h5 class="modal-title">
-          <i class="bi bi-cart3 me-2"></i>Your Cart
-        </h5>
-        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-      </div>
-
-      <div class="modal-body" id="cartBody">
-        <!-- Cart items will be dynamically injected here -->
-      </div>
-      <!-- Cart Summary -->
-<div id="cartSummary" class="px-4 pb-3"></div>
-
-
-     
-
-      <div class="modal-footer border-0">
-        <button
-          type="button"
-          class="btn btn-outline-secondary"
-          data-bs-dismiss="modal"
-        >
-          Continue Shopping
-        </button>
-        <button type="button" class="btn btn-primary" id="checkoutBtn">
-          Place Order & Pay
-        </button>
-      </div>
-    </div>
-  </div>
-</div>
-
-<footer class="footer py-5" style="background-color: var(--primary); color: var(--secondary);">
-  <div class="container">
-    <div class="row gy-4 align-items-start">
-      
-      <!-- Brand Info -->
-      <div class="col-md-4">
-        <h5 class="fw-bold mb-3" style="color: var(--accent);">The Local Basket</h5>
-        <p class="small mb-4" style="opacity: 0.85;">
-          Curated, locally sourced products supporting artisans & small businesses.
-        </p>
-        <div class="d-flex gap-3 social-links">
-          <a href="#" class="footer-icon"><i class="bi bi-facebook"></i></a>
-          <a href="https://www.instagram.com/thelocalbaskets" target="_blank" class="footer-icon"><i class="bi bi-instagram"></i></a>
-          <a href="https://wa.me/+919609010193" target="_blank" class="footer-icon"><i class="bi bi-whatsapp"></i></a>
+    <nav class="myNav">
+        <div class="container-fluid">
+            <a href="index.html"><img src="images/logo.PNG" alt="The Local Basket" style="height:50px;"></a>
+            <input type="text" id="searchInput" placeholder="Search products...">
+            <button type="button" class="btn-cart" data-bs-toggle="modal" data-bs-target="#cartModal">
+                <i class="bi bi-cart3 fs-4"></i>
+                <span class="cart-count badge bg-danger">0</span>
+            </button>
         </div>
-      </div>
-
-      <!-- Help Section -->
-      <div class="col-6 col-md-2">
-        <h6 class="fw-semibold mb-3" style="color: var(--accent);">Help</h6>
-        <ul class="list-unstyled small">
-          <li><a href="FAQs.html" class="footer-link">FAQs</a></li>
-          <li><a href="shipping.html" class="footer-link">Shipping</a></li>
-          <li><a href="return.html" class="footer-link">Returns</a></li>
-          <li><a href="contactus.html" class="footer-link">Contact Us</a></li>
-        </ul>
-      </div>
-
-      <!-- Quick Links (Optional for balance) -->
-      <div class="col-6 col-md-2">
-        <h6 class="fw-semibold mb-3" style="color: var(--accent);">Shop</h6>
-        <ul class="list-unstyled small">
-          <li><a href="#" id="scrollToTop" class="footer-link">All Products</a></li>
-          <li><a href="#" id="newArrivals" class="footer-link">New Arrivals</a></li>
-          <li><a href="#" id="offers" class="footer-link">Offers</a></li>
-        </ul>
-      </div>
-
-      <!-- Contact Info -->
-      <div class="col-md-4">
-        <h6 class="fw-semibold mb-3" style="color: var(--accent);">Get in Touch</h6>
-        <p class="small mb-1"><i class="bi bi-geo-alt me-2"></i>New Market, Pakyong, East Sikkim</p>
-        <p class="small mb-1"><i class="bi bi-envelope me-2"></i>tlbpkg@gmail.com</p>
-        <p class="small"><i class="bi bi-phone me-2"></i>+919609010193 | +917872778009 | +918116134446 | +918348945765</p>
-      </div>
+    </nav>
+    <div class="festive-offer-banner text-center py-2">
+        🎉 Festive Offer: <strong>10% OFF</strong> on all products! Hurry, limited time only! 🎁
     </div>
 
-    <hr class="border-secondary mt-4 mb-3" style="opacity: 0.3;">
+    <section class="hero-section">
+        <img src="images/images.png" alt="Premium Products" class="hero-image">
+        <div class="hero-overlay">
+            <h1>Premium Local Products</h1>
+            <p>Curated selection from local artisans & businesses. Quality you can trust.</p>
+            <a href="#featured" class="btn-accent">Shop Now</a>
+        </div>
+    </section>
 
-    <div class="text-center small" style="opacity: 0.8;">
-      &copy; 2025 <span style="color: var(--accent); font-weight: 600;">The Local Basket</span>. All rights reserved.
+    <section id="featured" class="container">
+        <div class="products-grid"></div>
+        <div id="noResults" class="text-center py-5" style="display: none;">
+            <i class="bi bi-search display-1 text-muted"></i>
+            <h3 class="mt-3">No products found</h3>
+            <p class="text-muted">Try adjusting your search terms</p>
+        </div>
+    </section>
+
+    <div class="modal fade" id="imageModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-lg">
+            <div class="modal-content bg-transparent border-0 shadow-none">
+                <button type="button" class="btn-close ms-auto me-2 mt-2" data-bs-dismiss="modal"></button>
+                <img id="modalImage" src="" class="img-fluid rounded shadow" alt="Product Preview">
+            </div>
+        </div>
     </div>
-  </div>
-</footer>
+
+    <div id="cart-message" class="cartMsg">Item added to cart!</div>
+
+    <div class="modal fade" id="cartModal" tabindex="-1">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content rounded-4 shadow">
+                <div class="modal-header border-0">
+                    <h5 class="modal-title">
+                        <i class="bi bi-cart3 me-2"></i>Your Cart
+                    </h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+
+                <div class="modal-body" id="cartBody">
+                    <!-- Cart items will be dynamically injected here -->
+                </div>
+                <!-- Cart Summary -->
+                <div id="cartSummary" class="px-4 pb-3"></div>
 
 
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.4/dist/js/bootstrap.bundle.min.js"></script>
-<script src="https://checkout.razorpay.com/v1/checkout.js"></script>
-<script src="/js-min/main.min.js" defer></script>
-
-<script src="/js-min/app.min.js" defer></script>
 
 
-<script>
-  document.getElementById("scrollToTop").addEventListener("click", function (e) {
-    e.preventDefault();
-    window.scrollTo({
-      top: 0,
-      behavior: "smooth"
-    });
-  });
+                <div class="modal-footer border-0">
+                    <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">
+                        Continue Shopping
+                    </button>
+                    <button type="button" class="btn btn-primary" id="checkoutBtn">
+                        Place Order & Pay
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
 
-  // Coming soon alerts
-  document.getElementById("newArrivals").addEventListener("click", function (e) {
-    e.preventDefault();
-    alert("🛍️ New Arrivals - Coming Soon!");
-  });
+    <footer class="footer py-5">
+        <div class="container">
+            <div class="row gy-4 align-items-start">
 
-  document.getElementById("offers").addEventListener("click", function (e) {
-    e.preventDefault();
-    alert("🎁 Exciting Offers - Coming Soon!");
-  });
-</script>
+                <!-- Brand Info -->
+                <div class="col-md-4">
+                    <h5 class="fw-bold mb-3">The Local Basket</h5>
+                    <p class="small mb-4">
+                        Curated, locally sourced products supporting artisans & small businesses.
+                    </p>
+                    <div class="d-flex gap-3 social-links">
+                        <a href="#" class="footer-icon"><i class="bi bi-facebook"></i></a>
+                        <a href="https://www.instagram.com/thelocalbaskets" target="_blank" class="footer-icon"><i
+                                class="bi bi-instagram"></i></a>
+                        <a href="https://wa.me/+919609010193" target="_blank" class="footer-icon"><i
+                                class="bi bi-whatsapp"></i></a>
+                    </div>
+                </div>
+
+                <!-- Help Section -->
+                <div class="col-6 col-md-2">
+                    <h6 class="fw-semibold mb-3">Help</h6>
+                    <ul class="list-unstyled small">
+                        <li><a href="FAQs.html" class="footer-link">FAQs</a></li>
+                        <li><a href="shipping.html" class="footer-link">Shipping</a></li>
+                        <li><a href="return.html" class="footer-link">Returns</a></li>
+                        <li><a href="contactus.html" class="footer-link">Contact Us</a></li>
+                    </ul>
+                </div>
+
+                <!-- Quick Links (Optional for balance) -->
+                <div class="col-6 col-md-2">
+                    <h6 class="fw-semibold mb-3">Shop</h6>
+                    <ul class="list-unstyled small">
+                        <li><a href="#" id="scrollToTop" class="footer-link">All Products</a></li>
+                        <li><a href="#" id="newArrivals" class="footer-link">New Arrivals</a></li>
+                        <li><a href="#" id="offers" class="footer-link">Offers</a></li>
+                    </ul>
+                </div>
+
+                <!-- Contact Info -->
+                <div class="col-md-4">
+                    <h6 class="fw-semibold mb-3">Get in Touch</h6>
+                    <p class="small mb-1"><i class="bi bi-geo-alt me-2"></i>New Market, Pakyong, East Sikkim</p>
+                    <p class="small mb-1"><i class="bi bi-envelope me-2"></i>tlbpkg@gmail.com</p>
+                    <p class="small"><i class="bi bi-phone me-2"></i>+919609010193 | +917872778009 | +918116134446 |
+                        +918348945765
+                    </p>
+                </div>
+            </div>
+
+            <hr class="border-secondary mt-4 mb-3" style="opacity: 0.3;">
+
+            <div class="text-center small" style="opacity: 0.8;">
+                &copy; 2025 <span style="color: var(--accent); font-weight: 600;">The Local Basket</span>. All rights
+                reserved.
+            </div>
+        </div>
+    </footer>
+
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.4/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+    <script src="/js-min/main.min.js" defer></script>
+
+    <script src="/js-min/app.min.js" defer></script>
+
+
+    <script>
+        document.getElementById("scrollToTop").addEventListener("click", function (e) {
+            e.preventDefault();
+            window.scrollTo({
+                top: 0,
+                behavior: "smooth"
+            });
+        });
+
+        // Coming soon alerts
+        document.getElementById("newArrivals").addEventListener("click", function (e) {
+            e.preventDefault();
+            alert("🛍️ New Arrivals - Coming Soon!");
+        });
+
+        document.getElementById("offers").addEventListener("click", function (e) {
+            e.preventDefault();
+            alert("🎁 Exciting Offers - Coming Soon!");
+        });
+    </script>
 
 
 
 </body>
+
 </html>

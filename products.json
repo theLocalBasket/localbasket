@@ -174,7 +174,6 @@
     "qty": 0,
     "image": "images/Phone charm05.jpg"
   },
- 
   {
     "name": "Mini Crochet Bouquet 🌸",
     "description": "Pocket-sized handcrafted bouquet, perfect to gift.",
@@ -239,7 +238,6 @@
     "image": "images/Sunflower bag charm.jpg"
   },
   {
-
     "name": "Handmade Crochet Bouquet - Large 🌸",
     "description": "Large Size handcrafted bouquet for gifting or decor.",
     "price": 1000,
@@ -247,21 +245,10 @@
     "image": "images/large bouquet.jpg"
   },
   {
-
     "name": "Themed - Handmade Crochet Bouquet  🌸",
     "description": "Sesonal themed handcrafted bouquet, ideal for gifting or decor.",
     "price": 1200,
     "qty": 10,
     "image": "images/themed bouquet.jpg"
   }
-  ,
-  {
-
-    "name": "Demo  🌸",
-    "description": "Sesonal themed handcrafted bouquet, ideal for gifting or decor.",
-    "price": 2,
-    "qty": 10,
-    "image": "images/themed bouquet.jpg"
-  }
-
 ]

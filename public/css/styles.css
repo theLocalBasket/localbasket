@@ -52,7 +52,11 @@ body {
   letter-spacing: 0.3px;
 }
 
-h1, h2, h3, h4, h5 {
+h1,
+h2,
+h3,
+h4,
+h5 {
   font-family: 'Playfair Display', serif;
   color: var(--primary);
   font-weight: 600;
@@ -637,6 +641,7 @@ h5 {
     opacity: 0;
     transform: translateY(30px);
   }
+
   100% {
     opacity: 1;
     transform: translateY(0);
@@ -648,6 +653,7 @@ h5 {
     opacity: 0;
     transform: translateX(50px);
   }
+
   100% {
     opacity: 1;
     transform: translateX(0);
@@ -658,6 +664,7 @@ h5 {
   0% {
     transform: translateY(0) rotate(0deg);
   }
+
   100% {
     transform: translateY(-15px) rotate(5deg);
   }
@@ -955,6 +962,7 @@ h5 {
     opacity: 0;
     transform: translateX(100px);
   }
+
   to {
     opacity: 1;
     transform: translateX(0);
@@ -966,6 +974,7 @@ h5 {
     opacity: 1;
     transform: translateX(0);
   }
+
   to {
     opacity: 0;
     transform: translateX(100px);
