@@ -7,7 +7,7 @@ document.addEventListener("DOMContentLoaded", async () => {
   const checkoutBtn = document.getElementById("checkoutBtn");
   let cart = [];
 
-  const dev_mode = window.location.hostname === "abcd" ; // || window.location.hostname === "127.0.0.1";
+  const dev_mode = window.location.hostname === "localhost" || window.location.hostname === "127.0.0.1";
 
   // ---------- Helper Functions ----------
   const updateCartCount = () => {
@@ -48,7 +48,7 @@ const showCartMessage = (message = "Item added to cart!", duration = 1000) => {
 
 function calculateTotals() {
   const subtotal = cart.reduce((sum, i) => sum + i.price * i.qty, 0);
-  const shipping = subtotal > 400 ? 0 : 80;
+  const shipping = 0; // subtotal > 400 ? 0 : 80;
   const discount = discountAmount || 0;
   const grandTotal = subtotal + shipping - discount;
   return { subtotal, shipping, discount, grandTotal };
