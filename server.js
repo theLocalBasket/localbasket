@@ -175,11 +175,35 @@ async function sendOrderEmails(orderData) {
     `;
 
     // Admin Email
-    await sendGmail(
-      process.env.RECEIVER_EMAIL,
-      `🛒 New Order - ₹${sanitizedOrder.grandTotal.toFixed(2)}`,
-      wrapEmail("New Order Received", `<p>Customer: ${sanitizedOrder.shipping.name}</p>${itemsTable}`)
-    );
+   await sendGmail(
+  process.env.RECEIVER_EMAIL,
+  `🛒 New Order - ₹${sanitizedOrder.grandTotal.toFixed(2)}`,
+  wrapEmail(
+    "New Order Received",
+    `
+      <h2 style="margin-bottom:10px;">Customer Details</h2>
+      <p><strong>Name:</strong> ${sanitizedOrder.shipping.name}</p>
+      <p><strong>Address:</strong> ${sanitizedOrder.shipping.address}</p>
+      <p><strong>Phone:</strong> ${sanitizedOrder.shipping.phone}</p>
+      <p><strong>Email:</strong> ${sanitizedOrder.shipping.email}</p>
+      <p><strong>Pincode:</strong> ${sanitizedOrder.shipping.pincode}</p>
+
+      <h2 style="margin-top:20px; margin-bottom:10px;">Payment Details</h2>
+      <p><strong>Payment ID:</strong> ${sanitizedOrder.paymentId}</p>
+
+      <h2 style="margin-top:20px; margin-bottom:10px;">Coupon</h2>
+      <p><strong>Coupon Used:</strong> ${
+        sanitizedOrder.couponCode !== "NONE"
+          ? `${sanitizedOrder.couponName} (${sanitizedOrder.couponCode})`
+          : "No Coupon Used"
+      }</p>
+
+      <h2 style="margin-top:20px; margin-bottom:10px;">Order Items</h2>
+      ${itemsTable}
+    `
+  )
+);
+
 
     // Customer Email
     await sendGmail(
