@@ -250,13 +250,6 @@
     "price": 1200,
     "qty": 10,
     "image": "images/themed bouquet.jpg"
-  },
-{
-    "name": "T-Demo 🌸",
-    "description": "Sesonal themed handcrafted bouquet, ideal for gifting or decor.",
-    "price": 1,
-    "qty": 10,
-    "image": "images/themed bouquet.jpg"
-}
+  }
 
 ]

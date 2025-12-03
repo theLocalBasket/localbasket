@@ -48,7 +48,7 @@ document.addEventListener("DOMContentLoaded", async () => {
 
   function calculateTotals() {
     const subtotal = cart.reduce((sum, i) => sum + i.price * i.qty, 0);
-    const shipping = 0; // subtotal > 400 ? 0 : 80;
+    const shipping =  subtotal > 400 ? 0 : 80;
     const discount = discountAmount || 0;
     const grandTotal = subtotal + shipping - discount;
     return { subtotal, shipping, discount, grandTotal };
@@ -618,7 +618,7 @@ document.addEventListener("DOMContentLoaded", async () => {
   // -------------------------
   function calculateTotals() {
     const subtotal = cart.reduce((sum, i) => sum + i.price * i.qty, 0);
-    const shipping = 0; // subtotal > 400 ? 0 : 80;
+    const shipping =  subtotal > 400 ? 0 : 80;
     const discount = discountAmount || 0;
     const grandTotal = subtotal + shipping - discount;
     return { subtotal, shipping, discount, grandTotal };
