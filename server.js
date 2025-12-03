@@ -204,13 +204,41 @@ async function sendOrderEmails(orderData) {
   )
 );
 
+// Customer Email
+await sendGmail(
+  sanitizedOrder.shipping.email,
+  `✅ Order Confirmation - ₹${sanitizedOrder.grandTotal.toFixed(2)}`,
+  wrapEmail(
+    "Order Confirmation",
+    `
+    <div style="padding:20px; font-family: 'Segoe UI', Arial, sans-serif; color:#333;">
+      <p style="font-size:16px;">Hi <strong>${sanitizedOrder.shipping.name}</strong>,</p>
+      <p style="font-size:16px;">Thank you for your order! Here’s a summary of your purchase:</p>
+      
+      <div style="background:#f8f9fa; border-radius:10px; padding:20px; box-shadow:0 4px 10px rgba(0,0,0,0.05); margin-top:20px;">
+        <h3 style="color:#198754; margin-bottom:10px;">Payment Details</h3>
+        <p style="margin:5px 0;"><strong>Payment ID:</strong> ${sanitizedOrder.paymentId}</p>
+        
+        <h3 style="color:#198754; margin:20px 0 10px;">Coupon</h3>
+        <p style="margin:5px 0;"><strong>Coupon Used:</strong> ${
+          sanitizedOrder.couponCode !== "NONE"
+            ? `${sanitizedOrder.couponName} (${sanitizedOrder.couponCode})`
+            : "No Coupon Used"
+        }</p>
+        
+        <h3 style="color:#198754; margin:20px 0 10px;">Order Items</h3>
+        ${itemsTable}
+        
+        <p style="margin-top:20px; font-size:16px; color:#555;">We appreciate your business and hope you enjoy your order!</p>
+      </div>
+      
+      <p style="margin-top:30px; font-size:14px; color:#777;">If you have any questions, reply to this email or contact our support team.</p>
+      <p style="font-size:14px; color:#777;">© ${new Date().getFullYear()} The Local Basket</p>
+    </div>
+    `
+  )
+);
 
-    // Customer Email
-    await sendGmail(
-      sanitizedOrder.shipping.email,
-      `✅ Order Confirmation - ₹${sanitizedOrder.grandTotal.toFixed(2)}`,
-      wrapEmail("Order Confirmation", `<p>Hi ${sanitizedOrder.shipping.name},</p>${itemsTable}<p>Thank you for shopping!</p>`)
-    );
 
   } catch (err) {
     console.error("❌ [EMAIL ERROR]:", err);
